@@ -94,28 +94,34 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
             <!-- Produk 1 -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group">
-                <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative">
-                    <span class="absolute top-3 left-3 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">Terlaris</span>
-                    <i data-lucide="cup-soda" class="w-20 h-20 text-amber-800 group-hover:scale-110 transition transform"></i>
-                </div>
-                <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
-                    <div>
-                        <span class="text-[11px] font-medium text-amber-800 uppercase tracking-wider">Teh Siap Minum</span>
-                        <h3 class="font-bold text-gray-900 text-base leading-snug">Teh Botol Sosro RGB 220 ml</h3>
-                        <p class="text-xs text-gray-500 mt-1">Kemasan botol kaca ikonik kesegaran alami asli Indonesia.</p>
-                    </div>
-                    <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
-                        <div>
-                            <p class="text-xs text-gray-400">Harga Satuan</p>
-                            <p class="text-lg font-bold text-amber-900">Rp 4.000</p>
-                        </div>
-                        <button onclick="addToCart('Teh Botol Sosro RGB 220ml', 4000)" class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm">
-                            <i data-lucide="plus" class="w-5 h-5"></i>
-                        </button>
-                    </div>
-                </div>
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group">
+    <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative overflow-hidden">
+        <span class="absolute top-3 left-3 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded z-10">Terlaris</span>
+        
+        <!-- Gambar produk -->
+        <img 
+            src="teh botol 220ml.jpg" 
+            alt="Teh Botol Sosro RGB 220 ml" 
+            class="w-full h-full object-contain group-hover:scale-110 transition transform duration-300"
+        >
+    </div>
+    <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+        <div>
+            <span class="text-[11px] font-medium text-amber-800 uppercase tracking-wider">Teh Siap Minum</span>
+            <h3 class="font-bold text-gray-900 text-base leading-snug">Teh Botol Sosro RGB 220 ml</h3>
+            <p class="text-xs text-gray-500 mt-1">Kemasan botol kaca ikonik kesegaran alami asli Indonesia.</p>
+        </div>
+        <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+            <div>
+                <p class="text-xs text-gray-400">Harga Satuan</p>
+                <p class="text-lg font-bold text-amber-900">Rp 4.000</p>
             </div>
+            <button onclick="addToCart('Teh Botol Sosro RGB 220ml', 4000)" class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm">
+                <i data-lucide="plus" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </div>
+</div>
 
             <!-- Produk 2 -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group">
