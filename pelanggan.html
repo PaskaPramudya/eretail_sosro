@@ -183,26 +183,32 @@
 </div>
             <!-- Produk 4 -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group">
-                <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative">
-                    <i data-lucide="box" class="w-20 h-20 text-emerald-700 group-hover:scale-110 transition transform"></i>
-                </div>
-                <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
-                    <div>
-                        <span class="text-[11px] font-medium text-amber-800 uppercase tracking-wider">Kemasan Karton (Grosir)</span>
-                        <h3 class="font-bold text-gray-900 text-base leading-snug">Teh Botol Kotak 250ml (Dus)</h3>
-                        <p class="text-xs text-gray-500 mt-1">1 Karton isi 24 pcs. Lebih hemat untuk stok toko Anda.</p>
-                    </div>
-                    <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
-                        <div>
-                            <p class="text-xs text-gray-400">Harga Karton</p>
-                            <p class="text-lg font-bold text-amber-900">Rp 78.000</p>
-                        </div>
-                        <button onclick="addToCart('Teh Botol Kotak 250ml (Dus)', 78000)" class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm">
-                            <i data-lucide="plus" class="w-5 h-5"></i>
-                        </button>
-                    </div>
-                </div>
+    <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative overflow-hidden">
+        
+        <!-- Gambar produk menggantikan ikon Lucide -->
+        <img 
+            src="Teh Botol Kotak 250ml (Dus).jpg" 
+            alt="Teh Botol Kotak 250ml (Dus)" 
+            class="w-full h-full object-contain group-hover:scale-110 transition transform duration-300"
+        >
+    </div>
+    <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+        <div>
+            <span class="text-[11px] font-medium text-amber-800 uppercase tracking-wider">Kemasan Karton (Grosir)</span>
+            <h3 class="font-bold text-gray-900 text-base leading-snug">Teh Botol Kotak 250ml (Dus)</h3>
+            <p class="text-xs text-gray-500 mt-1">1 Karton isi 24 pcs. Lebih hemat untuk stok toko Anda.</p>
+        </div>
+        <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+            <div>
+                <p class="text-xs text-gray-400">Harga Karton</p>
+                <p class="text-lg font-bold text-amber-900">Rp 78.000</p>
             </div>
+            <button onclick="addToCart('Teh Botol Kotak 250ml (Dus)', 78000)" class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm">
+                <i data-lucide="plus" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </div>
+</div>
 
         </div>
     </main>
