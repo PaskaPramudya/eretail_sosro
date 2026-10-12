@@ -213,7 +213,7 @@
         </div>
     </main>
 
-    
+
 <!-- Slide-over Drawer Keranjang Belanja -->
 <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden hidden">
     <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="toggleCart()"></div>
@@ -224,7 +224,9 @@
                     <i data-lucide="shopping-cart" class="w-5 h-5"></i>
                     <h2 class="font-bold text-lg">Keranjang Belanja</h2>
                 </div>
-                <button onclick="toggleCart()" class="hover:bg-amber-700 p-1 rounded transition"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="toggleCart()" class="hover:bg-amber-700 p-1 rounded transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
             </div>
 
             <div class="flex-1 overflow-y-auto p-4 space-y-4">
@@ -235,9 +237,9 @@
                         <p class="text-xs text-amber-800 font-semibold mt-1">Rp 4.000 x 10 Botol</p>
                     </div>
                     <div class="flex items-center gap-3">
-                        <span class="font-bold text-gray-900 text-sm">Rp 40.000</span>
+                        <span class="font-bold text-gray-900 text-sm harga-item" data-harga="40000">Rp 40.000</span>
                         <!-- Tombol Hapus -->
-                        <button onclick="removeItem('Teh Botol Sosro RGB 220ml')" class="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded transition" title="Hapus Barang">
+                        <button onclick="hapusDariKeranjang(this)" class="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded transition" title="Hapus Barang">
                             <i data-lucide="trash-2" class="w-4 h-4"></i>
                         </button>
                     </div>
@@ -250,9 +252,9 @@
                         <p class="text-xs text-amber-800 font-semibold mt-1">Rp 78.000 x 1 Dus</p>
                     </div>
                     <div class="flex items-center gap-3">
-                        <span class="font-bold text-gray-900 text-sm">Rp 78.000</span>
+                        <span class="font-bold text-gray-900 text-sm harga-item" data-harga="78000">Rp 78.000</span>
                         <!-- Tombol Hapus -->
-                        <button onclick="removeItem('Teh Botol Kotak 250ml (Dus)')" class="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded transition" title="Hapus Barang">
+                        <button onclick="hapusDariKeranjang(this)" class="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded transition" title="Hapus Barang">
                             <i data-lucide="trash-2" class="w-4 h-4"></i>
                         </button>
                     </div>
@@ -262,7 +264,7 @@
             <div class="p-4 border-t border-gray-200 bg-gray-50 space-y-3">
                 <div class="flex justify-between text-sm font-semibold">
                     <span>Total Pembelian</span>
-                    <span class="text-lg text-amber-900 font-bold">Rp 118.000</span>
+                    <span id="total-pembelian" class="text-lg text-amber-900 font-bold">Rp 118.000</span>
                 </div>
                 <button onclick="openCheckout()" class="w-full bg-amber-800 hover:bg-amber-900 text-white font-bold py-3 rounded-lg transition shadow flex items-center justify-center gap-2 text-sm">
                     <span>Lanjut ke Form Pesan</span>
@@ -272,6 +274,38 @@
         </div>
     </div>
 </div>
+
+<!-- Script JavaScript untuk fungsi hapus dan hitung otomatis -->
+<script>
+    function hapusDariKeranjang(tombol) {
+        // 1. Mencari elemen produk dan menghapusnya dari layar
+        const barisProduk = tombol.closest('.p-3.bg-gray-50.rounded-lg');
+        if (barisProduk) {
+            barisProduk.remove();
+        }
+        
+        // 2. Jalankan fungsi hitung ulang total setiap kali barang dihapus
+        hitungUlangTotal();
+    }
+
+    function hitungUlangTotal() {
+        // Cari semua harga barang yang masih ada di dalam keranjang
+        const semuaHarga = document.querySelectorAll('.harga-item');
+        let totalBaru = 0;
+
+        // Jumlahkan semua nilai dari atribut data-harga
+        semuaHarga.forEach(function(elemen) {
+            const harga = parseInt(elemen.getAttribute('data-harga')) || 0;
+            totalBaru += harga;
+        });
+
+        // Format angka menjadi format Rupiah (contoh: 118000 jadi Rp 118.000)
+        const formatRupiah = 'Rp ' + totalBaru.toLocaleString('id-ID');
+
+        // Update teks pada bagian Total Pembelian
+        document.getElementById('total-pembelian').innerText = formatRupiah;
+    }
+</script>
 
     <!-- Modal Form Checkout / Pemesanan -->
     <div id="modal-checkout" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
