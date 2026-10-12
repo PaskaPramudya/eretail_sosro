@@ -1,8 +1,8 @@
 <?php
 $host     = "localhost";
 $user     = "root";
-$password = "";
-$database = "ecommers_sosro";
+$password = ""; // Kosongkan jika standar XAMPP
+$database = "ecommers_sosro"; // Sesuaikan dengan nama di SQLyog
 
 $koneksi = mysqli_connect($host, $user, $password, $database);
 

@@ -10,6 +10,9 @@
     
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- SweetAlert2 untuk Notifikasi Pop-up Centang Hijau -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-gray-50 font-sans text-gray-800 antialiased flex flex-col min-h-screen">
 
@@ -45,7 +48,11 @@
                     <span id="cart-count" class="bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center -top-1 -right-1 absolute">2</span>
                 </button>
                 <div class="h-6 w-px bg-amber-700 hidden sm:block"></div>
-                <button class="text-sm font-medium hover:text-amber-200 transition hidden sm:block">Masuk / Daftar</button>
+                
+                <!-- TOMBOL MASUK / DAFTAR -->
+                <button onclick="openAuthModal()" class="text-sm font-medium hover:text-amber-200 transition hidden sm:block cursor-pointer bg-amber-900/40 hover:bg-amber-900 px-3 py-1.5 rounded-lg border border-amber-600/50">
+                    Masuk / Daftar
+                </button>
             </div>
         </div>
     </header>
@@ -74,7 +81,6 @@
 
     <!-- Main Content -->
     <main id="katalog" class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1">
-        
         <!-- Filter Category Tabs -->
         <div class="flex flex-wrap items-center justify-between gap-4 mb-8 border-b border-gray-200 pb-4">
             <div>
@@ -243,32 +249,87 @@
                 <button onclick="closeCheckout()" class="hover:bg-amber-700 p-1 rounded"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             <form action="proses_pesan.php" method="POST" class="p-6 space-y-4">
-    <div>
-        <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Pemesan / Nama Toko</label>
-        <input type="text" name="nama_pemesan" placeholder="Contoh: Toko Kelontong Berkah" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required>
-    </div>
-    <div class="grid grid-cols-2 gap-3">
-        <div>
-            <label class="block text-xs font-semibold text-gray-700 mb-1">Nomor WhatsApp</label>
-            <input type="tel" name="no_wa" placeholder="0812xxxx" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Pemesan / Nama Toko</label>
+                    <input type="text" name="nama_pemesan" placeholder="Contoh: Toko Kelontong Berkah" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Nomor WhatsApp</label>
+                        <input type="tel" name="no_wa" placeholder="0812xxxx" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Metode Pengiriman</label>
+                        <select name="metode" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <option value="Armada Sosro (Grosir)">Armada Sosro (Grosir)</option>
+                            <option value="Ambil Sendiri di Depot">Ambil Sendiri di Depot</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Alamat Lengkap Pengiriman</label>
+                    <textarea name="alamat" rows="3" placeholder="Masukkan jalan, RT/RW, dan kecamatan..." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required></textarea>
+                </div>
+                <div class="pt-4 border-t border-gray-100 flex justify-end space-x-2">
+                    <button type="button" onclick="closeCheckout()" class="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 font-medium">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-amber-800 hover:bg-amber-900 text-white rounded-lg text-sm font-medium shadow-sm">Kirim Pesanan</button>
+                </div>
+            </form>
         </div>
-        <div>
-            <label class="block text-xs font-semibold text-gray-700 mb-1">Metode Pengiriman</label>
-            <select name="metode" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
-                <option value="Armada Sosro (Grosir)">Armada Sosro (Grosir)</option>
-                <option value="Ambil Sendiri di Depot">Ambil Sendiri di Depot</option>
-            </select>
-        </div>
     </div>
-    <div>
-        <label class="block text-xs font-semibold text-gray-700 mb-1">Alamat Lengkap Pengiriman</label>
-        <textarea name="alamat" rows="3" placeholder="Masukkan jalan, RT/RW, dan kecamatan..." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required></textarea>
-    </div>
-    <div class="pt-4 border-t border-gray-100 flex justify-end space-x-2">
-        <button type="button" onclick="closeCheckout()" class="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 font-medium">Batal</button>
-        <button type="submit" class="px-5 py-2 bg-amber-800 hover:bg-amber-900 text-white rounded-lg text-sm font-medium shadow-sm">Kirim Pesanan</button>
-    </div>
-</form>
+
+    <!-- MODAL POPUP MASUK / DAFTAR -->
+    <div id="modal-auth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden border border-gray-100">
+            <div class="bg-amber-800 text-white p-4 flex justify-between items-center">
+                <div class="flex space-x-4">
+                    <button id="tab-login" onclick="switchAuthTab('login')" class="font-bold text-base border-b-2 border-white pb-0.5">Masuk</button>
+                    <button id="tab-register" onclick="switchAuthTab('register')" class="font-medium text-base text-amber-200 border-b-2 border-transparent hover:text-white pb-0.5">Daftar Akun</button>
+                </div>
+                <button onclick="closeAuthModal()" class="hover:bg-amber-700 p-1 rounded text-amber-200 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="p-6">
+                <!-- Form Login -->
+                <form id="form-login" action="proses_login.php" method="POST" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Email / No. Handphone</label>
+                        <input type="text" name="email_or_phone" placeholder="Contoh: ahmad@gmail.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Kata Sandi (Password)</label>
+                        <input type="password" name="password" placeholder="••••••••" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                    </div>
+                    <button type="submit" class="w-full py-2.5 bg-amber-800 hover:bg-amber-900 text-white font-bold rounded-lg transition text-sm shadow">
+                        Masuk Sekarang
+                    </button>
+                </form>
+
+                <!-- Form Register (Daftar) -->
+                <form id="form-register" action="proses_daftar.php" method="POST" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Lengkap / Nama Toko</label>
+                        <input type="text" name="nama_lengkap" placeholder="Contoh: Toko Kelontong Berkah" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Alamat Email</label>
+                        <input type="email" name="email" placeholder="nama@email.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">No. WhatsApp / HP</label>
+                        <input type="tel" name="no_hp" placeholder="08123456789" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Buat Kata Sandi</label>
+                        <input type="password" name="password" placeholder="Minimal 6 karakter" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                    </div>
+                    <button type="submit" class="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition text-sm shadow">
+                        Daftar Akun Baru
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -280,13 +341,12 @@
         </div>
     </footer>
 
-    <!-- Interactive Script -->
+    <!-- Interactive Script & Centang Hijau Handler -->
     <script>
         lucide.createIcons();
 
         function toggleCart() {
-            const drawer = document.getElementById('cart-drawer');
-            drawer.classList.toggle('hidden');
+            document.getElementById('cart-drawer').classList.toggle('hidden');
         }
 
         function openCheckout() {
@@ -298,13 +358,83 @@
             document.getElementById('modal-checkout').classList.add('hidden');
         }
 
-        function addToCart(nama, harga) {
-            alert(`Berhasil menambahkan ${nama} ke keranjang!`);
+        function openAuthModal() {
+            document.getElementById('modal-auth').classList.remove('hidden');
         }
 
-        function submitOrder() {
-            alert('Pesanan Anda berhasil dikirim! Tim Admin Sosro akan menghubungi WhatsApp Anda.');
-            closeCheckout();
+        function closeAuthModal() {
+            document.getElementById('modal-auth').classList.add('hidden');
+        }
+
+        function switchAuthTab(type) {
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+            const formLogin = document.getElementById('form-login');
+            const formRegister = document.getElementById('form-register');
+
+            if (type === 'login') {
+                tabLogin.className = "font-bold text-base border-b-2 border-white pb-0.5";
+                tabRegister.className = "font-medium text-base text-amber-200 border-b-2 border-transparent hover:text-white pb-0.5";
+                formLogin.classList.remove('hidden');
+                formRegister.classList.add('hidden');
+            } else {
+                tabRegister.className = "font-bold text-base border-b-2 border-white pb-0.5";
+                tabLogin.className = "font-medium text-base text-amber-200 border-b-2 border-transparent hover:text-white pb-0.5";
+                formRegister.classList.remove('hidden');
+                formLogin.classList.add('hidden');
+            }
+        }
+
+        function addToCart(nama, harga) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: nama + ' telah ditambahkan ke keranjang!',
+                confirmButtonColor: '#16a34a',
+                timer: 1500
+            });
+        }
+
+        // PENANGANAN NOTIFIKASI CENTANG HIJAU
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        const nama = urlParams.get('nama');
+
+        if (status === 'login_success') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Login Berhasil!',
+                text: 'Selamat datang kembali, ' + (nama || 'Pelanggan') + '!',
+                confirmButtonColor: '#16a34a', // Centang Hijau
+                timer: 2500
+            });
+        } else if (status === 'register_success') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Pendaftaran Berhasil!',
+                text: 'Akun Anda telah terdaftar. Silakan masuk.',
+                confirmButtonColor: '#16a34a', // Centang Hijau
+                timer: 2500
+            });
+        } else if (status === 'login_failed') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Gagal',
+                text: 'Email/No. HP atau Kata Sandi salah.',
+                confirmButtonColor: '#dc2626'
+            });
+        } else if (status === 'email_exists') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Gagal Mendaftar',
+                text: 'Email sudah terdaftar. Gunakan email lain.',
+                confirmButtonColor: '#d97706'
+            });
+        }
+
+        // Bersihkan URL dari parameter agar tidak muncul terus saat refresh
+        if (status) {
+            window.history.replaceState({}, document.title, window.location.pathname);
         }
     </script>
 </body>
