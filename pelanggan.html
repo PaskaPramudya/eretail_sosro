@@ -45,7 +45,8 @@
             <div class="flex items-center space-x-4">
                 <button onclick="toggleCart()" class="relative bg-amber-700 hover:bg-amber-600 p-2.5 rounded-full transition flex items-center gap-2">
                     <i data-lucide="shopping-bag" class="w-5 h-5"></i>
-                    <span id="cart-count" class="bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center -top-1 -right-1 absolute">2</span>
+                    <!-- Notifikasi Jumlah Keranjang Dimulai dari 0 -->
+                    <span id="cart-count" class="bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center -top-1 -right-1 absolute">0</span>
                 </button>
                 <div class="h-6 w-px bg-amber-700 hidden sm:block"></div>
                 
@@ -100,6 +101,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
             <!-- Produk 1 -->
+<<<<<<< HEAD
 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group">
     <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative overflow-hidden">
         <span class="absolute top-3 left-3 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded z-10">Terlaris</span>
@@ -121,6 +123,29 @@
             <div>
                 <p class="text-xs text-gray-400">Harga Satuan</p>
                 <p class="text-lg font-bold text-amber-900">Rp 4.000</p>
+=======
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group">
+                <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative overflow-hidden">
+                    <span class="absolute top-3 left-3 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded z-10">Terlaris</span>
+                    <img src="teh botol 220ml.jpg" alt="Teh Botol Sosro RGB 220 ml" class="w-full h-full object-contain group-hover:scale-110 transition transform duration-300">
+                </div>
+                <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                    <div>
+                        <span class="text-[11px] font-medium text-amber-800 uppercase tracking-wider">Teh Siap Minum</span>
+                        <h3 class="font-bold text-gray-900 text-base leading-snug">Teh Botol Sosro RGB 220 ml</h3>
+                        <p class="text-xs text-gray-500 mt-1">Kemasan botol kaca ikonik kesegaran alami asli Indonesia.</p>
+                    </div>
+                    <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-400">Harga Satuan</p>
+                            <p class="text-lg font-bold text-amber-900">Rp 4.000</p>
+                        </div>
+                        <button onclick="addToCart('Teh Botol Sosro RGB 220ml', 4000)" class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+>>>>>>> 83aca83ed6d3719dbf7479aebf6007d3c43d0333
             </div>
             <button onclick="addToCart('Teh Botol Sosro RGB 220ml', 4000)" class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm">
                 <i data-lucide="plus" class="w-5 h-5"></i>
@@ -130,6 +155,7 @@
 </div>
 
             <!-- Produk 2 -->
+<<<<<<< HEAD
 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group">
     <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative overflow-hidden">
         
@@ -150,6 +176,28 @@
             <div>
                 <p class="text-xs text-gray-400">Harga Satuan</p>
                 <p class="text-lg font-bold text-amber-900">Rp 6.000</p>
+=======
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group">
+                <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative overflow-hidden">
+                    <img src="Fruit Tea Apel 350ml.jpg" alt="Fruit Tea Apel 350ml" class="w-full h-full object-contain group-hover:scale-110 transition transform duration-300">
+                </div>
+                <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                    <div>
+                        <span class="text-[11px] font-medium text-amber-800 uppercase tracking-wider">Teh Buah</span>
+                        <h3 class="font-bold text-gray-900 text-base leading-snug">Fruit Tea Apel 350ml</h3>
+                        <p class="text-xs text-gray-500 mt-1">Sensasi teh rasa buah apel segar favorit anak muda.</p>
+                    </div>
+                    <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-400">Harga Satuan</p>
+                            <p class="text-lg font-bold text-amber-900">Rp 6.000</p>
+                        </div>
+                        <button onclick="addToCart('Fruit Tea Apel 350ml', 6000)" class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+>>>>>>> 83aca83ed6d3719dbf7479aebf6007d3c43d0333
             </div>
             <button onclick="addToCart('Fruit Tea Apel 350ml', 6000)" class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm">
                 <i data-lucide="plus" class="w-5 h-5"></i>
@@ -159,6 +207,7 @@
 </div>
 
             <!-- Produk 3 -->
+<<<<<<< HEAD
 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group">
     <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative overflow-hidden">
         <span class="absolute top-3 left-3 bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded z-10">Sparkling</span>
@@ -208,6 +257,52 @@
             <div>
                 <p class="text-xs text-gray-400">Harga Karton</p>
                 <p class="text-lg font-bold text-amber-900">Rp 78.000</p>
+=======
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group">
+                <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative overflow-hidden">
+                    <span class="absolute top-3 left-3 bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded z-10">Sparkling</span>
+                    <img src="TEBS Sparkling 500ml.jpg" alt="TEBS Sparkling 500ml" class="w-full h-full object-contain group-hover:scale-110 transition transform duration-300">
+                </div>
+                <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                    <div>
+                        <span class="text-[11px] font-medium text-amber-800 uppercase tracking-wider">Soda Tea</span>
+                        <h3 class="font-bold text-gray-900 text-base leading-snug">TEBS Sparkling 500ml</h3>
+                        <p class="text-xs text-gray-500 mt-1">Kombinasi unik kesegaran teh berkarbonasi bikin adem.</p>
+                    </div>
+                    <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-400">Harga Satuan</p>
+                            <p class="text-lg font-bold text-amber-900">Rp 7.500</p>
+                        </div>
+                        <button onclick="addToCart('TEBS Sparkling 500ml', 7500)" class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Produk 4 -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group">
+                <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative overflow-hidden">
+                    <img src="Teh Botol Kotak 250ml (Dus).jpg" alt="Teh Botol Kotak 250ml (Dus)" class="w-full h-full object-contain group-hover:scale-110 transition transform duration-300">
+                </div>
+                <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                    <div>
+                        <span class="text-[11px] font-medium text-amber-800 uppercase tracking-wider">Kemasan Karton (Grosir)</span>
+                        <h3 class="font-bold text-gray-900 text-base leading-snug">Teh Botol Kotak 250ml (Dus)</h3>
+                        <p class="text-xs text-gray-500 mt-1">1 Karton isi 24 pcs. Lebih hemat untuk stok toko Anda.</p>
+                    </div>
+                    <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-400">Harga Karton</p>
+                            <p class="text-lg font-bold text-amber-900">Rp 78.000</p>
+                        </div>
+                        <button onclick="addToCart('Teh Botol Kotak 250ml (Dus)', 78000)" class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+>>>>>>> 83aca83ed6d3719dbf7479aebf6007d3c43d0333
             </div>
             <button onclick="addToCart('Teh Botol Kotak 250ml (Dus)', 78000)" class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm">
                 <i data-lucide="plus" class="w-5 h-5"></i>
@@ -219,6 +314,7 @@
         </div>
     </main>
 
+<<<<<<< HEAD
 
 <!-- Slide-over Drawer Keranjang Belanja -->
 <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden hidden">
@@ -229,12 +325,28 @@
                 <div class="flex items-center gap-2">
                     <i data-lucide="shopping-cart" class="w-5 h-5"></i>
                     <h2 class="font-bold text-lg">Keranjang Belanja</h2>
+=======
+    <!-- Slide-over Drawer Keranjang Belanja -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="toggleCart()"></div>
+        <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-white shadow-xl flex flex-col">
+                <div class="p-4 bg-amber-800 text-white flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                        <h2 class="font-bold text-lg">Keranjang Belanja</h2>
+                    </div>
+                    <button onclick="toggleCart()" class="hover:bg-amber-700 p-1 rounded transition">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+>>>>>>> 83aca83ed6d3719dbf7479aebf6007d3c43d0333
                 </div>
                 <button onclick="toggleCart()" class="hover:bg-amber-700 p-1 rounded transition">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
 
+<<<<<<< HEAD
             <div class="flex-1 overflow-y-auto p-4 space-y-4">
                 <!-- Item 1 -->
                 <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
@@ -263,6 +375,18 @@
                         <button onclick="hapusDariKeranjang(this)" class="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded transition" title="Hapus Barang">
                             <i data-lucide="trash-2" class="w-4 h-4"></i>
                         </button>
+=======
+                <!-- Wadah barang keranjang, dimulai dalam keadaan kosong -->
+                <div id="daftar-keranjang" class="flex-1 overflow-y-auto p-4 space-y-4">
+                    <!-- Barang akan ditambahkan di sini oleh JavaScript -->
+                </div>
+
+                <div class="p-4 border-t border-gray-200 bg-gray-50 space-y-3">
+                    <div class="flex justify-between text-sm font-semibold">
+                        <span>Total Pembelian</span>
+                        <!-- Total dimulai dari Rp 0 -->
+                        <span id="total-pembelian" class="text-lg text-amber-900 font-bold">Rp 0</span>
+>>>>>>> 83aca83ed6d3719dbf7479aebf6007d3c43d0333
                     </div>
                 </div>
             </div>
@@ -347,6 +471,7 @@
                     <button type="submit" class="px-5 py-2 bg-amber-800 hover:bg-amber-900 text-white rounded-lg text-sm font-medium shadow-sm">Kirim Pesanan</button>
                 </div>
             </form>
+<<<<<<< HEAD
         </div>
     </div>
 
@@ -402,6 +527,8 @@
                     </button>
                 </form>
             </div>
+=======
+>>>>>>> 83aca83ed6d3719dbf7479aebf6007d3c43d0333
         </div>
     </div>
 
@@ -413,22 +540,94 @@
         </div>
     </footer>
 
+<<<<<<< HEAD
     <!-- Interactive Script & Centang Hijau Handler -->
+=======
+    <!-- Interactive Script Terpadu (Sistem Keranjang, Hapus, & Hitung) -->
+>>>>>>> 83aca83ed6d3719dbf7479aebf6007d3c43d0333
     <script>
+        // Render ikon Lucide
         lucide.createIcons();
 
+        // Fungsi Buka/Tutup Keranjang
         function toggleCart() {
             document.getElementById('cart-drawer').classList.toggle('hidden');
         }
 
+        // Fungsi Menambahkan Barang ke Keranjang
+        function addToCart(nama, harga) {
+            const daftarKeranjang = document.getElementById('daftar-keranjang');
+            const formatRupiah = 'Rp ' + harga.toLocaleString('id-ID');
+
+            // Template HTML untuk produk di keranjang
+            const itemHTML = `
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200 produk-di-keranjang">
+                    <div>
+                        <h4 class="font-bold text-sm text-gray-800">${nama}</h4>
+                        <p class="text-xs text-amber-800 font-semibold mt-1">${formatRupiah} x 1</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="font-bold text-gray-900 text-sm harga-item" data-harga="${harga}">${formatRupiah}</span>
+                        <button onclick="hapusDariKeranjang(this)" class="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded transition" title="Hapus Barang">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Menyisipkan produk ke dalam wadah keranjang
+            daftarKeranjang.insertAdjacentHTML('beforeend', itemHTML);
+            
+            // Merender ulang ikon agar ikon tempat sampah muncul
+            lucide.createIcons();
+
+            // Hitung ulang harga total dan badge keranjang
+            hitungUlangTotal();
+
+            // Membuka laci keranjang otomatis saat tombol ditekan
+            const cartDrawer = document.getElementById('cart-drawer');
+            cartDrawer.classList.remove('hidden');
+        }
+
+        // Fungsi Menghapus Barang
+        function hapusDariKeranjang(tombol) {
+            const barisProduk = tombol.closest('.produk-di-keranjang');
+            if (barisProduk) {
+                barisProduk.remove();
+            }
+            hitungUlangTotal();
+        }
+
+        // Fungsi Hitung Total Harga & Update Angka Keranjang
+        function hitungUlangTotal() {
+            const semuaHarga = document.querySelectorAll('.harga-item');
+            let totalBaru = 0;
+            let jumlahBarang = 0;
+
+            semuaHarga.forEach(function(elemen) {
+                const harga = parseInt(elemen.getAttribute('data-harga')) || 0;
+                totalBaru += harga;
+                jumlahBarang++;
+            });
+
+            // Update badge jumlah keranjang di header
+            document.getElementById('cart-count').innerText = jumlahBarang;
+
+            // Update teks total pembelian
+            const formatRupiah = 'Rp ' + totalBaru.toLocaleString('id-ID');
+            document.getElementById('total-pembelian').innerText = formatRupiah;
+        }
+
+        // Fungsi Buka/Tutup Form Checkout
         function openCheckout() {
-            toggleCart();
-            document.getElementById('modal-checkout').classList.remove('hidden');
+            toggleCart(); // Tutup keranjangnya dulu
+            document.getElementById('modal-checkout').classList.remove('hidden'); // Baru buka form pesannya
         }
 
         function closeCheckout() {
             document.getElementById('modal-checkout').classList.add('hidden');
         }
+<<<<<<< HEAD
 
         function openAuthModal() {
             document.getElementById('modal-auth').classList.remove('hidden');
@@ -508,6 +707,8 @@
         if (status) {
             window.history.replaceState({}, document.title, window.location.pathname);
         }
+=======
+>>>>>>> 83aca83ed6d3719dbf7479aebf6007d3c43d0333
     </script>
 </body>
 </html>
