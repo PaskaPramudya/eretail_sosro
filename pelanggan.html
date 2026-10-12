@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Sosro - Toko Online Resmi</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 antialiased flex flex-col min-h-screen">
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-amber-900 text-amber-100 text-xs py-2 px-4 text-center font-medium">
+        🍃 Nikmati Keharuman & Kesegaran Teh Asli Indonesia. Bebas Ongkir untuk Pembelian Grosir Mitra!
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="bg-amber-800 text-white shadow-md sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+            <!-- Logo Brand -->
+            <div class="flex items-center space-x-3">
+                <div class="bg-red-600 p-2 rounded-lg font-bold text-xl tracking-wide flex items-center gap-2 shadow">
+                    <i data-lucide="store" class="w-6 h-6"></i>
+                    <span>SOSRO</span>
+                </div>
+                <span class="text-xs bg-amber-700/60 text-amber-200 px-2.5 py-1 rounded-full font-medium hidden sm:inline-block">Official Store</span>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="hidden md:flex flex-1 max-w-md mx-8">
+                <div class="relative w-full">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" placeholder="Cari Teh Botol, Fruit Tea, TEBS..." class="w-full pl-9 pr-4 py-2 bg-white text-gray-800 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-inner">
+                </div>
+            </div>
+
+            <!-- User Actions & Cart -->
+            <div class="flex items-center space-x-4">
+                <button onclick="toggleCart()" class="relative bg-amber-700 hover:bg-amber-600 p-2.5 rounded-full transition flex items-center gap-2">
+                    <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                    <span id="cart-count" class="bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center -top-1 -right-1 absolute">2</span>
+                </button>
+                <div class="h-6 w-px bg-amber-700 hidden sm:block"></div>
+                <button class="text-sm font-medium hover:text-amber-200 transition hidden sm:block">Masuk / Daftar</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="bg-gradient-to-r from-amber-800 via-amber-700 to-red-700 text-white py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="space-y-4 text-center md:text-left max-w-xl">
+                <span class="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Promo Mitra & Grosir</span>
+                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight">Segarnya Minuman Asli Sosro Langsung Dari Pabrik!</h1>
+                <p class="text-amber-100 text-sm sm:text-base">Pesan beragam produk Teh Botol Sosro, Fruit Tea, TEBS, dan Prima langsung untuk kebutuhan toko, cafe, maupun konsumsi harian Anda.</p>
+                <div class="pt-2 flex flex-wrap justify-center md:justify-start gap-3">
+                    <a href="#katalog" class="bg-white text-amber-900 hover:bg-amber-100 font-bold px-6 py-3 rounded-lg shadow transition text-sm">Lihat Katalog</a>
+                    <a href="#cara-pesan" class="bg-amber-900/50 hover:bg-amber-900 border border-amber-500 font-medium px-5 py-3 rounded-lg transition text-sm">Panduan Mitra</a>
+                </div>
+            </div>
+            <div class="w-full md:w-auto flex justify-center">
+                <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 text-center space-y-2">
+                    <i data-lucide="shield-check" class="w-12 h-12 text-amber-300 mx-auto"></i>
+                    <p class="font-bold text-lg">100% Produk Original</p>
+                    <p class="text-xs text-amber-100">Jaminan Kualitas & Kadaluarsa Panjang</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main id="katalog" class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1">
+        
+        <!-- Filter Category Tabs -->
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-8 border-b border-gray-200 pb-4">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">Katalog Produk</h2>
+                <p class="text-xs text-gray-500">Pilih ragam produk kesegaran Sosro favorit Anda</p>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+                <button class="px-4 py-2 rounded-full text-xs font-semibold bg-amber-800 text-white shadow-sm">Semua Produk</button>
+                <button class="px-4 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 hover:bg-amber-50 transition">Teh Botol Sosro</button>
+                <button class="px-4 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 hover:bg-amber-50 transition">Fruit Tea</button>
+                <button class="px-4 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 hover:bg-amber-50 transition">TEBS Sparkling</button>
+            </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+            <!-- Produk 1 -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group">
+                <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative">
+                    <span class="absolute top-3 left-3 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">Terlaris</span>
+                    <i data-lucide="cup-soda" class="w-20 h-20 text-amber-800 group-hover:scale-110 transition transform"></i>
+                </div>
+                <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                    <div>
+                        <span class="text-[11px] font-medium text-amber-800 uppercase tracking-wider">Teh Siap Minum</span>
+                        <h3 class="font-bold text-gray-900 text-base leading-snug">Teh Botol Sosro RGB 220ml</h3>
+                        <p class="text-xs text-gray-500 mt-1">Kemasan botol kaca ikonik kesegaran alami asli Indonesia.</p>
+                    </div>
+                    <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-400">Harga Satuan</p>
+                            <p class="text-lg font-bold text-amber-900">Rp 4.000</p>
+                        </div>
+                        <button onclick="addToCart('Teh Botol Sosro RGB 220ml', 4000)" class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Produk 2 -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group">
+                <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative">
+                    <i data-lucide="wine" class="w-20 h-20 text-red-600 group-hover:scale-110 transition transform"></i>
+                </div>
+                <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                    <div>
+                        <span class="text-[11px] font-medium text-amber-800 uppercase tracking-wider">Teh Buah</span>
+                        <h3 class="font-bold text-gray-900 text-base leading-snug">Fruit Tea Apel 350ml</h3>
+                        <p class="text-xs text-gray-500 mt-1">Sensasi teh rasa buah apel segar favorit anak muda.</p>
+                    </div>
+                    <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-400">Harga Satuan</p>
+                            <p class="text-lg font-bold text-amber-900">Rp 6.000</p>
+                        </div>
+                        <button onclick="addToCart('Fruit Tea Apel 350ml', 6000)" class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Produk 3 -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group">
+                <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative">
+                    <span class="absolute top-3 left-3 bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">Sparkling</span>
+                    <i data-lucide="sparkles" class="w-20 h-20 text-yellow-600 group-hover:scale-110 transition transform"></i>
+                </div>
+                <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                    <div>
+                        <span class="text-[11px] font-medium text-amber-800 uppercase tracking-wider">Soda Tea</span>
+                        <h3 class="font-bold text-gray-900 text-base leading-snug">TEBS Sparkling 500ml</h3>
+                        <p class="text-xs text-gray-500 mt-1">Kombinasi unik kesegaran teh berkarbonasi bikin adem.</p>
+                    </div>
+                    <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-400">Harga Satuan</p>
+                            <p class="text-lg font-bold text-amber-900">Rp 7.500</p>
+                        </div>
+                        <button onclick="addToCart('TEBS Sparkling 500ml', 7500)" class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Produk 4 -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group">
+                <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative">
+                    <i data-lucide="box" class="w-20 h-20 text-emerald-700 group-hover:scale-110 transition transform"></i>
+                </div>
+                <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                    <div>
+                        <span class="text-[11px] font-medium text-amber-800 uppercase tracking-wider">Kemasan Karton (Grosir)</span>
+                        <h3 class="font-bold text-gray-900 text-base leading-snug">Teh Botol Kotak 250ml (Dus)</h3>
+                        <p class="text-xs text-gray-500 mt-1">1 Karton isi 24 pcs. Lebih hemat untuk stok toko Anda.</p>
+                    </div>
+                    <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-400">Harga Karton</p>
+                            <p class="text-lg font-bold text-amber-900">Rp 78.000</p>
+                        </div>
+                        <button onclick="addToCart('Teh Botol Kotak 250ml (Dus)', 78000)" class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Slide-over Drawer Keranjang Belanja -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="toggleCart()"></div>
+        <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-white shadow-xl flex flex-col">
+                <div class="p-4 bg-amber-800 text-white flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                        <h2 class="font-bold text-lg">Keranjang Belanja</h2>
+                    </div>
+                    <button onclick="toggleCart()" class="hover:bg-amber-700 p-1 rounded"><i data-lucide="x" class="w-5 h-5"></i></button>
+                </div>
+
+                <div class="flex-1 overflow-y-auto p-4 space-y-4">
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-800">Teh Botol Sosro RGB 220ml</h4>
+                            <p class="text-xs text-amber-800 font-semibold mt-1">Rp 4.000 x 10 Botol</p>
+                        </div>
+                        <span class="font-bold text-gray-900 text-sm">Rp 40.000</span>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-800">Teh Botol Kotak 250ml (Dus)</h4>
+                            <p class="text-xs text-amber-800 font-semibold mt-1">Rp 78.000 x 1 Dus</p>
+                        </div>
+                        <span class="font-bold text-gray-900 text-sm">Rp 78.000</span>
+                    </div>
+                </div>
+
+                <div class="p-4 border-t border-gray-200 bg-gray-50 space-y-3">
+                    <div class="flex justify-between text-sm font-semibold">
+                        <span>Total Pembelian</span>
+                        <span class="text-lg text-amber-900 font-bold">Rp 118.000</span>
+                    </div>
+                    <button onclick="openCheckout()" class="w-full bg-amber-800 hover:bg-amber-900 text-white font-bold py-3 rounded-lg transition shadow flex items-center justify-center gap-2 text-sm">
+                        <span>Lanjut ke Form Pesan</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Form Checkout / Pemesanan -->
+    <div id="modal-checkout" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden">
+            <div class="bg-amber-800 text-white p-4 flex justify-between items-center">
+                <h3 class="font-bold text-lg">Form Pemesanan Pembeli</h3>
+                <button onclick="closeCheckout()" class="hover:bg-amber-700 p-1 rounded"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form action="proses_pesan.php" method="POST" class="p-6 space-y-4">
+    <div>
+        <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Pemesan / Nama Toko</label>
+        <input type="text" name="nama_pemesan" placeholder="Contoh: Toko Kelontong Berkah" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+        <div>
+            <label class="block text-xs font-semibold text-gray-700 mb-1">Nomor WhatsApp</label>
+            <input type="tel" name="no_wa" placeholder="0812xxxx" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+        </div>
+        <div>
+            <label class="block text-xs font-semibold text-gray-700 mb-1">Metode Pengiriman</label>
+            <select name="metode" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+                <option value="Armada Sosro (Grosir)">Armada Sosro (Grosir)</option>
+                <option value="Ambil Sendiri di Depot">Ambil Sendiri di Depot</option>
+            </select>
+        </div>
+    </div>
+    <div>
+        <label class="block text-xs font-semibold text-gray-700 mb-1">Alamat Lengkap Pengiriman</label>
+        <textarea name="alamat" rows="3" placeholder="Masukkan jalan, RT/RW, dan kecamatan..." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required></textarea>
+    </div>
+    <div class="pt-4 border-t border-gray-100 flex justify-end space-x-2">
+        <button type="button" onclick="closeCheckout()" class="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 font-medium">Batal</button>
+        <button type="submit" class="px-5 py-2 bg-amber-800 hover:bg-amber-900 text-white rounded-lg text-sm font-medium shadow-sm">Kirim Pesanan</button>
+    </div>
+</form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 text-xs py-8 border-t border-gray-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
+            <p class="text-white font-bold text-sm">PT Sinar Sosro - E-Commerce System</p>
+            <p>Sistem Pemesanan Produk Resmi Sosro Indonesia.</p>
+        </div>
+    </footer>
+
+    <!-- Interactive Script -->
+    <script>
+        lucide.createIcons();
+
+        function toggleCart() {
+            const drawer = document.getElementById('cart-drawer');
+            drawer.classList.toggle('hidden');
+        }
+
+        function openCheckout() {
+            toggleCart();
+            document.getElementById('modal-checkout').classList.remove('hidden');
+        }
+
+        function closeCheckout() {
+            document.getElementById('modal-checkout').classList.add('hidden');
+        }
+
+        function addToCart(nama, harga) {
+            alert(`Berhasil menambahkan ${nama} ke keranjang!`);
+        }
+
+        function submitOrder() {
+            alert('Pesanan Anda berhasil dikirim! Tim Admin Sosro akan menghubungi WhatsApp Anda.');
+            closeCheckout();
+        }
+    </script>
+</body>
+</html>
