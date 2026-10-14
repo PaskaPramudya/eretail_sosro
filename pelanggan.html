@@ -299,7 +299,7 @@
     <!-- OVERLAYS & MODALS (FUNGSI TETAP DIPERTAHANKAN) -->
     <!-- ============================================== -->
 
-    <!-- Laci Keranjang Belanja -->
+<!-- Laci Keranjang Belanja -->
     <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden hidden">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="toggleCart()"></div>
         <div class="fixed inset-y-0 right-0 max-w-full flex">
@@ -324,15 +324,27 @@
                     </div>
                 </div>
 
+                <!-- Bagian Bawah Keranjang (Footer) YANG SUDAH DIPERBARUI -->
                 <div class="p-6 border-t border-slate-200 bg-white shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)]">
                     <div class="flex justify-between items-center mb-6">
                         <span class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Total Pembelian</span>
                         <span id="total-pembelian" class="text-2xl text-slate-900 font-extrabold">Rp 0</span>
                     </div>
-                    <button onclick="openCheckout()" class="w-full bg-slate-900 hover:bg-brand-600 text-white font-bold py-4 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
-                        <span>Lanjut ke Pemesanan</span>
-                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                    </button>
+                    
+                    <!-- Kumpulan Tombol Aksi -->
+                    <div class="flex flex-col gap-3">
+                        <!-- Tombol Lanjut Pemesanan Utama -->
+                        <button onclick="openCheckout()" class="w-full bg-slate-900 hover:bg-brand-600 text-white font-bold py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+                            <span>Lanjut ke Pemesanan</span>
+                            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </button>
+                        
+                        <!-- Tombol Tambah Belanja (BARU) -->
+                        <button onclick="toggleCart()" class="w-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                            <span>Tambah Belanja Lainnya</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -448,67 +460,118 @@
     <!-- Script File Bawaan -->
     <script src="main.js"></script>
 
-    <!-- SCRIPTS INTERAKTIF -->
+<!-- SCRIPTS INTERAKTIF -->
     <script>
-        // Render Icons
+        // Render Icons pertama kali
         lucide.createIcons();
 
-        // LOGIKA KERANJANG BELANJA
+        // Variabel untuk menyimpan data keranjang
+        let dataKeranjang = {};
+
+        // Buka/Tutup Keranjang
         function toggleCart() {
             document.getElementById('cart-drawer').classList.toggle('hidden');
         }
 
+        // Fungsi Tambah Barang ke Keranjang
         function addToCart(nama, harga) {
-            const formatRupiah = 'Rp ' + harga.toLocaleString('id-ID');
+            // Jika barang sudah ada, tambah qty. Jika belum, buat baru.
+            if (dataKeranjang[nama]) {
+                dataKeranjang[nama].qty += 1;
+            } else {
+                dataKeranjang[nama] = { harga: harga, qty: 1 };
+            }
             
-            // Hapus Pesan Kosong jika ada
-            const emptyMsg = document.getElementById('empty-cart-msg');
-            if(emptyMsg) emptyMsg.style.display = 'none';
-
-            // Elemen Item Keranjang
-            const itemHTML = `
-                <div class="flex items-center justify-between p-4 bg-white rounded-xl border border-slate-100 shadow-sm produk-di-keranjang transition-all hover:border-brand-200">
-                    <div>
-                        <h4 class="font-bold text-sm text-slate-900">${nama}</h4>
-                        <p class="text-[11px] text-brand-600 font-semibold mt-1 uppercase">1 Item</p>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <span class="font-extrabold text-slate-900 text-sm harga-item" data-harga="${harga}">${formatRupiah}</span>
-                        <button onclick="hapusDariKeranjang(this)" class="text-slate-300 hover:text-red-500 bg-slate-50 hover:bg-red-50 p-2 rounded-lg transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                    </div>
-                </div>
-            `;
-            document.getElementById('daftar-keranjang').insertAdjacentHTML('beforeend', itemHTML);
-            lucide.createIcons();
-            hitungUlangTotal();
+            renderKeranjang();
             document.getElementById('cart-drawer').classList.remove('hidden');
         }
 
-        function hapusDariKeranjang(tombol) {
-            tombol.closest('.produk-di-keranjang').remove();
-            hitungUlangTotal();
-            
-            // Tampilkan pesan kosong jika tidak ada item
-            if(document.querySelectorAll('.harga-item').length === 0) {
-                const emptyMsg = document.getElementById('empty-cart-msg');
-                if(emptyMsg) emptyMsg.style.display = 'flex';
+        // Fungsi Tambah/Kurang Qty dari dalam keranjang
+        function updateQty(nama, jumlah) {
+            if (dataKeranjang[nama]) {
+                dataKeranjang[nama].qty += jumlah;
+                // Jika qty menjadi 0 atau kurang, hapus barang dari keranjang
+                if (dataKeranjang[nama].qty <= 0) {
+                    delete dataKeranjang[nama];
+                }
+                renderKeranjang();
             }
         }
 
-        function hitungUlangTotal() {
-            let total = 0, count = 0;
-            document.querySelectorAll('.harga-item').forEach(el => {
-                total += parseInt(el.getAttribute('data-harga')) || 0;
-                count++;
-            });
-            
-            // Animasi Badge
+        // Fungsi Hapus Total 1 Baris Barang
+        function hapusDariKeranjang(nama) {
+            delete dataKeranjang[nama];
+            renderKeranjang();
+        }
+
+        // Fungsi merender ulang tampilan HTML keranjang
+        function renderKeranjang() {
+            const wadah = document.getElementById('daftar-keranjang');
+            const keys = Object.keys(dataKeranjang);
+            let html = '';
+            let totalHarga = 0;
+            let totalBarang = 0;
+
+            if (keys.length === 0) {
+                // Tampilan jika keranjang kosong
+                html = `
+                    <div id="empty-cart-msg" class="text-center text-slate-400 py-10 flex flex-col items-center justify-center h-full">
+                        <i data-lucide="shopping-bag" class="w-12 h-12 mb-3 opacity-20"></i>
+                        <p class="text-sm">Keranjang Anda masih kosong</p>
+                    </div>
+                `;
+            } else {
+                // Loop semua barang yang ada di keranjang
+                keys.forEach(nama => {
+                    const item = dataKeranjang[nama];
+                    const subtotal = item.harga * item.qty;
+                    totalHarga += subtotal;
+                    totalBarang += item.qty;
+
+                    const formatHargaSatuan = 'Rp ' + item.harga.toLocaleString('id-ID');
+                    const formatSubtotal = 'Rp ' + subtotal.toLocaleString('id-ID');
+
+                    html += `
+                        <div class="flex items-center justify-between p-4 bg-white rounded-xl border border-slate-100 shadow-sm transition-all hover:border-brand-200">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-sm text-slate-900 line-clamp-1">${nama}</h4>
+                                <div class="flex items-center gap-4 mt-3">
+                                    
+                                    <!-- Kontrol Tambah/Kurang Kuantitas -->
+                                    <div class="flex items-center bg-slate-50 border border-slate-200 rounded-lg">
+                                        <button onclick="updateQty('${nama}', -1)" class="w-8 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-200 hover:text-brand-600 transition rounded-l-lg font-bold">-</button>
+                                        <span class="w-8 text-center text-xs font-bold text-slate-900">${item.qty}</span>
+                                        <button onclick="updateQty('${nama}', 1)" class="w-8 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-200 hover:text-brand-600 transition rounded-r-lg font-bold">+</button>
+                                    </div>
+                                    
+                                    <span class="text-xs font-semibold text-slate-400">${formatHargaSatuan} / item</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col items-end gap-3 ml-4">
+                                <span class="font-extrabold text-slate-900 text-sm">${formatSubtotal}</span>
+                                <button onclick="hapusDariKeranjang('${nama}')" class="text-slate-300 hover:text-red-500 p-1 rounded-lg transition-colors" title="Hapus Produk">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Memasukkan HTML ke dalam wadah keranjang
+            wadah.innerHTML = html;
+
+            // Render ulang ikon Lucide untuk elemen yang baru saja dibuat
+            lucide.createIcons();
+
+            // Memperbarui Total Harga di bawah
+            document.getElementById('total-pembelian').innerText = 'Rp ' + totalHarga.toLocaleString('id-ID');
+
+            // Memperbarui Animasi Angka/Badge Keranjang di header
             const badge = document.getElementById('cart-count');
-            badge.innerText = count;
+            badge.innerText = totalBarang;
             badge.classList.add('scale-125');
             setTimeout(() => badge.classList.remove('scale-125'), 200);
-
-            document.getElementById('total-pembelian').innerText = 'Rp ' + total.toLocaleString('id-ID');
         }
 
         // LOGIKA MODAL
@@ -531,7 +594,6 @@
                 const isMatch = name === type;
                 const tab = document.getElementById('tab-' + name);
                 
-                // Ubah styling tab active vs inactive
                 if(isMatch) {
                     tab.className = "flex-1 py-2 text-sm font-bold bg-white text-slate-900 rounded-lg shadow-sm transition-all";
                 } else {
