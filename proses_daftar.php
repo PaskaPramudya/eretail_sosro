@@ -10,17 +10,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $cek_email = mysqli_query($koneksi, "SELECT * FROM pengguna WHERE email='$email'");
 
     if (mysqli_num_rows($cek_email) > 0) {
-        header("Location: pelanggan.html?status=email_exists");
+        header("Location: pelanggan.php?status=email_exists");
         exit();
     } else {
         $query = "INSERT INTO pengguna (nama_lengkap, email, no_hp, password, role) VALUES ('$nama_lengkap', '$email', '$no_hp', '$password', 'pelanggan')";
         
         if (mysqli_query($koneksi, $query)) {
-            // Langsung redirect ke pelanggan.html dengan pesan sukses
-            header("Location: pelanggan.html?status=register_success");
+            header("Location: pelanggan.php?status=register_success");
             exit();
         } else {
-            header("Location: pelanggan.html?status=register_failed");
+            header("Location: pelanggan.php?status=register_failed");
             exit();
         }
     }

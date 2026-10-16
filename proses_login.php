@@ -11,14 +11,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (mysqli_num_rows($result) > 0) {
         $user = mysqli_fetch_assoc($result);
+        
+        // Simpan data user ke dalam session
         $_SESSION['user_id'] = $user['id'];
-        $_SESSION['nama']    = $user['nama_lengkap'];
+        $_SESSION['nama']    = $user['nama_lengkap']; // Baris ini wajib ada agar nama muncul di header
 
-        // Langsung redirect ke pelanggan.html dengan pesan sukses
-        header("Location: pelanggan.html?status=login_success&nama=" . urlencode($user['nama_lengkap']));
+        // Redirect ke pelanggan.php
+        header("Location: pelanggan.php?status=login_success&nama=" . urlencode($user['nama_lengkap']));
         exit();
     } else {
-        header("Location: pelanggan.html?status=login_failed");
+        header("Location: pelanggan.php?status=login_failed");
         exit();
     }
 }
