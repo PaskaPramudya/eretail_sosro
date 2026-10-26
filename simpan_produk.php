@@ -1,8 +1,8 @@
-
 <?php
 session_start();
 
-if (empty($_SESSION['admin_login'])) {
+// Mencegah akses tanpa login admin
+if (empty($_SESSION['admin_login']) && ($_SESSION['role'] ?? '') !== 'admin') {
     header("Location: login_admin.php");
     exit;
 }
@@ -35,14 +35,14 @@ if (
     exit("Data produk tidak valid. <a href='admin.php'>Kembali</a>");
 }
 
+// Menggunakan $koneksi sesuai file koneksi.php
 $stmt = mysqli_prepare(
-    $conn,
-    "INSERT INTO produk (nama_produk, kategori, harga, stok)
-     VALUES (?, ?, ?, ?)"
+    $koneksi,
+    "INSERT INTO produk (nama_produk, kategori, harga, stok) VALUES (?, ?, ?, ?)"
 );
 
 if (!$stmt) {
-    exit("Gagal menyiapkan penyimpanan produk.");
+    exit("Gagal menyiapkan penyimpanan produk: " . mysqli_error($koneksi));
 }
 
 mysqli_stmt_bind_param($stmt, "ssii", $nama, $kategori, $harga, $stok);

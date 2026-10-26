@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/koneksi.php';
 session_start();
 include 'koneksi.php';
 
@@ -42,32 +43,42 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         <div class="hidden md:flex flex-1 max-w-md mx-8">
           <div class="relative w-full">
             <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+<<<<<<< HEAD
             <input
               type="text"
               placeholder="Cari Teh Botol, Fruit Tea, TEBS..."
               class="w-full pl-9 pr-4 py-2 bg-white text-gray-800 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-inner"
             />
+=======
+            <input type="text" placeholder="Cari Teh Botol, Fruit Tea, TEBS..." class="w-full pl-9 pr-4 py-2 bg-white text-gray-800 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-inner" />
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
           </div>
         </div>
 
         <!-- User Actions & Cart -->
         <div class="flex items-center space-x-4">
-          <button
-            onclick="toggleCart()"
-            class="relative bg-amber-700 hover:bg-amber-600 p-2.5 rounded-full transition flex items-center gap-2"
-          >
+          <button onclick="toggleCart()" class="relative bg-amber-700 hover:bg-amber-600 p-2.5 rounded-full transition flex items-center gap-2">
             <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+<<<<<<< HEAD
             <span
               id="cart-count"
               class="bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center -top-1 -right-1 absolute"
               >0</span
             >
+=======
+            <!-- Notifikasi Jumlah Keranjang -->
+            <span id="cart-count" class="bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center -top-1 -right-1 absolute">0</span>
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
           </button>
 
           <div class="h-6 w-px bg-amber-700 hidden sm:block"></div>
 
           <!-- Tombol Profil / Auth -->
           <?php if (isset($_SESSION['nama'])): ?>
+<<<<<<< HEAD
+=======
+            <!-- Tampilan Saat Pelanggan Sudah Login -->
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
             <div class="flex items-center gap-2">
               <span class="text-sm font-semibold bg-amber-900/60 px-3 py-1.5 rounded-lg border border-amber-600/50 flex items-center gap-2 text-amber-100">
                 <i data-lucide="user" class="w-4 h-4 text-amber-300"></i>
@@ -78,10 +89,15 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
               </a>
             </div>
           <?php else: ?>
+<<<<<<< HEAD
             <button
               onclick="openAuthModal()"
               class="text-sm font-medium hover:text-amber-200 transition hidden sm:block cursor-pointer bg-amber-900/40 hover:bg-amber-900 px-3 py-1.5 rounded-lg border border-amber-600/50"
             >
+=======
+            <!-- Tampilan Saat Belum Login -->
+            <button onclick="openAuthModal()" class="text-sm font-medium hover:text-amber-200 transition hidden sm:block cursor-pointer bg-amber-900/40 hover:bg-amber-900 px-3 py-1.5 rounded-lg border border-amber-600/50">
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
               Masuk / Daftar
             </button>
           <?php endif; ?>
@@ -89,6 +105,7 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
       </div>
     </header>
 
+<<<<<<< HEAD
     <!-- Hero Banner -->
     <section class="bg-gradient-to-r from-amber-800 via-amber-700 to-red-700 text-white py-12 px-4 sm:px-6 lg:px-8">
       <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
@@ -111,8 +128,48 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
             <i data-lucide="shield-check" class="w-12 h-12 text-amber-300 mx-auto"></i>
             <p class="font-bold text-lg">100% Produk Original</p>
             <p class="text-xs text-amber-100">Jaminan Kualitas & Kadaluarsa Panjang</p>
+=======
+    <!-- HERO BANNER SECTION (Menggunakan Gambar Panorama background.jpg) -->
+    <section class="relative w-full min-h-[380px] md:min-h-[440px] bg-cover bg-center bg-no-repeat flex items-center" style="background-image: url('background.jpg');">
+      <!-- Overlay transparan tipis agar teks tetap terbaca tajam -->
+      <div class="absolute inset-0 bg-black/20"></div>
+
+      <div class="relative z-10 w-full max-w-7xl mx-auto px-6 py-8 flex flex-col lg:flex-row items-center justify-between">
+        
+        <!-- Kolom Kiri: Promo, Title, Description, Buttons -->
+        <div class="w-full lg:w-[42%] flex flex-col items-start gap-3">
+          <span class="bg-[#d32f2f] text-white text-xs font-bold px-3 py-1 rounded shadow uppercase tracking-wide">
+            Promo Mitra & Grosir
+          </span>
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight drop-shadow-lg">
+            Segarnya Minuman Asli Sosro<br>Langsung Dari Pabrik!
+          </h1>
+          <p class="text-white text-sm md:text-base drop-shadow max-w-md leading-relaxed">
+            Pesan beragam produk Teh Botol Sosro, Fruit Tea, TEBS, dan Prima langsung untuk kebutuhan toko, cafe, maupun konsumsi harian Anda.
+          </p>
+          <div class="flex flex-wrap gap-3 mt-2">
+            <a href="#katalog" class="bg-white text-[#d32f2f] font-bold px-6 py-2.5 rounded-lg shadow hover:bg-gray-100 transition text-sm">
+              Lihat Katalog
+            </a>
+            <a href="#cara-pesan" class="bg-[#5c2a12]/70 border border-white/40 text-white font-bold px-6 py-2.5 rounded-lg shadow backdrop-blur-sm hover:bg-[#5c2a12]/90 transition text-sm">
+              Panduan Mitra
+            </a>
           </div>
         </div>
+
+        <!-- Area Tengah: Ruang Kosong agar Logo Tehbotol Sosro di tengah background.jpg tidak tertutup -->
+        <div class="hidden lg:block w-[32%]"></div>
+
+        <!-- Kolom Kanan: Card 100% Produk Original -->
+        <div class="hidden md:flex w-full lg:w-[26%] justify-end mt-6 lg:mt-0">
+          <div class="bg-gradient-to-b from-[#5c2a12]/85 to-[#3a1a0b]/90 border border-[#8b4513]/60 p-6 rounded-2xl shadow-xl flex flex-col items-center text-center backdrop-blur-md w-60">
+            <i data-lucide="shield-check" class="w-12 h-12 text-yellow-500 mb-2"></i>
+            <h3 class="text-white font-bold text-base mb-1">100% Produk Original</h3>
+            <p class="text-gray-300 text-xs">Jaminan Kualitas & Kedaluwarsa Panjang</p>
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -135,6 +192,7 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
 
       <!-- Product Grid Dinamis dari Database -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<<<<<<< HEAD
         <?php while ($row = mysqli_fetch_assoc($query_produk)) : ?>
           <?php 
             // Cek nama file gambar dari database, jika kosong gunakan default
@@ -187,13 +245,57 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
             </div>
           </div>
         <?php endwhile; ?>
+=======
+        <?php
+        $query_produk = mysqli_query($koneksi, "SELECT * FROM produk ORDER BY id_produk ASC");
+        if ($query_produk && mysqli_num_rows($query_produk) > 0) {
+            while ($p = mysqli_fetch_assoc($query_produk)) {
+                $gambar = "teh botol 220ml.jpg";
+                if ($p['id_produk'] == 2) $gambar = "Fruit Tea Apel 350ml.jpg";
+                if ($p['id_produk'] == 3) $gambar = "TEBS Sparkling 500ml.jpg";
+                if ($p['id_produk'] == 4) $gambar = "Teh Botol Kotak 250ml (Dus).jpg";
+        ?>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group">
+          <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative overflow-hidden">
+            <span class="absolute top-3 left-3 bg-amber-800 text-white text-[10px] font-bold px-2 py-0.5 rounded z-10">
+              Stok: <?php echo $p['stok']; ?>
+            </span>
+            <img src="<?php echo $gambar; ?>" alt="<?php echo htmlspecialchars($p['nama_produk']); ?>" class="w-full h-full object-contain group-hover:scale-110 transition transform duration-300" />
+          </div>
+
+          <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+            <div>
+              <span class="text-[11px] font-medium text-amber-800 uppercase tracking-wider"><?php echo htmlspecialchars($p['kategori']); ?></span>
+              <h3 class="font-bold text-gray-900 text-base leading-snug"><?php echo htmlspecialchars($p['nama_produk']); ?></h3>
+            </div>
+
+            <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+              <div>
+                <p class="text-xs text-gray-400">Harga Satuan</p>
+                <p class="text-lg font-bold text-amber-900">Rp <?php echo number_format($p['harga'], 0, ',', '.'); ?></p>
+              </div>
+
+              <button onclick="addToCart('<?php echo htmlspecialchars($p['nama_produk']); ?>', <?php echo $p['harga']; ?>)" class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm">
+                <i data-lucide="plus" class="w-5 h-5"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <?php 
+            }
+        } 
+        ?>
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
       </div>
     </main>
 
     <!-- Slide-over Drawer Keranjang Belanja -->
     <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden hidden">
       <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="toggleCart()"></div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
       <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
         <div class="w-screen max-w-md bg-white shadow-xl flex flex-col">
           <div class="p-4 bg-amber-800 text-white flex justify-between items-center">
@@ -201,13 +303,23 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
               <i data-lucide="shopping-cart" class="w-5 h-5"></i>
               <h2 class="font-bold text-lg">Keranjang Belanja</h2>
             </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
             <button onclick="toggleCart()" class="hover:bg-amber-700 p-1 rounded transition">
               <i data-lucide="x" class="w-5 h-5"></i>
             </button>
           </div>
 
+<<<<<<< HEAD
           <div id="daftar-keranjang" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
+=======
+          <!-- Wadah barang keranjang -->
+          <div id="daftar-keranjang" class="flex-1 overflow-y-auto p-4 space-y-4">
+            <!-- Barang akan ditambahkan di sini oleh JavaScript -->
+          </div>
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
 
           <div class="p-4 border-t border-gray-200 bg-gray-50 space-y-3">
             <div class="flex justify-between text-sm font-semibold">
@@ -215,10 +327,7 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
               <span id="total-pembelian" class="text-lg text-amber-900 font-bold">Rp 0</span>
             </div>
 
-            <button
-              onclick="openCheckout()"
-              class="w-full bg-amber-800 hover:bg-amber-900 text-white font-bold py-3 rounded-lg transition shadow flex items-center justify-center gap-2 text-sm"
-            >
+            <button onclick="openCheckout()" class="w-full bg-amber-800 hover:bg-amber-900 text-white font-bold py-3 rounded-lg transition shadow flex items-center justify-center gap-2 text-sm">
               <span>Lanjut ke Form Pesan</span>
               <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </button>
@@ -240,6 +349,7 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         <form action="proses_pesan.php" method="POST" class="p-6 space-y-4">
           <div>
             <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Pemesan / Nama Toko</label>
+<<<<<<< HEAD
             <input
               type="text"
               name="nama_pemesan"
@@ -247,11 +357,15 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
               required
             />
+=======
+            <input type="text" name="nama_pemesan" placeholder="Contoh: Toko Kelontong Berkah" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-xs font-semibold text-gray-700 mb-1">Nomor WhatsApp</label>
+<<<<<<< HEAD
               <input
                 type="tel"
                 name="no_wa"
@@ -259,6 +373,9 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
                 required
               />
+=======
+              <input type="tel" name="no_wa" placeholder="0812xxxx" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
             </div>
 
             <div>
@@ -272,6 +389,7 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
 
           <div>
             <label class="block text-xs font-semibold text-gray-700 mb-1">Alamat Lengkap Pengiriman</label>
+<<<<<<< HEAD
             <textarea
               name="alamat"
               rows="3"
@@ -279,6 +397,9 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
               required
             ></textarea>
+=======
+            <textarea name="alamat" rows="3" placeholder="Masukkan jalan, RT/RW, dan kecamatan..." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required></textarea>
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
           </div>
 
           <div class="pt-4 border-t border-gray-100 flex justify-end space-x-2">
@@ -314,10 +435,18 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
               <label class="block text-xs font-semibold text-gray-700 mb-1">Kata Sandi (Password)</label>
               <input type="password" name="password" placeholder="••••••••" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
             </div>
+<<<<<<< HEAD
             <button type="submit" class="w-full py-2.5 bg-amber-800 hover:bg-amber-900 text-white font-bold rounded-lg transition text-sm shadow">Masuk Sekarang</button>
           </form>
 
           <!-- Form Register -->
+=======
+
+            <button type="submit" class="w-full py-2.5 bg-amber-800 hover:bg-amber-900 text-white font-bold rounded-lg transition text-sm shadow">Masuk Sekarang</button>
+          </form>
+
+          <!-- Form Register (Daftar) -->
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
           <form id="form-register" action="proses_daftar.php" method="POST" class="space-y-4 hidden">
             <div>
               <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Lengkap / Nama Toko</label>
@@ -335,21 +464,37 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
               <label class="block text-xs font-semibold text-gray-700 mb-1">Buat Kata Sandi</label>
               <input type="password" name="password" placeholder="Minimal 6 karakter" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
             </div>
+<<<<<<< HEAD
             <button type="submit" class="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition text-sm shadow">Daftar Akun Baru</button>
           </form>
 
           <!-- Form Admin -->
+=======
+
+            <button type="submit" class="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition text-sm shadow">Daftar Akun Baru</button>
+          </form>
+
+          <!-- Form login admin -->
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
           <form id="form-admin" action="proses_admin_login.php" method="POST" class="space-y-4 hidden">
             <div class="rounded-lg bg-amber-50 border border-amber-200 p-3 text-xs text-amber-900">
               Login khusus administrator untuk mengelola produk dan kategori.
             </div>
             <div>
               <label for="admin-username" class="block text-xs font-semibold text-gray-700 mb-1">Username Admin</label>
+<<<<<<< HEAD
               <input id="admin-username" type="text" name="username" placeholder="Masukkan username admin" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
             </div>
             <div>
               <label for="admin-password" class="block text-xs font-semibold text-gray-700 mb-1">Password Admin</label>
               <input id="admin-password" type="password" name="password" placeholder="Masukkan password admin" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
+=======
+              <input id="admin-username" type="text" name="username" autocomplete="username" placeholder="Masukkan username admin" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
+            </div>
+            <div>
+              <label for="admin-password" class="block text-xs font-semibold text-gray-700 mb-1">Password Admin</label>
+              <input id="admin-password" type="password" name="password" autocomplete="current-password" placeholder="Masukkan password admin" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
             </div>
             <button type="submit" class="w-full py-2.5 bg-gray-900 hover:bg-black text-white font-bold rounded-lg transition text-sm shadow">Masuk sebagai Admin</button>
           </form>
@@ -367,13 +512,24 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
 
     <!-- Interactive Script Terpadu -->
     <script>
+<<<<<<< HEAD
       lucide.createIcons();
 
+=======
+      // Render ikon Lucide
+      lucide.createIcons();
+
+      // Fungsi Buka/Tutup Keranjang
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
       function toggleCart() {
         const drawer = document.getElementById("cart-drawer");
         drawer.classList.toggle("hidden");
       }
 
+<<<<<<< HEAD
+=======
+      // Fungsi Menambahkan Barang ke Keranjang
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
       function addToCart(nama, harga) {
         const daftarKeranjang = document.getElementById("daftar-keranjang");
         const formatRupiah = "Rp " + harga.toLocaleString("id-ID");
@@ -401,6 +557,10 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         cartDrawer.classList.remove("hidden");
       }
 
+<<<<<<< HEAD
+=======
+      // Fungsi Menghapus Barang
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
       function hapusDariKeranjang(tombol) {
         const barisProduk = tombol.closest(".produk-di-keranjang");
         if (barisProduk) {
@@ -409,6 +569,10 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         hitungUlangTotal();
       }
 
+<<<<<<< HEAD
+=======
+      // Fungsi Hitung Total Harga & Update Angka Keranjang
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
       function hitungUlangTotal() {
         const semuaHarga = document.querySelectorAll(".harga-item");
         let totalBaru = 0;
@@ -425,6 +589,10 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         document.getElementById("total-pembelian").innerText = formatRupiah;
       }
 
+<<<<<<< HEAD
+=======
+      // Fungsi Buka/Tutup Form Checkout
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
       function openCheckout() {
         toggleCart();
         document.getElementById("modal-checkout").classList.remove("hidden");
@@ -434,6 +602,10 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         document.getElementById("modal-checkout").classList.add("hidden");
       }
 
+<<<<<<< HEAD
+=======
+      // FUNGSI UNTUK MODAL LOGIN & DAFTAR
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
       function openAuthModal() {
         document.getElementById("modal-auth").classList.remove("hidden");
       }
@@ -454,6 +626,10 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         });
       }
 
+<<<<<<< HEAD
+=======
+      // PENANGANAN NOTIFIKASI ANIMASI CENTANG HIJAU & SILANG MERAH (SweetAlert2)
+>>>>>>> 9d2d01970cad8ffaf74167be64b67d4287fc1a54
       window.onload = function () {
         const urlParams = new URLSearchParams(window.location.search);
         const status = urlParams.get("status");
