@@ -2,7 +2,7 @@
 session_start();
 include 'koneksi.php';
 
-// Validasi Keamanan: Mengarahkan ke pelanggan.php jika bukan admin untuk mencegah redirect loop
+// Validasi Keamanan: Mengarahkan ke pelanggan.php jika bukan admin
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header("Location: pelanggan.php?status=admin_login_failed");
     exit();
@@ -12,7 +12,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 $q_produk = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM produk");
 $total_produk = ($q_produk) ? mysqli_fetch_assoc($q_produk)['total'] : 0;
 
-// 2. Hitung Total Pesanan
+// 2. Hitung Total Pesanan & Omset
 $q_pesan = mysqli_query($koneksi, "SELECT COUNT(*) as total, SUM(total_bayar) as omset FROM pesan");
 $res_pesan = ($q_pesan) ? mysqli_fetch_assoc($q_pesan) : ['total' => 0, 'omset' => 0];
 $total_pesanan = $res_pesan['total'] ?? 0;
@@ -26,7 +26,7 @@ $total_pelanggan = ($q_user) ? mysqli_fetch_assoc($q_user)['total'] : 0;
 $q_pesanan_list = mysqli_query($koneksi, "SELECT * FROM pesan ORDER BY id DESC LIMIT 10");
 
 // 5. Ambil Data Produk
-$q_produk_list = mysqli_query($koneksi, "SELECT * FROM produk ORDER BY id DESC");
+$q_produk_list = mysqli_query($koneksi, "SELECT * FROM produk ORDER BY id ASC");
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -86,6 +86,7 @@ $q_produk_list = mysqli_query($koneksi, "SELECT * FROM produk ORDER BY id DESC")
             </a>
         </div>
     </aside>
+
     <!-- MAIN CONTENT AREA -->
     <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
         <!-- TOP BAR HEADER -->
@@ -94,7 +95,7 @@ $q_produk_list = mysqli_query($koneksi, "SELECT * FROM produk ORDER BY id DESC")
                 <i data-lucide="shield-check" class="w-6 h-6 text-amber-800"></i>
                 <h2 class="text-xl font-bold text-slate-900">Panel Kontrol Utama</h2>
             </div>
-           
+            
             <div class="flex items-center gap-3">
                 <div class="text-right hidden sm:block">
                     <p class="text-xs font-bold text-slate-800"><?php echo htmlspecialchars($_SESSION['admin_nama'] ?? 'Administrator'); ?></p>
@@ -105,11 +106,11 @@ $q_produk_list = mysqli_query($koneksi, "SELECT * FROM produk ORDER BY id DESC")
                 </div>
             </div>
         </header>
+
         <!-- MAIN BODY CONTENT -->
         <main class="p-6 overflow-y-auto space-y-8 flex-1">
             <!-- STATS CARDS GRID -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-               
                 <!-- Card 1: Total Produk -->
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
                     <div>
@@ -155,6 +156,7 @@ $q_produk_list = mysqli_query($koneksi, "SELECT * FROM produk ORDER BY id DESC")
                     </div>
                 </div>
             </div>
+
             <!-- TABEL 1: DATA PESANAN MASUK -->
             <div id="tabel-pesanan" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="p-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-amber-900 to-amber-800 text-white">
@@ -208,6 +210,7 @@ $q_produk_list = mysqli_query($koneksi, "SELECT * FROM produk ORDER BY id DESC")
                     </table>
                 </div>
             </div>
+
             <!-- TABEL 2: KATALOG PRODUK -->
             <div id="tabel-produk" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white">
@@ -225,6 +228,7 @@ $q_produk_list = mysqli_query($koneksi, "SELECT * FROM produk ORDER BY id DESC")
                                 <th class="py-3.5 px-4">Kategori</th>
                                 <th class="py-3.5 px-4">Harga Satuan</th>
                                 <th class="py-3.5 px-4">Stok</th>
+                                <th class="py-3.5 px-4 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
@@ -235,12 +239,19 @@ $q_produk_list = mysqli_query($koneksi, "SELECT * FROM produk ORDER BY id DESC")
                                         <td class="py-3.5 px-4 font-bold text-slate-900"><?php echo htmlspecialchars($prod['nama_produk']); ?></td>
                                         <td class="py-3.5 px-4"><span class="bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-0.5 rounded font-semibold"><?php echo htmlspecialchars($prod['kategori']); ?></span></td>
                                         <td class="py-3.5 px-4 font-bold text-slate-900">Rp <?php echo number_format($prod['harga'], 0, ',', '.'); ?></td>
-                                        <td class="py-3.5 px-4 font-bold text-slate-700"><?php echo $prod['stok']; ?> pcs</td>
+                                        <td class="py-3.5 px-4 font-bold <?php echo ($prod['stok'] > 10 ? 'text-emerald-600' : 'text-red-600'); ?>">
+                                            <?php echo $prod['stok']; ?> pcs
+                                        </td>
+                                        <td class="py-3.5 px-4 text-center">
+                                            <button onclick="editStok('<?php echo $prod['id']; ?>', '<?php echo htmlspecialchars($prod['nama_produk'], ENT_QUOTES); ?>', '<?php echo $prod['stok']; ?>', '<?php echo $prod['harga']; ?>')" class="inline-flex items-center gap-1 bg-amber-100 hover:bg-amber-200 text-amber-800 px-3 py-1.5 rounded-lg font-bold transition text-xs shadow-sm">
+                                                <i data-lucide="edit" class="w-3.5 h-3.5"></i> Edit Stok
+                                            </button>
+                                        </td>
                                     </tr>
                                 <?php endwhile; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="5" class="text-center py-8 text-slate-400">
+                                    <td colspan="6" class="text-center py-8 text-slate-400">
                                         Belum ada data produk di database.
                                     </td>
                                 </tr>
@@ -251,9 +262,69 @@ $q_produk_list = mysqli_query($koneksi, "SELECT * FROM produk ORDER BY id DESC")
             </div>
         </main>
     </div>
-    <!-- Script Init Lucide Icons -->
+
+    <!-- MODAL EDIT STOK & HARGA PRODUK -->
+    <div id="modal-edit-stok" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-100">
+            <div class="bg-amber-900 text-white p-4 flex justify-between items-center">
+                <h3 class="font-bold text-base flex items-center gap-2">
+                    <i data-lucide="package" class="w-5 h-5 text-amber-300"></i> Kelola Stok & Harga Produk
+                </h3>
+                <button onclick="closeEditModal()" class="hover:bg-amber-800 p-1 rounded-lg text-amber-200 hover:text-white transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form action="update_produk.php" method="POST" class="p-6 space-y-4">
+                <input type="hidden" id="edit-id" name="id">
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Produk</label>
+                    <input type="text" id="edit-nama" class="w-full px-3 py-2 bg-slate-100 border border-slate-300 rounded-lg text-sm text-slate-600 font-bold focus:outline-none" readonly>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Jumlah Stok (Pcs)</label>
+                    <input type="number" id="edit-stok" name="stok" min="0" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold text-emerald-700" required>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Harga Satuan (Rp)</label>
+                    <input type="number" id="edit-harga" name="harga" min="0" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold text-slate-800" required>
+                </div>
+
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeEditModal()" class="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-5 py-2 bg-amber-800 hover:bg-amber-900 text-white font-bold rounded-lg text-sm shadow transition">
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SCRIPT INIT & INTERAKSI -->
     <script>
+        // Init Lucide Icons
         lucide.createIcons();
+
+        // Fungsi Buka Modal Edit Stok
+        function editStok(id, nama, stok, harga) {
+            document.getElementById('edit-id').value = id;
+            document.getElementById('edit-nama').value = nama;
+            document.getElementById('edit-stok').value = stok;
+            document.getElementById('edit-harga').value = harga;
+            
+            document.getElementById('modal-edit-stok').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        // Fungsi Tutup Modal Edit Stok
+        function closeEditModal() {
+            document.getElementById('modal-edit-stok').classList.add('hidden');
+        }
     </script>
 </body>
 </html>
