@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `produk` (
+  CREATE TABLE IF NOT EXISTS `produk` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `nama_produk` VARCHAR(100) NOT NULL,
   `kategori` VARCHAR(50) NOT NULL,
