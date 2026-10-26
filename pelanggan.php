@@ -122,7 +122,9 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
       </div>
     </section>
 
-    <!-- Main Content -->
+    <!-- Main Content (Katalog Produk) -->
+    <?php if (isset($_SESSION['nama'])): ?>
+    <!-- JIKA SUDAH LOGIN: Tampilkan Katalog -->
     <main id="katalog" class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1">
       <!-- Filter Category Tabs -->
       <div class="flex flex-wrap items-center justify-between gap-4 mb-8 border-b border-gray-200 pb-4">
@@ -195,6 +197,20 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         <?php endwhile; ?>
       </div>
     </main>
+
+    <?php else: ?>
+    <!-- JIKA BELUM LOGIN: Tampilkan Pesan Login -->
+    <main id="katalog" class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-16 flex-1 flex flex-col items-center justify-center text-center">
+      <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 max-w-md w-full">
+        <i data-lucide="lock" class="w-12 h-12 text-amber-700 mx-auto mb-4"></i>
+        <h2 class="text-xl font-bold text-gray-900 mb-2">Katalog Produk Terkunci</h2>
+        <p class="text-sm text-gray-500 mb-6">Katalog produk beserta harganya hanya tersedia untuk pelanggan setia kami. Silakan masuk atau daftar akun baru untuk mulai berbelanja.</p>
+        <button onclick="openAuthModal()" class="w-full bg-amber-800 hover:bg-amber-900 text-white font-bold py-3 rounded-lg transition shadow-sm">
+          Masuk / Daftar Sekarang
+        </button>
+      </div>
+    </main>
+    <?php endif; ?>
 
     <!-- Slide-over Drawer Keranjang Belanja -->
     <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden hidden">
@@ -422,7 +438,7 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         let totalBaru = 0;
         let jumlahBarang = 0;
 
-        semuaHarga.forEach(function (elemen) {
+        semuHarga.forEach(function (elemen) {
           const harga = parseInt(elemen.getAttribute("data-harga")) || 0;
           totalBaru += harga;
           jumlahBarang++;

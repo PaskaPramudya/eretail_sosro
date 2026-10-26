@@ -2,6 +2,13 @@
 session_start();
 include 'koneksi.php';
 
+// --- TAMBAHAN OTOMATIS: Memeriksa dan menambahkan kolom 'gambar' jika belum ada ---
+$cek_kolom = mysqli_query($koneksi, "SHOW COLUMNS FROM produk LIKE 'gambar'");
+if (mysqli_num_rows($cek_kolom) == 0) {
+    mysqli_query($koneksi, "ALTER TABLE produk ADD COLUMN gambar VARCHAR(255) NULL AFTER stok");
+}
+// ----------------------------------------------------------------------------------
+
 // 1. Proses Tambah Produk Baru
 if (isset($_POST['tambah_produk'])) {
     $nama_produk = mysqli_real_escape_string($koneksi, $_POST['nama_produk']);
@@ -86,39 +93,134 @@ $data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/table.css">
     <style>
-        .btn-tambah { background-color: #2980b9; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 15px; font-weight: bold; }
-        .btn-tambah:hover { background-color: #1f618d; }
-        .btn-edit { background-color: #f39c12; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; }
-        .btn-edit:hover { background-color: #d68910; }
-        .btn-gambar { background-color: #3498db; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; }
-        .btn-gambar:hover { background-color: #2980b9; }
-        .btn-hapus { background-color: #e74c3c; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; font-size: 13.33px; display: inline-block; }
-        .btn-hapus:hover { background-color: #c0392b; }
-        .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
-        .modal-content { background-color: #fff; margin: 5% auto; padding: 20px; width: 380px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-        .modal-content h3 { margin-top: 0; }
+        /* Mengatur font agar lebih rapi dan modern */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fdf8f5; /* Background krem/hangat muda */
+            margin: 0;
+        }
+
+        /* Styling Header ala Navbar Sosro */
+        .header {
+            background-color: #8c3b10 !important; /* Cokelat kemerahan hangat */
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .header h2 { margin: 0; font-size: 22px; font-weight: bold; }
+        .header-btn-logout {
+            background-color: #e52929; /* Merah cerah khas tombol Keluar */
+            color: white !important;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        .header-btn-logout:hover { background-color: #c91f1f; }
+
+        /* Styling Container & Table */
+        .container {
+            padding: 30px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        h3 { color: #5a2707; margin-bottom: 20px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+            border: none;
+        }
+        thead tr {
+            background-color: #eab676; /* Warna oranye muda kekuningan hangat */
+            color: #5a2707;
+            text-align: left;
+        }
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0e4db;
+        }
+        tbody tr:hover { background-color: #fff9f2; }
+
+        /* Styling Tombol Aksi */
+        .btn-tambah { 
+            background-color: #e52929; /* Merah Sosro */
+            color: white; 
+            padding: 10px 20px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            margin-bottom: 20px; 
+            font-weight: bold; 
+            box-shadow: 0 2px 5px rgba(229, 41, 41, 0.3);
+            transition: 0.2s;
+        }
+        .btn-tambah:hover { background-color: #c91f1f; }
+        
+        .btn-edit { background-color: #e67e22; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; transition: 0.2s; font-size: 13px;}
+        .btn-edit:hover { background-color: #d35400; }
+        
+        .btn-gambar { background-color: #8c3b10; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; transition: 0.2s; font-size: 13px;}
+        .btn-gambar:hover { background-color: #692c0c; }
+        
+        .btn-hapus { background-color: #c0392b; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; font-size: 13px; display: inline-block; transition: 0.2s;}
+        .btn-hapus:hover { background-color: #922b21; }
+
+        /* Styling Modal */
+        .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(60, 20, 0, 0.6); } /* Dark overlay kemerahan */
+        .modal-content { 
+            background-color: #fff; 
+            margin: 8% auto; 
+            padding: 25px; 
+            width: 400px; 
+            border-radius: 10px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
+            border-top: 5px solid #e52929; /* Aksen merah di atas modal */
+        }
+        .modal-content h3 { margin-top: 0; color: #8c3b10; }
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; }
-        .form-group input, .form-group select { width: 100%; padding: 8px; box-sizing: border-box; }
-        .btn-submit { background-color: #27ae60; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%; }
-        .btn-close { background-color: #c0392b; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 5px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 500; color: #444; }
+        .form-group input, .form-group select { 
+            width: 100%; 
+            padding: 10px; 
+            box-sizing: border-box; 
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: #e52929; }
+        
+        .btn-submit { background-color: #27ae60; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 8px;}
+        .btn-submit:hover { background-color: #219150; }
+        .btn-close { background-color: #95a5a6; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold;}
+        .btn-close:hover { background-color: #7f8c8d; }
     </style>
 </head>
 <body>
 
+<!-- Perbaikan Header memisahkan logout dengan Flexbox agar tidak perlu negatif margin -->
 <div class="header">
-    <h2>Dashboard Admin E-Retail Sosro</h2>
-    <a href="logout_admin.php" style="color: white; float: right; margin-top: -30px;">Logout</a>
+    <h2>Dashboard Admin E-Retail</h2>
+    <a href="logout_admin.php" class="header-btn-logout">Keluar</a>
 </div>
 
-<div class="container" style="padding: 20px;">
+<div class="container">
     <h3>Daftar Produk & Kelola Stok</h3>
     
     <button class="btn-tambah" onclick="bukaModalTambah()">+ Tambah Produk Baru</button>
 
-    <table border="1" cellspacing="0" cellpadding="10" style="width: 100%; text-align: left;">
+    <table cellspacing="0" cellpadding="10">
         <thead>
-            <tr style="background-color: #f2f2f2;">
+            <tr>
                 <th>ID</th>
                 <th>Nama Produk</th>
                 <th>Kategori</th>
@@ -135,11 +237,11 @@ $data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
             ?>
             <tr>
                 <td><?= $id_produk; ?></td>
-                <td><?= htmlspecialchars($row['nama_produk']); ?></td>
+                <td><strong><?= htmlspecialchars($row['nama_produk']); ?></strong></td>
                 <td><?= htmlspecialchars($row['kategori']); ?></td>
                 <td>Rp <?= number_format($row['harga'], 0, ',', '.'); ?></td>
-                <td><strong><?= isset($row['stok']) ? $row['stok'] : 0; ?></strong></td>
-                <td><?= !empty($row['gambar']) ? htmlspecialchars($row['gambar']) : '<i>Belum Ada</i>'; ?></td>
+                <td><span style="background-color: #ffe8d6; padding: 3px 8px; border-radius: 4px; color: #d35400; font-weight: bold;"><?= isset($row['stok']) ? $row['stok'] : 0; ?></span></td>
+                <td><?= !empty($row['gambar']) ? htmlspecialchars($row['gambar']) : '<i style="color:#aaa;">Belum Ada</i>'; ?></td>
                 <td>
                     <button class="btn-edit" onclick="bukaModalStok('<?= $id_produk; ?>', '<?= htmlspecialchars(addslashes($row['nama_produk'])); ?>')">Edit Stok</button>
                     <button class="btn-gambar" onclick="bukaModalGambar('<?= $id_produk; ?>', '<?= htmlspecialchars(addslashes($row['nama_produk'])); ?>')">Edit Gambar</button>
