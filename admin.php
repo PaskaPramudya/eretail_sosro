@@ -29,10 +29,10 @@ if (isset($_POST['tambah_produk'])) {
 
 // 2. Proses Edit Nama Gambar
 if (isset($_POST['edit_gambar'])) {
-    $id = $_POST['id'];
+    $id = mysqli_real_escape_string($koneksi, $_POST['id']);
     $gambar = mysqli_real_escape_string($koneksi, $_POST['gambar']);
 
-    $query_update_gambar = "UPDATE produk SET gambar = '$gambar' WHERE id = '$id'";
+    $query_update_gambar = "UPDATE produk SET gambar = '$gambar' WHERE id = '$id' OR id_produk = '$id'";
     if (mysqli_query($koneksi, $query_update_gambar)) {
         echo "<script>alert('Gambar produk berhasil diperbarui!'); window.location.href='admin.php';</script>";
     } else {
@@ -42,14 +42,14 @@ if (isset($_POST['edit_gambar'])) {
 
 // 3. Proses Update Stok
 if (isset($_POST['update_stok'])) {
-    $id = $_POST['id'];
+    $id = mysqli_real_escape_string($koneksi, $_POST['id']);
     $mode = $_POST['mode']; // 'tambah' atau 'set'
     $jumlah = intval($_POST['jumlah']);
 
     if ($mode == 'tambah') {
-        $query = "UPDATE produk SET stok = stok + $jumlah WHERE id = '$id'";
+        $query = "UPDATE produk SET stok = stok + $jumlah WHERE id = '$id' OR id_produk = '$id'";
     } else {
-        $query = "UPDATE produk SET stok = $jumlah WHERE id = '$id'";
+        $query = "UPDATE produk SET stok = $jumlah WHERE id = '$id' OR id_produk = '$id'";
     }
 
     if (mysqli_query($koneksi, $query)) {
@@ -62,7 +62,7 @@ if (isset($_POST['update_stok'])) {
 // 4. Proses Hapus Produk
 if (isset($_GET['hapus'])) {
     $id_hapus = intval($_GET['hapus']);
-    $query_hapus = "DELETE FROM produk WHERE id = '$id_hapus'";
+    $query_hapus = "DELETE FROM produk WHERE id = '$id_hapus' OR id_produk = '$id_hapus'";
 
     if (mysqli_query($koneksi, $query_hapus)) {
         echo "<script>alert('Produk berhasil dihapus!'); window.location.href='admin.php';</script>";
@@ -130,17 +130,20 @@ $data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         </thead>
         <tbody>
             <?php while ($row = mysqli_fetch_assoc($data_produk)) : ?>
+            <?php 
+                $id_produk = $row['id'] ?? $row['id_produk'] ?? 0;
+            ?>
             <tr>
-                <td><?= $row['id']; ?></td>
+                <td><?= $id_produk; ?></td>
                 <td><?= htmlspecialchars($row['nama_produk']); ?></td>
                 <td><?= htmlspecialchars($row['kategori']); ?></td>
                 <td>Rp <?= number_format($row['harga'], 0, ',', '.'); ?></td>
                 <td><strong><?= isset($row['stok']) ? $row['stok'] : 0; ?></strong></td>
                 <td><?= !empty($row['gambar']) ? htmlspecialchars($row['gambar']) : '<i>Belum Ada</i>'; ?></td>
                 <td>
-                    <button class="btn-edit" onclick="bukaModalStok('<?= $row['id']; ?>', '<?= htmlspecialchars($row['nama_produk']); ?>')">Edit Stok</button>
-                    <button class="btn-gambar" onclick="bukaModalGambar('<?= $row['id']; ?>', '<?= htmlspecialchars($row['nama_produk']); ?>')">Edit Gambar</button>
-                    <a href="admin.php?hapus=<?= $row['id']; ?>" class="btn-hapus" onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">Hapus</a>
+                    <button class="btn-edit" onclick="bukaModalStok('<?= $id_produk; ?>', '<?= htmlspecialchars(addslashes($row['nama_produk'])); ?>')">Edit Stok</button>
+                    <button class="btn-gambar" onclick="bukaModalGambar('<?= $id_produk; ?>', '<?= htmlspecialchars(addslashes($row['nama_produk'])); ?>')">Edit Gambar</button>
+                    <a href="admin.php?hapus=<?= $id_produk; ?>" class="btn-hapus" onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">Hapus</a>
                 </td>
             </tr>
             <?php endwhile; ?>

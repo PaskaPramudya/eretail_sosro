@@ -89,25 +89,31 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
       </div>
     </header>
 
-    <!-- Hero Banner -->
-    <section class="bg-gradient-to-r from-amber-800 via-amber-700 to-red-700 text-white py-12 px-4 sm:px-6 lg:px-8">
-      <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+    <!-- Hero Banner dengan Gambar Background -->
+    <section 
+      class="relative bg-cover bg-center text-white py-14 px-4 sm:px-6 lg:px-8"
+      style="background-image: url('background.jpg');"
+    >
+      <!-- Overlay hitam transparan agar teks di atas background bergambar tetap terbaca jelas -->
+      <div class="absolute inset-0 bg-black/40 backdrop-blur-[1px]"></div>
+
+      <div class="relative max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 z-10">
         <div class="space-y-4 text-center md:text-left max-w-xl">
-          <span class="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Promo Mitra & Grosir</span>
-          <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight">
+          <span class="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider drop-shadow">Promo Mitra & Grosir</span>
+          <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight drop-shadow-md">
             Segarnya Minuman Asli Sosro Langsung Dari Pabrik!
           </h1>
-          <p class="text-amber-100 text-sm sm:text-base">
+          <p class="text-amber-100 text-sm sm:text-base drop-shadow">
             Pesan beragam produk Teh Botol Sosro, Fruit Tea, TEBS, dan Prima langsung untuk kebutuhan toko, cafe, maupun konsumsi harian Anda.
           </p>
           <div class="pt-2 flex flex-wrap justify-center md:justify-start gap-3">
             <a href="#katalog" class="bg-white text-amber-900 hover:bg-amber-100 font-bold px-6 py-3 rounded-lg shadow transition text-sm">Lihat Katalog</a>
-            <a href="#cara-pesan" class="bg-amber-900/50 hover:bg-amber-900 border border-amber-500 font-medium px-5 py-3 rounded-lg transition text-sm">Panduan Mitra</a>
+            <a href="#cara-pesan" class="bg-amber-950/70 hover:bg-amber-900 border border-amber-500 font-medium px-5 py-3 rounded-lg transition text-sm backdrop-blur-sm">Panduan Mitra</a>
           </div>
         </div>
 
         <div class="w-full md:w-auto flex justify-center">
-          <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 text-center space-y-2">
+          <div class="bg-black/40 backdrop-blur-md p-6 rounded-2xl border border-white/20 text-center space-y-2 shadow-lg">
             <i data-lucide="shield-check" class="w-12 h-12 text-amber-300 mx-auto"></i>
             <p class="font-bold text-lg">100% Produk Original</p>
             <p class="text-xs text-amber-100">Jaminan Kualitas & Kadaluarsa Panjang</p>
