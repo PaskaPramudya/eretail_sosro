@@ -1,10 +1,3 @@
-<?php
-session_start();
-include 'koneksi.php';
-
-// Ambil data produk dari database
-$query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
-?>
 <!doctype html>
 <html lang="id">
   <head>
@@ -53,7 +46,7 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         <!-- User Actions & Cart -->
         <div class="flex items-center space-x-4">
           <button
-            onclick="<?= isset($_SESSION['nama']) ? 'toggleCart()' : 'requireLogin()' ?>"
+            onclick="{{ session()->has('nama') ? 'toggleCart()' : 'requireLogin()' }}"
             class="relative bg-amber-700 hover:bg-amber-600 p-2.5 rounded-full transition flex items-center gap-2"
           >
             <i data-lucide="shopping-bag" class="w-5 h-5"></i>
@@ -67,24 +60,24 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
           <div class="h-6 w-px bg-amber-700 hidden sm:block"></div>
 
           <!-- Tombol Profil / Auth -->
-          <?php if (isset($_SESSION['nama'])): ?>
+          @if (session()->has('nama'))
             <div class="flex items-center gap-2">
               <span class="text-sm font-semibold bg-amber-900/60 px-3 py-1.5 rounded-lg border border-amber-600/50 flex items-center gap-2 text-amber-100">
                 <i data-lucide="user" class="w-4 h-4 text-amber-300"></i>
-                <?php echo htmlspecialchars($_SESSION['nama']); ?>
+                {{ session('nama') }}
               </span>
-              <a href="logout.php" class="text-xs font-semibold bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition shadow-sm">
+              <a href="{{ url('/logout') }}" class="text-xs font-semibold bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition shadow-sm">
                 Keluar
               </a>
             </div>
-          <?php else: ?>
+          @else
             <button
               onclick="openAuthModal()"
               class="text-sm font-medium hover:text-amber-200 transition hidden sm:block cursor-pointer bg-amber-900/40 hover:bg-amber-900 px-3 py-1.5 rounded-lg border border-amber-600/50"
             >
               Masuk / Daftar
             </button>
-          <?php endif; ?>
+          @endif
         </div>
       </div>
     </header>
@@ -92,9 +85,9 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
     <!-- Hero Banner dengan Gambar Background -->
     <section 
       class="relative bg-cover bg-center text-white py-14 px-4 sm:px-6 lg:px-8"
-      style="background-image: url('background.jpg');"
+      style="background-image: url('{{ asset('images/background.jpg') }}');"
     >
-      <!-- Overlay hitam transparan agar teks di atas background bergambar tetap terbaca jelas -->
+      <!-- Overlay hitam transparan -->
       <div class="absolute inset-0 bg-black/40 backdrop-blur-[1px]"></div>
 
       <div class="relative max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 z-10">
@@ -122,7 +115,7 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
       </div>
     </section>
 
-    <!-- Main Content (Katalog Produk Selalu Tampil) -->
+    <!-- Main Content (Katalog Produk) -->
     <main id="katalog" class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1">
       <!-- Filter Category Tabs -->
       <div class="flex flex-wrap items-center justify-between gap-4 mb-8 border-b border-gray-200 pb-4">
@@ -139,70 +132,75 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         </div>
       </div>
 
-      <!-- Product Grid Dinamis dari Database -->
+      <!-- Product Grid Dinamis -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <?php while ($row = mysqli_fetch_assoc($query_produk)) : ?>
-          <?php 
-            // Cek nama file gambar dari database, jika kosong gunakan default
-            $file_gambar = !empty($row['gambar']) ? $row['gambar'] : 'Fruit Tea Apel 350ml.jpg'; 
-            $stok_tersedia = isset($row['stok']) ? $row['stok'] : 0;
-          ?>
-          <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group">
-            <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative overflow-hidden">
-              <?php if (strtolower($row['kategori']) == 'minuman' && $row['id'] == 1): ?>
-                <span class="absolute top-3 left-3 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded z-10">Terlaris</span>
-              <?php elseif (strpos(strtolower($row['nama_produk']), 'tebs') !== false): ?>
-                <span class="absolute top-3 left-3 bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded z-10">Sparkling</span>
-              <?php endif; ?>
+        @if(isset($data_produk) && count($data_produk) > 0)
+          @foreach ($data_produk as $row)
+            @php 
+              $file_gambar = !empty($row->gambar) ? asset('images/' . $row->gambar) : asset('images/Fruit Tea Apel 350ml.jpg'); 
+              $stok_tersedia = $row->stok ?? 0;
+              $id_produk = $row->id ?? $row->id_produk ?? 0;
+            @endphp
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group">
+              <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative overflow-hidden">
+                @if (strtolower($row->kategori) == 'minuman' && $id_produk == 1)
+                  <span class="absolute top-3 left-3 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded z-10">Terlaris</span>
+                @elseif (str_contains(strtolower($row->nama_produk), 'tebs'))
+                  <span class="absolute top-3 left-3 bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded z-10">Sparkling</span>
+                @endif
 
-              <img
-                src="<?= htmlspecialchars($file_gambar); ?>"
-                alt="<?= htmlspecialchars($row['nama_produk']); ?>"
-                class="w-full h-full object-contain group-hover:scale-110 transition transform duration-300"
-              />
-            </div>
-
-            <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
-              <div>
-                <span class="text-[11px] font-medium text-amber-800 uppercase tracking-wider">
-                  <?= htmlspecialchars($row['kategori']); ?>
-                </span>
-
-                <h3 class="font-bold text-gray-900 text-base leading-snug">
-                  <?= htmlspecialchars($row['nama_produk']); ?>
-                </h3>
-
-                <p class="text-xs text-emerald-600 font-semibold mt-1">
-                  Stok Tersedia: <?= $stok_tersedia; ?>
-                </p>
+                <img
+                  src="{{ $file_gambar }}"
+                  alt="{{ $row->nama_produk }}"
+                  class="w-full h-full object-contain group-hover:scale-110 transition transform duration-300"
+                />
               </div>
 
-              <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+              <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
                 <div>
-                  <p class="text-xs text-gray-400">Harga Satuan</p>
-                  <p class="text-lg font-bold text-amber-900">Rp <?= number_format($row['harga'], 0, ',', '.'); ?></p>
+                  <span class="text-[11px] font-medium text-amber-800 uppercase tracking-wider">
+                    {{ $row->kategori }}
+                  </span>
+
+                  <h3 class="font-bold text-gray-900 text-base leading-snug">
+                    {{ $row->nama_produk }}
+                  </h3>
+
+                  <p class="text-xs text-emerald-600 font-semibold mt-1">
+                    Stok Tersedia: {{ $stok_tersedia }}
+                  </p>
                 </div>
 
-                <!-- Cek sesi login untuk menentukan aksi tombol keranjang -->
-                <?php if (isset($_SESSION['nama'])): ?>
-                  <button
-                    onclick="addToCart('<?= htmlspecialchars(addslashes($row['nama_produk'])); ?>', <?= $row['harga']; ?>)"
-                    class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm"
-                  >
-                    <i data-lucide="plus" class="w-5 h-5"></i>
-                  </button>
-                <?php else: ?>
-                  <button
-                    onclick="requireLogin()"
-                    class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm"
-                  >
-                    <i data-lucide="plus" class="w-5 h-5"></i>
-                  </button>
-                <?php endif; ?>
+                <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+                  <div>
+                    <p class="text-xs text-gray-400">Harga Satuan</p>
+                    <p class="text-lg font-bold text-amber-900">Rp {{ number_format($row->harga, 0, ',', '.') }}</p>
+                  </div>
+
+                  @if (session()->has('nama'))
+                    <button
+                      onclick="addToCart('{{ addslashes($row->nama_produk) }}', {{ $row->harga }})"
+                      class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm"
+                    >
+                      <i data-lucide="plus" class="w-5 h-5"></i>
+                    </button>
+                  @else
+                    <button
+                      onclick="requireLogin()"
+                      class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm"
+                    >
+                      <i data-lucide="plus" class="w-5 h-5"></i>
+                    </button>
+                  @endif
+                </div>
               </div>
             </div>
+          @endforeach
+        @else
+          <div class="col-span-full text-center py-10 text-gray-500">
+            Belum ada produk yang tersedia.
           </div>
-        <?php endwhile; ?>
+        @endif
       </div>
     </main>
 
@@ -251,7 +249,8 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
           </button>
         </div>
 
-        <form action="proses_pesan.php" method="POST" class="p-6 space-y-4">
+        <form action="{{ url('/proses-pesan') }}" method="POST" class="p-6 space-y-4">
+          @csrf
           <div>
             <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Pemesan / Nama Toko</label>
             <input
@@ -319,7 +318,8 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
 
         <div class="p-6">
           <!-- Form Login -->
-          <form id="form-login" action="proses_login.php" method="POST" class="space-y-4">
+          <form id="form-login" action="{{ url('/proses-login') }}" method="POST" class="space-y-4">
+            @csrf
             <div>
               <label class="block text-xs font-semibold text-gray-700 mb-1">Email / No. Handphone</label>
               <input type="text" name="email_or_phone" placeholder="Contoh: ahmad@gmail.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
@@ -332,7 +332,8 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
           </form>
 
           <!-- Form Register -->
-          <form id="form-register" action="proses_daftar.php" method="POST" class="space-y-4 hidden">
+          <form id="form-register" action="{{ url('/proses-daftar') }}" method="POST" class="space-y-4 hidden">
+            @csrf
             <div>
               <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Lengkap / Nama Toko</label>
               <input type="text" name="nama_lengkap" placeholder="Contoh: Toko Kelontong Berkah" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
@@ -352,8 +353,9 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
             <button type="submit" class="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition text-sm shadow">Daftar Akun Baru</button>
           </form>
 
-          <!-- Form Admin -->
-          <form id="form-admin" action="proses_admin_login.php" method="POST" class="space-y-4 hidden">
+          <!-- Form Admin Login -->
+          <form id="form-admin" action="{{ url('/proses-admin-login') }}" method="POST" class="space-y-4 hidden">
+            @csrf
             <div class="rounded-lg bg-amber-50 border border-amber-200 p-3 text-xs text-amber-900">
               Login khusus administrator untuk mengelola produk dan kategori.
             </div>
@@ -379,11 +381,10 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
       </div>
     </footer>
 
-    <!-- Interactive Script Terpadu -->
+    <!-- Interactive Script -->
     <script>
       lucide.createIcons();
 
-      // Fungsi Peringatan Login
       function requireLogin() {
         Swal.fire({
           icon: 'info',
@@ -401,13 +402,11 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         });
       }
 
-      // Fungsi Buka/Tutup Keranjang
       function toggleCart() {
         const drawer = document.getElementById("cart-drawer");
         drawer.classList.toggle("hidden");
       }
 
-      // Fungsi Menambahkan Barang ke Keranjang
       function addToCart(nama, harga) {
         const daftarKeranjang = document.getElementById("daftar-keranjang");
         const formatRupiah = "Rp " + harga.toLocaleString("id-ID");
@@ -435,7 +434,6 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         cartDrawer.classList.remove("hidden");
       }
 
-      // Fungsi Menghapus Barang
       function hapusDariKeranjang(tombol) {
         const barisProduk = tombol.closest(".produk-di-keranjang");
         if (barisProduk) {
@@ -444,7 +442,6 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         hitungUlangTotal();
       }
 
-      // Fungsi Hitung Total Harga & Update Angka Keranjang
       function hitungUlangTotal() {
         const semuaHarga = document.querySelectorAll(".harga-item");
         let totalBaru = 0;
@@ -461,7 +458,6 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         document.getElementById("total-pembelian").innerText = formatRupiah;
       }
 
-      // Fungsi Buka/Tutup Form Checkout
       function openCheckout() {
         toggleCart();
         document.getElementById("modal-checkout").classList.remove("hidden");
@@ -471,7 +467,6 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         document.getElementById("modal-checkout").classList.add("hidden");
       }
 
-      // FUNGSI UNTUK MODAL LOGIN & DAFTAR
       function openAuthModal() {
         document.getElementById("modal-auth").classList.remove("hidden");
       }
@@ -492,7 +487,6 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         });
       }
 
-      // PENANGANAN NOTIFIKASI ANIMASI CENTANG HIJAU & SILANG MERAH (SweetAlert2)
       window.onload = function () {
         const urlParams = new URLSearchParams(window.location.search);
         const status = urlParams.get("status");

@@ -1,97 +1,13 @@
-<?php
-session_start();
-include 'koneksi.php';
-
-// --- TAMBAHAN OTOMATIS: Memeriksa dan menambahkan kolom 'gambar' jika belum ada ---
-$cek_kolom = mysqli_query($koneksi, "SHOW COLUMNS FROM produk LIKE 'gambar'");
-if (mysqli_num_rows($cek_kolom) == 0) {
-    mysqli_query($koneksi, "ALTER TABLE produk ADD COLUMN gambar VARCHAR(255) NULL AFTER stok");
-}
-// ----------------------------------------------------------------------------------
-
-// 1. Proses Tambah Produk Baru
-if (isset($_POST['tambah_produk'])) {
-    $nama_produk = mysqli_real_escape_string($koneksi, $_POST['nama_produk']);
-    $kategori = mysqli_real_escape_string($koneksi, $_POST['kategori']);
-    $harga = intval($_POST['harga']);
-    $stok = intval($_POST['stok']);
-
-    $nama_gambar = $_FILES['gambar']['name'];
-    $tmp_gambar = $_FILES['gambar']['tmp_name'];
-
-    if (!empty($nama_gambar)) {
-        move_uploaded_file($tmp_gambar, $nama_gambar);
-    } else {
-        $nama_gambar = '';
-    }
-
-    $query_tambah = "INSERT INTO produk (nama_produk, kategori, harga, stok, gambar) VALUES ('$nama_produk', '$kategori', $harga, $stok, '$nama_gambar')";
-
-    if (mysqli_query($koneksi, $query_tambah)) {
-        echo "<script>alert('Produk baru berhasil ditambahkan!'); window.location.href='admin.php';</script>";
-    } else {
-        echo "<script>alert('Gagal menambahkan produk.');</script>";
-    }
-}
-
-// 2. Proses Edit Nama Gambar
-if (isset($_POST['edit_gambar'])) {
-    $id = mysqli_real_escape_string($koneksi, $_POST['id']);
-    $gambar = mysqli_real_escape_string($koneksi, $_POST['gambar']);
-
-    $query_update_gambar = "UPDATE produk SET gambar = '$gambar' WHERE id = '$id' OR id_produk = '$id'";
-    if (mysqli_query($koneksi, $query_update_gambar)) {
-        echo "<script>alert('Gambar produk berhasil diperbarui!'); window.location.href='admin.php';</script>";
-    } else {
-        echo "<script>alert('Gagal memperbarui gambar.');</script>";
-    }
-}
-
-// 3. Proses Update Stok
-if (isset($_POST['update_stok'])) {
-    $id = mysqli_real_escape_string($koneksi, $_POST['id']);
-    $mode = $_POST['mode']; // 'tambah' atau 'set'
-    $jumlah = intval($_POST['jumlah']);
-
-    if ($mode == 'tambah') {
-        $query = "UPDATE produk SET stok = stok + $jumlah WHERE id = '$id' OR id_produk = '$id'";
-    } else {
-        $query = "UPDATE produk SET stok = $jumlah WHERE id = '$id' OR id_produk = '$id'";
-    }
-
-    if (mysqli_query($koneksi, $query)) {
-        echo "<script>alert('Stok barang berhasil diperbarui!'); window.location.href='admin.php';</script>";
-    } else {
-        echo "<script>alert('Gagal memperbarui stok.');</script>";
-    }
-}
-
-// 4. Proses Hapus Produk
-if (isset($_GET['hapus'])) {
-    $id_hapus = intval($_GET['hapus']);
-    $query_hapus = "DELETE FROM produk WHERE id = '$id_hapus' OR id_produk = '$id_hapus'";
-
-    if (mysqli_query($koneksi, $query_hapus)) {
-        echo "<script>alert('Produk berhasil dihapus!'); window.location.href='admin.php';</script>";
-    } else {
-        echo "<script>alert('Gagal menghapus produk.'); window.location.href='admin.php';</script>";
-    }
-}
-
-// Ambil Seluruh Data Produk
-$data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
-?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Admin - E-Retail Sosro</title>
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/sidebar.css">
-    <link rel="stylesheet" href="css/table.css">
+    <link rel="stylesheet" href="{{ asset('css/base.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/table.css') }}">
     <style>
         /* Mengatur font agar lebih rapi dan modern */
         body {
@@ -176,7 +92,7 @@ $data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         .btn-hapus:hover { background-color: #922b21; }
 
         /* Styling Modal */
-        .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(60, 20, 0, 0.6); } /* Dark overlay kemerahan */
+        .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(60, 20, 0, 0.6); }
         .modal-content { 
             background-color: #fff; 
             margin: 8% auto; 
@@ -184,7 +100,7 @@ $data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
             width: 400px; 
             border-radius: 10px; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
-            border-top: 5px solid #e52929; /* Aksen merah di atas modal */
+            border-top: 5px solid #e52929;
         }
         .modal-content h3 { margin-top: 0; color: #8c3b10; }
         .form-group { margin-bottom: 15px; }
@@ -207,10 +123,9 @@ $data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
 </head>
 <body>
 
-<!-- Perbaikan Header memisahkan logout dengan Flexbox agar tidak perlu negatif margin -->
 <div class="header">
     <h2>Dashboard Admin E-Retail</h2>
-    <a href="logout_admin.php" class="header-btn-logout">Keluar</a>
+    <a href="{{ url('/logout') }}" class="header-btn-logout">Keluar</a>
 </div>
 
 <div class="container">
@@ -231,24 +146,36 @@ $data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
             </tr>
         </thead>
         <tbody>
-            <?php while ($row = mysqli_fetch_assoc($data_produk)) : ?>
-            <?php 
-                $id_produk = $row['id'] ?? $row['id_produk'] ?? 0;
-            ?>
-            <tr>
-                <td><?= $id_produk; ?></td>
-                <td><strong><?= htmlspecialchars($row['nama_produk']); ?></strong></td>
-                <td><?= htmlspecialchars($row['kategori']); ?></td>
-                <td>Rp <?= number_format($row['harga'], 0, ',', '.'); ?></td>
-                <td><span style="background-color: #ffe8d6; padding: 3px 8px; border-radius: 4px; color: #d35400; font-weight: bold;"><?= isset($row['stok']) ? $row['stok'] : 0; ?></span></td>
-                <td><?= !empty($row['gambar']) ? htmlspecialchars($row['gambar']) : '<i style="color:#aaa;">Belum Ada</i>'; ?></td>
-                <td>
-                    <button class="btn-edit" onclick="bukaModalStok('<?= $id_produk; ?>', '<?= htmlspecialchars(addslashes($row['nama_produk'])); ?>')">Edit Stok</button>
-                    <button class="btn-gambar" onclick="bukaModalGambar('<?= $id_produk; ?>', '<?= htmlspecialchars(addslashes($row['nama_produk'])); ?>')">Edit Gambar</button>
-                    <a href="admin.php?hapus=<?= $id_produk; ?>" class="btn-hapus" onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">Hapus</a>
-                </td>
-            </tr>
-            <?php endwhile; ?>
+            @if(isset($data_produk) && count($data_produk) > 0)
+                @foreach ($data_produk as $row)
+                @php 
+                    $id_produk = $row->id ?? $row->id_produk ?? 0;
+                @endphp
+                <tr>
+                    <td>{{ $id_produk }}</td>
+                    <td><strong>{{ $row->nama_produk }}</strong></td>
+                    <td>{{ $row->kategori }}</td>
+                    <td>Rp {{ number_format($row->harga, 0, ',', '.') }}</td>
+                    <td><span style="background-color: #ffe8d6; padding: 3px 8px; border-radius: 4px; color: #d35400; font-weight: bold;">{{ $row->stok ?? 0 }}</span></td>
+                    <td>
+                        @if(!empty($row->gambar))
+                            {{ $row->gambar }}
+                        @else
+                            <i style="color:#aaa;">Belum Ada</i>
+                        @endif
+                    </td>
+                    <td>
+                        <button class="btn-edit" onclick="bukaModalStok('{{ $id_produk }}', '{{ addslashes($row->nama_produk) }}')">Edit Stok</button>
+                        <button class="btn-gambar" onclick="bukaModalGambar('{{ $id_produk }}', '{{ addslashes($row->nama_produk) }}')">Edit Gambar</button>
+                        <a href="{{ url('/admin/hapus/' . $id_produk) }}" class="btn-hapus" onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">Hapus</a>
+                    </td>
+                </tr>
+                @endforeach
+            @else
+                <tr>
+                    <td colspan="7" style="text-align: center; color: #888;">Belum ada data produk.</td>
+                </tr>
+            @endif
         </tbody>
     </table>
 </div>
@@ -257,7 +184,8 @@ $data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
 <div id="modalTambah" class="modal">
     <div class="modal-content">
         <h3>Tambah Produk Baru</h3>
-        <form action="admin.php" method="POST" enctype="multipart/form-data">
+        <form action="{{ url('/admin/tambah') }}" method="POST" enctype="multipart/form-data">
+            @csrf
             <div class="form-group">
                 <label>Nama Produk:</label>
                 <input type="text" name="nama_produk" required placeholder="Contoh: Susu Kedelai">
@@ -288,7 +216,8 @@ $data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
 <div id="modalStok" class="modal">
     <div class="modal-content">
         <h3>Kelola Stok Barang</h3>
-        <form action="admin.php" method="POST">
+        <form action="{{ url('/admin/update-stok') }}" method="POST">
+            @csrf
             <input type="hidden" name="id" id="modal_stok_id">
             <div class="form-group">
                 <label>Nama Produk:</label>
@@ -315,7 +244,8 @@ $data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
 <div id="modalGambar" class="modal">
     <div class="modal-content">
         <h3>Edit Nama Gambar</h3>
-        <form action="admin.php" method="POST">
+        <form action="{{ url('/admin/edit-gambar') }}" method="POST">
+            @csrf
             <input type="hidden" name="id" id="modal_gambar_id">
             <div class="form-group">
                 <label>Nama Produk:</label>
