@@ -193,7 +193,6 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
     <!-- Slide-over Drawer Keranjang Belanja -->
     <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden hidden">
       <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="toggleCart()"></div>
-
       <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
         <div class="w-screen max-w-md bg-white shadow-xl flex flex-col">
           <div class="p-4 bg-amber-800 text-white flex justify-between items-center">
@@ -201,7 +200,6 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
               <i data-lucide="shopping-cart" class="w-5 h-5"></i>
               <h2 class="font-bold text-lg">Keranjang Belanja</h2>
             </div>
-
             <button onclick="toggleCart()" class="hover:bg-amber-700 p-1 rounded transition">
               <i data-lucide="x" class="w-5 h-5"></i>
             </button>
@@ -345,11 +343,11 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
             </div>
             <div>
               <label for="admin-username" class="block text-xs font-semibold text-gray-700 mb-1">Username Admin</label>
-              <input id="admin-username" type="text" name="username" placeholder="Masukkan username admin" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
+              <input id="admin-username" type="text" name="username" autocomplete="username" placeholder="Masukkan username admin" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
             </div>
             <div>
               <label for="admin-password" class="block text-xs font-semibold text-gray-700 mb-1">Password Admin</label>
-              <input id="admin-password" type="password" name="password" placeholder="Masukkan password admin" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
+              <input id="admin-password" type="password" name="password" autocomplete="current-password" placeholder="Masukkan password admin" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
             </div>
             <button type="submit" class="w-full py-2.5 bg-gray-900 hover:bg-black text-white font-bold rounded-lg transition text-sm shadow">Masuk sebagai Admin</button>
           </form>
@@ -369,11 +367,13 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
     <script>
       lucide.createIcons();
 
+      // Fungsi Buka/Tutup Keranjang
       function toggleCart() {
         const drawer = document.getElementById("cart-drawer");
         drawer.classList.toggle("hidden");
       }
 
+      // Fungsi Menambahkan Barang ke Keranjang
       function addToCart(nama, harga) {
         const daftarKeranjang = document.getElementById("daftar-keranjang");
         const formatRupiah = "Rp " + harga.toLocaleString("id-ID");
@@ -401,6 +401,7 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         cartDrawer.classList.remove("hidden");
       }
 
+      // Fungsi Menghapus Barang
       function hapusDariKeranjang(tombol) {
         const barisProduk = tombol.closest(".produk-di-keranjang");
         if (barisProduk) {
@@ -409,6 +410,7 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         hitungUlangTotal();
       }
 
+      // Fungsi Hitung Total Harga & Update Angka Keranjang
       function hitungUlangTotal() {
         const semuaHarga = document.querySelectorAll(".harga-item");
         let totalBaru = 0;
@@ -425,6 +427,7 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         document.getElementById("total-pembelian").innerText = formatRupiah;
       }
 
+      // Fungsi Buka/Tutup Form Checkout
       function openCheckout() {
         toggleCart();
         document.getElementById("modal-checkout").classList.remove("hidden");
@@ -434,6 +437,7 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         document.getElementById("modal-checkout").classList.add("hidden");
       }
 
+      // FUNGSI UNTUK MODAL LOGIN & DAFTAR
       function openAuthModal() {
         document.getElementById("modal-auth").classList.remove("hidden");
       }
@@ -454,6 +458,7 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         });
       }
 
+      // PENANGANAN NOTIFIKASI ANIMASI CENTANG HIJAU & SILANG MERAH (SweetAlert2)
       window.onload = function () {
         const urlParams = new URLSearchParams(window.location.search);
         const status = urlParams.get("status");
