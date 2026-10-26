@@ -53,7 +53,7 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         <!-- User Actions & Cart -->
         <div class="flex items-center space-x-4">
           <button
-            onclick="toggleCart()"
+            onclick="<?= isset($_SESSION['nama']) ? 'toggleCart()' : 'requireLogin()' ?>"
             class="relative bg-amber-700 hover:bg-amber-600 p-2.5 rounded-full transition flex items-center gap-2"
           >
             <i data-lucide="shopping-bag" class="w-5 h-5"></i>
@@ -122,9 +122,7 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
       </div>
     </section>
 
-    <!-- Main Content (Katalog Produk) -->
-    <?php if (isset($_SESSION['nama'])): ?>
-    <!-- JIKA SUDAH LOGIN: Tampilkan Katalog -->
+    <!-- Main Content (Katalog Produk Selalu Tampil) -->
     <main id="katalog" class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1">
       <!-- Filter Category Tabs -->
       <div class="flex flex-wrap items-center justify-between gap-4 mb-8 border-b border-gray-200 pb-4">
@@ -185,32 +183,28 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
                   <p class="text-lg font-bold text-amber-900">Rp <?= number_format($row['harga'], 0, ',', '.'); ?></p>
                 </div>
 
-                <button
-                  onclick="addToCart('<?= htmlspecialchars(addslashes($row['nama_produk'])); ?>', <?= $row['harga']; ?>)"
-                  class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm"
-                >
-                  <i data-lucide="plus" class="w-5 h-5"></i>
-                </button>
+                <!-- Cek sesi login untuk menentukan aksi tombol keranjang -->
+                <?php if (isset($_SESSION['nama'])): ?>
+                  <button
+                    onclick="addToCart('<?= htmlspecialchars(addslashes($row['nama_produk'])); ?>', <?= $row['harga']; ?>)"
+                    class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm"
+                  >
+                    <i data-lucide="plus" class="w-5 h-5"></i>
+                  </button>
+                <?php else: ?>
+                  <button
+                    onclick="requireLogin()"
+                    class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm"
+                  >
+                    <i data-lucide="plus" class="w-5 h-5"></i>
+                  </button>
+                <?php endif; ?>
               </div>
             </div>
           </div>
         <?php endwhile; ?>
       </div>
     </main>
-
-    <?php else: ?>
-    <!-- JIKA BELUM LOGIN: Tampilkan Pesan Login -->
-    <main id="katalog" class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-16 flex-1 flex flex-col items-center justify-center text-center">
-      <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 max-w-md w-full">
-        <i data-lucide="lock" class="w-12 h-12 text-amber-700 mx-auto mb-4"></i>
-        <h2 class="text-xl font-bold text-gray-900 mb-2">Katalog Produk Terkunci</h2>
-        <p class="text-sm text-gray-500 mb-6">Katalog produk beserta harganya hanya tersedia untuk pelanggan setia kami. Silakan masuk atau daftar akun baru untuk mulai berbelanja.</p>
-        <button onclick="openAuthModal()" class="w-full bg-amber-800 hover:bg-amber-900 text-white font-bold py-3 rounded-lg transition shadow-sm">
-          Masuk / Daftar Sekarang
-        </button>
-      </div>
-    </main>
-    <?php endif; ?>
 
     <!-- Slide-over Drawer Keranjang Belanja -->
     <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden hidden">
@@ -389,6 +383,24 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
     <script>
       lucide.createIcons();
 
+      // Fungsi Peringatan Login
+      function requireLogin() {
+        Swal.fire({
+          icon: 'info',
+          title: 'Perhatian!',
+          text: 'Anda harus masuk (login) atau daftar akun terlebih dahulu untuk berbelanja.',
+          confirmButtonColor: '#92400e',
+          confirmButtonText: 'Masuk / Daftar',
+          showCancelButton: true,
+          cancelButtonText: 'Batal',
+          cancelButtonColor: '#6b7280'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            openAuthModal();
+          }
+        });
+      }
+
       // Fungsi Buka/Tutup Keranjang
       function toggleCart() {
         const drawer = document.getElementById("cart-drawer");
@@ -438,7 +450,7 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         let totalBaru = 0;
         let jumlahBarang = 0;
 
-        semuHarga.forEach(function (elemen) {
+        semuaHarga.forEach(function (elemen) {
           const harga = parseInt(elemen.getAttribute("data-harga")) || 0;
           totalBaru += harga;
           jumlahBarang++;
