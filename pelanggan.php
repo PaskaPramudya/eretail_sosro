@@ -89,11 +89,6 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
       </div>
     </header>
 
-<<<<<<< HEAD
-    <!-- Hero Banner -->
-    <section class="bg-gradient-to-r from-amber-800 via-amber-700 to-red-700 text-white py-12 px-4 sm:px-6 lg:px-8">
-      <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-=======
     <!-- Hero Banner dengan Gambar Background -->
     <section 
       class="relative bg-cover bg-center text-white py-14 px-4 sm:px-6 lg:px-8"
@@ -103,7 +98,6 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
       <div class="absolute inset-0 bg-black/40 backdrop-blur-[1px]"></div>
 
       <div class="relative max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 z-10">
->>>>>>> 09cf47d
         <div class="space-y-4 text-center md:text-left max-w-xl">
           <span class="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider drop-shadow">Promo Mitra & Grosir</span>
           <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight drop-shadow-md">
@@ -125,10 +119,6 @@ $query_produk = mysqli_query($koneksi, "SELECT * FROM produk");
             <p class="text-xs text-amber-100">Jaminan Kualitas & Kadaluarsa Panjang</p>
           </div>
         </div>
-<<<<<<< HEAD
-
-=======
->>>>>>> 09cf47d
       </div>
     </section>
 
