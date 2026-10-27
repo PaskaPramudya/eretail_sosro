@@ -80,4 +80,24 @@ class OrderController extends Controller
         $orders = DB::table('pesanan')->latest()->get();
         return view('admin', compact('orders'));
     }
+    // Tracking Pengiriman (Mitra)
+    public function trackingPengiriman($id)
+    {
+        $pesanan = DB::table('pesanan')->where('id', $id)->first();
+        return view('pelanggan', compact('pesanan'));
+    }
+
+    // Faktur Penjualan (Mitra)
+    public function fakturPenjualan($id)
+    {
+        $pesanan = DB::table('pesanan')->where('id', $id)->first();
+        return view('pelanggan', compact('pesanan'));
+    }
+
+    // Verifikasi Pembayaran (Admin & Staff)
+    public function verifikasiPembayaran($id)
+    {
+        DB::table('pesanan')->where('id', $id)->update(['status_pembayaran' => 'Lunas']);
+        return redirect()->back()->with('success', 'Pembayaran berhasil diverifikasi!');
+    }
 }
