@@ -7,17 +7,28 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    
     // Halaman katalog produk untuk pelanggan
+    // Halaman Katalog Pelanggan
+    // Halaman Katalog Pelanggan
     public function index()
     {
-        $data_produk = Product::all();
+        $data_produk = Product::orderBy('id', 'desc')->get();
+        
+        // Ubah 'pelanggan' menjadi 'pelanggan.pelanggan'
         return view('pelanggan.pelanggan', compact('data_produk'));
     }
 
-    // Dashboard manajemen produk untuk Admin
+    // Dashboard Manajemen Produk Admin
     public function adminIndex()
     {
-        $data_produk = Product::latest()->get();
+        // Cek session admin
+        if (!session()->has('admin')) {
+            return redirect('/pelanggan?status=admin_login_failed');
+        }
+
+        // Ganti Product::latest()->get() menjadi Product::all() atau orderBy('id', 'desc')
+        $data_produk = Product::orderBy('id', 'desc')->get();
         return view('admin', compact('data_produk'));
     }
 
@@ -96,4 +107,5 @@ class ProductController extends Controller
 
         return redirect()->back()->with('success', 'Produk berhasil dihapus!');
     }
+
 }

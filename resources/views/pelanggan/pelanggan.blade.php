@@ -303,75 +303,75 @@
     </div>
 
     <!-- MODAL MASUK / DAFTAR AKUN -->
-    <div id="modal-auth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-      <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden border border-gray-100">
-        <div class="bg-amber-800 text-white p-4 flex justify-between items-center">
-          <div class="flex space-x-4">
-            <button id="tab-login" onclick="switchAuthTab('login')" class="font-bold text-base border-b-2 border-white pb-0.5">Masuk</button>
-            <button id="tab-register" onclick="switchAuthTab('register')" class="font-medium text-base text-amber-200 border-b-2 border-transparent hover:text-white pb-0.5">Daftar Akun</button>
-            <button id="tab-admin" onclick="switchAuthTab('admin')" class="font-medium text-base text-amber-200 border-b-2 border-transparent hover:text-white pb-0.5">Admin</button>
-          </div>
-          <button onclick="closeAuthModal()" class="hover:bg-amber-700 p-1 rounded text-amber-200 hover:text-white">
-            <i data-lucide="x" class="w-5 h-5"></i>
-          </button>
-        </div>
-
-        <div class="p-6">
-          <!-- Form Login -->
-          <form id="form-login" action="{{ url('/proses-login') }}" method="POST" class="space-y-4">
-            @csrf
-            <div>
-              <label class="block text-xs font-semibold text-gray-700 mb-1">Email / No. Handphone</label>
-              <input type="text" name="email_or_phone" placeholder="Contoh: ahmad@gmail.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-gray-700 mb-1">Kata Sandi (Password)</label>
-              <input type="password" name="password" placeholder="••••••••" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
-            </div>
-            <button type="submit" class="w-full py-2.5 bg-amber-800 hover:bg-amber-900 text-white font-bold rounded-lg transition text-sm shadow">Masuk Sekarang</button>
-          </form>
-
-          <!-- Form Register -->
-          <form id="form-register" action="{{ url('/proses-daftar') }}" method="POST" class="space-y-4 hidden">
-            @csrf
-            <div>
-              <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Lengkap / Nama Toko</label>
-              <input type="text" name="nama_lengkap" placeholder="Contoh: Toko Kelontong Berkah" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-gray-700 mb-1">Alamat Email</label>
-              <input type="email" name="email" placeholder="nama@email.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-gray-700 mb-1">No. WhatsApp / HP</label>
-              <input type="tel" name="no_hp" placeholder="08123456789" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-gray-700 mb-1">Buat Kata Sandi</label>
-              <input type="password" name="password" placeholder="Minimal 6 karakter" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
-            </div>
-            <button type="submit" class="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition text-sm shadow">Daftar Akun Baru</button>
-          </form>
-
-          <!-- Form Admin Login -->
-          <form id="form-admin" action="{{ url('/proses-admin-login') }}" method="POST" class="space-y-4 hidden">
-            @csrf
-            <div class="rounded-lg bg-amber-50 border border-amber-200 p-3 text-xs text-amber-900">
-              Login khusus administrator untuk mengelola produk dan kategori.
-            </div>
-            <div>
-              <label for="admin-username" class="block text-xs font-semibold text-gray-700 mb-1">Username Admin</label>
-              <input id="admin-username" type="text" name="username" autocomplete="username" placeholder="Masukkan username admin" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
-            </div>
-            <div>
-              <label for="admin-password" class="block text-xs font-semibold text-gray-700 mb-1">Password Admin</label>
-              <input id="admin-password" type="password" name="password" autocomplete="current-password" placeholder="Masukkan password admin" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
-            </div>
-            <button type="submit" class="w-full py-2.5 bg-gray-900 hover:bg-black text-white font-bold rounded-lg transition text-sm shadow">Masuk sebagai Admin</button>
-          </form>
-        </div>
+<div id="modal-auth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden border border-gray-100">
+    <div class="bg-amber-800 text-white p-4 flex justify-between items-center">
+      <div class="flex space-x-4">
+        <button id="tab-login" onclick="switchAuthTab('login')" class="font-bold text-base border-b-2 border-white pb-0.5">Masuk</button>
+        <button id="tab-register" onclick="switchAuthTab('register')" class="font-medium text-base text-amber-200 border-b-2 border-transparent hover:text-white pb-0.5">Daftar Akun</button>
+        <button id="tab-admin" onclick="switchAuthTab('admin')" class="font-medium text-base text-amber-200 border-b-2 border-transparent hover:text-white pb-0.5">Staff / Admin</button>
       </div>
+      <button onclick="closeAuthModal()" class="hover:bg-amber-700 p-1 rounded text-amber-200 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
     </div>
+
+    <div class="p-6">
+      <!-- Form Login Pelanggan / Mitra -->
+      <form id="form-login" action="{{ url('/proses-login') }}" method="POST" class="space-y-4">
+        @csrf
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 mb-1">Email / No. Handphone</label>
+          <input type="text" name="email_or_phone" placeholder="Contoh: dimas@gmail.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 mb-1">Kata Sandi (Password)</label>
+          <input type="password" name="password" placeholder="••••••••" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-amber-800 hover:bg-amber-900 text-white font-bold rounded-lg transition text-sm shadow">Masuk Sekarang</button>
+      </form>
+
+      <!-- Form Register Pelanggan / Mitra -->
+      <form id="form-register" action="{{ url('/proses-daftar') }}" method="POST" class="space-y-4 hidden">
+        @csrf
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Lengkap / Nama Toko</label>
+          <input type="text" name="nama_lengkap" placeholder="Contoh: Toko Kelontong Berkah" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 mb-1">Alamat Email</label>
+          <input type="email" name="email" placeholder="nama@email.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 mb-1">No. WhatsApp / HP</label>
+          <input type="tel" name="no_hp" placeholder="08123456789" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 mb-1">Buat Kata Sandi</label>
+          <input type="password" name="password" placeholder="Minimal 6 karakter" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition text-sm shadow">Daftar Akun Baru</button>
+      </form>
+
+      <!-- Form Internal Login (Staff & Admin) -->
+      <form id="form-admin" action="{{ url('/proses-admin-login') }}" method="POST" class="space-y-4 hidden">
+        @csrf
+        <div class="rounded-lg bg-amber-50 border border-amber-200 p-3 text-xs text-amber-900">
+          Akses khusus internal (Staff / Admin Distributor) untuk mengelola operasional dan produk.
+        </div>
+        <div>
+          <label for="admin-username" class="block text-xs font-semibold text-gray-700 mb-1">Username Internal</label>
+          <input id="admin-username" type="text" name="username" autocomplete="username" placeholder="Masukkan username staff/admin" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
+        </div>
+        <div>
+          <label for="admin-password" class="block text-xs font-semibold text-gray-700 mb-1">Password</label>
+          <input id="admin-password" type="password" name="password" autocomplete="current-password" placeholder="Masukkan password" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-gray-900 hover:bg-black text-white font-bold rounded-lg transition text-sm shadow">Masuk Internal</button>
+      </form>
+    </div>
+  </div>
+</div>
 
     <!-- Footer -->
     <footer class="bg-gray-900 text-gray-400 text-xs py-8 border-t border-gray-800 mt-12">

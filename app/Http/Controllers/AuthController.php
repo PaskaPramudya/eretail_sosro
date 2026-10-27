@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
-    // 1. Proses Login Pelanggan (tabel: pengguna)
+    // 1. Proses Login Pelanggan / Mitra (tabel: pengguna)
     public function prosesLogin(Request $request)
     {
         $input = $request->input('email_or_phone');
@@ -27,12 +27,12 @@ class AuthController extends Controller
         return redirect('/pelanggan?status=login_failed');
     }
 
-    // 2. Proses Pendaftaran Pelanggan Baru (tabel: pengguna)
+    // 2. Proses Pendaftaran Pelanggan Baru / Mitra (tabel: pengguna)
     public function prosesDaftar(Request $request)
     {
-        $nama    = $request->input('nama_lengkap');
-        $email   = $request->input('email');
-        $no_hp   = $request->input('no_hp');
+        $nama     = $request->input('nama_lengkap');
+        $email    = $request->input('email');
+        $no_hp    = $request->input('no_hp');
         $password = $request->input('password');
 
         // Cek apakah email sudah terdaftar
@@ -51,28 +51,47 @@ class AuthController extends Controller
         return redirect('/pelanggan?status=register_success');
     }
 
-    // 3. Proses Login Admin (tabel: staff / admin)
+    // 3. Proses Login Internal (Staff Distributor & Admin Distributor)
     public function prosesAdminLogin(Request $request)
     {
-        $username = $request->input('username');
+        $input = $request->input('username');
         $password = $request->input('password');
 
-        $admin = DB::table('staff')
-            ->where('username', $username)
+        // Cari berdasarkan kolom 'nama_staff' atau 'email' di tabel 'staff'
+        $user = DB::table('staff')
+            ->where(function($query) use ($input) {
+                $query->where('nama_staff', $input)
+                      ->orWhere('email', $input);
+            })
             ->first();
 
-        if ($admin && ($admin->password === $password || password_verify($password, $admin->password))) {
-            session(['admin' => $admin->username]);
-            return redirect('/admin');
+        if ($user && ($user->password === $password || password_verify($password, $user->password))) {
+            // Membaca dari kolom 'jabatan'
+            $jabatan = strtolower($user->jabatan ?? 'admin');
+            $identifier = $user->nama_staff ?? $user->email ?? $input;
+
+            if ($jabatan === 'staff') {
+                session([
+                    'staff' => $identifier,
+                    'role'  => 'staff'
+                ]);
+                return redirect('/staff/penjualan');
+            } else {
+                session([
+                    'admin' => $identifier,
+                    'role'  => 'admin'
+                ]);
+                return redirect('/admin');
+            }
         }
 
         return redirect('/pelanggan?status=admin_login_failed');
     }
 
-    // 4. Logout Pelanggan & Admin
+    // 4. Logout (Pelanggan, Admin, & Staff)
     public function logout()
     {
-        session()->forget(['nama', 'admin']);
+        session()->forget(['nama', 'admin', 'staff', 'role']);
         return redirect('/pelanggan');
     }
 }

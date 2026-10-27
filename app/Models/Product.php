@@ -9,7 +9,9 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $table = 'produk'; // Pastikan nama tabel sesuai dengan DB kamu
+    protected $table = 'produk'; // Nama tabel di MySQL phpMyAdmin
+
+    public $timestamps = false; // Mematikan fitur timestamps otomatis Laravel
 
     protected $fillable = [
         'nama_produk',
