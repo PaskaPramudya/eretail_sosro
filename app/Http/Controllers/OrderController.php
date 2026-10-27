@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-    // Form pemesanan satuan per produk (jika ada halaman khusus)
+    // Form pemesanan satuan per produk
     public function create($id)
     {
         $product = Product::findOrFail($id);
@@ -26,14 +26,15 @@ class OrderController extends Controller
             'alamat'       => 'required|string',
         ]);
 
-        // Menyimpan data pesanan ke database MySQL (tabel: pesanan / pesan)
-        DB::table('pesanan')->insert([
-            'nama_pemesan' => $request->nama_pemesan,
-            'no_wa'        => $request->no_wa,
-            'metode'       => $request->metode,
-            'alamat'       => $request->alamat,
-            'created_at'   => now(),
-            'updated_at'   => now(),
+        // Menyimpan data ke tabel 'pesan' sesuai nama kolom asli di phpMyAdmin
+        DB::table('pesan')->insert([
+            'nama_pemesan'      => $request->nama_pemesan,
+            'no_wa'             => $request->no_wa,
+            'metode_pengiriman' => $request->metode, // Menggunakan kolom metode_pengiriman
+            'alamat'            => $request->alamat,
+            'total_bayar'       => $request->input('total_bayar', 0),
+            'tanggal'           => date('Y-m-d'),
+            'status_bayar'      => 'Pending',
         ]);
 
         return redirect('/pelanggan?status=pesan_success');
@@ -68,7 +69,6 @@ class OrderController extends Controller
             'status'           => 'pending'
         ]);
 
-        // Kurangi stok produk
         $product->decrement('stok', $request->quantity);
 
         return redirect()->route('pelanggan.index')->with('success', 'Pesanan berhasil dibuat!');
@@ -77,27 +77,28 @@ class OrderController extends Controller
     // Daftar pesanan di Dashboard Admin
     public function adminOrders()
     {
-        $orders = DB::table('pesanan')->latest()->get();
+        $orders = DB::table('pesan')->get();
         return view('admin', compact('orders'));
     }
+
     // Tracking Pengiriman (Mitra)
     public function trackingPengiriman($id)
     {
-        $pesanan = DB::table('pesanan')->where('id', $id)->first();
-        return view('pelanggan', compact('pesanan'));
+        $pesanan = DB::table('pesan')->where('id', $id)->first();
+        return view('pelanggan.pelanggan', compact('pesanan'));
     }
 
     // Faktur Penjualan (Mitra)
     public function fakturPenjualan($id)
     {
-        $pesanan = DB::table('pesanan')->where('id', $id)->first();
-        return view('pelanggan', compact('pesanan'));
+        $pesanan = DB::table('pesan')->where('id', $id)->first();
+        return view('pelanggan.pelanggan', compact('pesanan'));
     }
 
     // Verifikasi Pembayaran (Admin & Staff)
     public function verifikasiPembayaran($id)
     {
-        DB::table('pesanan')->where('id', $id)->update(['status_pembayaran' => 'Lunas']);
+        DB::table('pesan')->where('id', $id)->update(['status_bayar' => 'Lunas']);
         return redirect()->back()->with('success', 'Pembayaran berhasil diverifikasi!');
     }
 }
