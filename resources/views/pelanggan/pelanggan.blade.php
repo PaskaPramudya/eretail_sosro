@@ -11,6 +11,30 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- SweetAlert2 CDN untuk Animasi Centang Hijau & Silang Merah -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+  .fly-item {
+    position: fixed;
+    z-index: 9999;
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 50%;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    pointer-events: none;
+    transition: all 0.8s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  }
+
+  @keyframes cartBounce {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+  }
+
+  .cart-bounce {
+    animation: cartBounce 0.4s ease-in-out;
+  }
+</style>
   </head>
 
   <body class="bg-gray-50 font-sans text-gray-800 antialiased flex flex-col min-h-screen">
@@ -178,12 +202,12 @@
                   </div>
 
                   @if (session()->has('nama'))
-                    <button
-                      onclick="addToCart('{{ addslashes($row->nama_produk) }}', {{ $row->harga }})"
-                      class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm"
-                    >
-                      <i data-lucide="plus" class="w-5 h-5"></i>
-                    </button>
+                  <button
+                    onclick="addToCart(event, '{{ addslashes($row->nama_produk) }}', {{ $row->harga }}, this)"
+                    class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm"
+                  >
+                    <i data-lucide="plus" class="w-5 h-5"></i>
+                  </button>
                   @else
                     <button
                       onclick="requireLogin()"
@@ -382,171 +406,238 @@
     </footer>
 
     <!-- Interactive Script -->
-    <script>
-      lucide.createIcons();
+<script>
+  lucide.createIcons();
 
-      function requireLogin() {
-        Swal.fire({
-          icon: 'info',
-          title: 'Perhatian!',
-          text: 'Anda harus masuk (login) atau daftar akun terlebih dahulu untuk berbelanja.',
-          confirmButtonColor: '#92400e',
-          confirmButtonText: 'Masuk / Daftar',
-          showCancelButton: true,
-          cancelButtonText: 'Batal',
-          cancelButtonColor: '#6b7280'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            openAuthModal();
-          }
-        });
+  // Array penampung item keranjang belanja
+  let keranjang = [];
+
+  function requireLogin() {
+    Swal.fire({
+      icon: 'info',
+      title: 'Perhatian!',
+      text: 'Anda harus masuk (login) atau daftar akun terlebih dahulu untuk berbelanja.',
+      confirmButtonColor: '#92400e',
+      confirmButtonText: 'Masuk / Daftar',
+      showCancelButton: true,
+      cancelButtonText: 'Batal',
+      cancelButtonColor: '#6b7280'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        openAuthModal();
       }
+    });
+  }
 
-      function toggleCart() {
-        const drawer = document.getElementById("cart-drawer");
-        drawer.classList.toggle("hidden");
-      }
+  function toggleCart() {
+    const drawer = document.getElementById("cart-drawer");
+    drawer.classList.toggle("hidden");
+  }
 
-      function addToCart(nama, harga) {
-        const daftarKeranjang = document.getElementById("daftar-keranjang");
-        const formatRupiah = "Rp " + harga.toLocaleString("id-ID");
+  // Fungsi Tambah Ke Keranjang (Akumulasi Jumlah Produk yang Sama)
+  // Fungsi Tambah Ke Keranjang dengan Animasi Fly to Cart
+  function addToCart(event, nama, harga, btnElement) {
+    // 1. Logika Tambah Data ke Array Keranjang
+    let itemDitemukan = keranjang.find(item => item.nama === nama);
 
-        const itemHTML = `
-          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200 produk-di-keranjang">
-            <div>
-              <h4 class="font-bold text-sm text-gray-800">${nama}</h4>
-              <p class="text-xs text-amber-800 font-semibold mt-1">${formatRupiah} x 1</p>
-            </div>
-            <div class="flex items-center gap-3">
-              <span class="font-bold text-gray-900 text-sm harga-item" data-harga="${harga}">${formatRupiah}</span>
-              <button onclick="hapusDariKeranjang(this)" class="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded transition" title="Hapus Barang">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
-              </button>
-            </div>
+    if (itemDitemukan) {
+      itemDitemukan.jumlah += 1;
+    } else {
+      keranjang.push({
+        nama: nama,
+        harga: harga,
+        jumlah: 1
+      });
+    }
+
+    renderKeranjang(); // Update data di latar belakang
+
+    // 2. Efek Animasi Produk Melayang ke Ikon Keranjang
+    const targetCart = document.getElementById("cart-count") || document.querySelector("[title='Keranjang']");
+    
+    if (btnElement && targetCart) {
+      const card = btnElement.closest('.bg-white') || btnElement.parentElement.parentElement;
+      const img = card ? card.querySelector('img') : null;
+
+      // Ambil posisi awal tombol / gambar
+      const startRect = img ? img.getBoundingClientRect() : btnElement.getBoundingClientRect();
+      const targetRect = targetCart.getBoundingClientRect();
+
+      // Buat elemen bayangan produk melayang
+      const flyer = document.createElement('img');
+      flyer.src = img ? img.src : 'https://via.placeholder.com/50';
+      flyer.className = 'fly-item';
+      flyer.style.left = `${startRect.left + startRect.width / 2 - 25}px`;
+      flyer.style.top = `${startRect.top + startRect.height / 2 - 25}px`;
+      
+      document.body.appendChild(flyer);
+
+      // Jalankan gerakan melayang ke target keranjang
+      setTimeout(() => {
+        flyer.style.left = `${targetRect.left + targetRect.width / 2 - 25}px`;
+        flyer.style.top = `${targetRect.top + targetRect.height / 2 - 25}px`;
+        flyer.style.width = '20px';
+        flyer.style.height = '20px';
+        flyer.style.opacity = '0.5';
+      }, 20);
+
+      // Setelah sampai, hapus elemen flyer dan beri efek membal pada ikon keranjang
+      setTimeout(() => {
+        flyer.remove();
+        targetCart.classList.add('cart-bounce');
+        setTimeout(() => targetCart.classList.remove('cart-bounce'), 400);
+      }, 820);
+    }
+    
+    // CATATAN: Kode pembuka modal/drawer keranjang (cartDrawer.classList.remove("hidden")) sengaja dihilangkan 
+    // agar keranjang tidak langsung terbuka saat tombol + diklik.
+  }
+
+  // Render Ulang Tampilan Keranjang Belanja
+  function renderKeranjang() {
+    const daftarKeranjang = document.getElementById("daftar-keranjang");
+    if (!daftarKeranjang) return;
+
+    let itemHTML = '';
+
+    keranjang.forEach((item, index) => {
+      let subtotal = item.harga * item.jumlah;
+      let formatHarga = "Rp " + item.harga.toLocaleString("id-ID");
+      let formatSubtotal = "Rp " + subtotal.toLocaleString("id-ID");
+
+      itemHTML += `
+        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200 produk-di-keranjang mb-2">
+          <div>
+            <h4 class="font-bold text-sm text-gray-800">${item.nama}</h4>
+            <p class="text-xs text-amber-800 font-semibold mt-1">${formatHarga} x ${item.jumlah}</p>
           </div>
-        `;
+          <div class="flex items-center gap-3">
+            <span class="font-bold text-gray-900 text-sm">${formatSubtotal}</span>
+            <button onclick="hapusDariKeranjang(${index})" class="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded transition" title="Hapus Barang">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      `;
+    });
 
-        daftarKeranjang.insertAdjacentHTML("beforeend", itemHTML);
-        lucide.createIcons();
-        hitungUlangTotal();
+    daftarKeranjang.innerHTML = itemHTML || '<p class="text-center text-gray-400 py-6 text-sm">Keranjang belanja kosong</p>';
+    lucide.createIcons();
+    hitungUlangTotal();
+  }
 
-        const cartDrawer = document.getElementById("cart-drawer");
-        cartDrawer.classList.remove("hidden");
-      }
+  // Hapus Barang Berdasarkan Index Array
+  function hapusDariKeranjang(index) {
+    keranjang.splice(index, 1);
+    renderKeranjang();
+  }
 
-      function hapusDariKeranjang(tombol) {
-        const barisProduk = tombol.closest(".produk-di-keranjang");
-        if (barisProduk) {
-          barisProduk.remove();
-        }
-        hitungUlangTotal();
-      }
+  // Hitung Total Pembelian & Jumlah Barang
+  function hitungUlangTotal() {
+    let totalBaru = 0;
+    let jumlahBarang = 0;
 
-      function hitungUlangTotal() {
-        const semuaHarga = document.querySelectorAll(".harga-item");
-        let totalBaru = 0;
-        let jumlahBarang = 0;
+    keranjang.forEach(item => {
+      totalBaru += item.harga * item.jumlah;
+      jumlahBarang += item.jumlah;
+    });
 
-        semuaHarga.forEach(function (elemen) {
-          const harga = parseInt(elemen.getAttribute("data-harga")) || 0;
-          totalBaru += harga;
-          jumlahBarang++;
-        });
+    const elCount = document.getElementById("cart-count");
+    const elTotal = document.getElementById("total-pembelian");
 
-        document.getElementById("cart-count").innerText = jumlahBarang;
-        const formatRupiah = "Rp " + totalBaru.toLocaleString("id-ID");
-        document.getElementById("total-pembelian").innerText = formatRupiah;
-      }
+    if (elCount) elCount.innerText = jumlahBarang;
+    if (elTotal) elTotal.innerText = "Rp " + totalBaru.toLocaleString("id-ID");
+  }
 
-      function openCheckout() {
-        toggleCart();
-        document.getElementById("modal-checkout").classList.remove("hidden");
-      }
+  function openCheckout() {
+    toggleCart();
+    document.getElementById("modal-checkout").classList.remove("hidden");
+  }
 
-      function closeCheckout() {
-        document.getElementById("modal-checkout").classList.add("hidden");
-      }
+  function closeCheckout() {
+    document.getElementById("modal-checkout").classList.add("hidden");
+  }
 
-      function openAuthModal() {
-        document.getElementById("modal-auth").classList.remove("hidden");
-      }
+  function openAuthModal() {
+    document.getElementById("modal-auth").classList.remove("hidden");
+  }
 
-      function closeAuthModal() {
-        document.getElementById("modal-auth").classList.add("hidden");
-      }
+  function closeAuthModal() {
+    document.getElementById("modal-auth").classList.add("hidden");
+  }
 
-      function switchAuthTab(type) {
-        ["login", "register", "admin"].forEach((name) => {
-          const tab = document.getElementById("tab-" + name);
-          const form = document.getElementById("form-" + name);
-          const active = name === type;
-          tab.className = active
-            ? "font-bold text-base border-b-2 border-white pb-0.5"
-            : "font-medium text-base text-amber-200 border-b-2 border-transparent hover:text-white pb-0.5";
-          form.classList.toggle("hidden", !active);
-        });
-      }
+  function switchAuthTab(type) {
+    ["login", "register", "admin"].forEach((name) => {
+      const tab = document.getElementById("tab-" + name);
+      const form = document.getElementById("form-" + name);
+      const active = name === type;
+      tab.className = active
+        ? "font-bold text-base border-b-2 border-white pb-0.5"
+        : "font-medium text-base text-amber-200 border-b-2 border-transparent hover:text-white pb-0.5";
+      form.classList.toggle("hidden", !active);
+    });
+  }
 
-      window.onload = function () {
-        const urlParams = new URLSearchParams(window.location.search);
-        const status = urlParams.get("status");
-        const nama = urlParams.get("nama");
+  window.onload = function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get("status");
+    const nama = urlParams.get("nama");
 
-        if (status === "login_success") {
-          Swal.fire({
-            icon: "success",
-            title: "Login Berhasil!",
-            text: "Selamat datang kembali, " + (nama || "Pelanggan") + "!",
-            showConfirmButton: false,
-            timer: 2500,
-            backdrop: `rgba(0,0,0,0.4)`,
-          });
-        } else if (status === "register_success") {
-          Swal.fire({
-            icon: "success",
-            title: "Pendaftaran Berhasil!",
-            text: "Akun Anda telah terdaftar. Silakan masuk.",
-            showConfirmButton: false,
-            timer: 2500,
-            backdrop: `rgba(0,0,0,0.4)`,
-          });
-        } else if (status === "login_failed") {
-          Swal.fire({
-            icon: "error",
-            title: "Login Gagal!",
-            text: "Email/No. HP atau Kata Sandi salah.",
-            confirmButtonColor: "#dc2626",
-            confirmButtonText: "Coba Lagi",
-          }).then(() => {
-            openAuthModal();
-          });
-        } else if (status === "admin_login_failed") {
-          Swal.fire({
-            icon: "error",
-            title: "Login Admin Gagal",
-            text: "Username atau password admin salah.",
-            confirmButtonColor: "#92400e",
-          }).then(() => {
-            openAuthModal();
-            switchAuthTab("admin");
-          });
-        } else if (status === "email_exists") {
-          Swal.fire({
-            icon: "warning",
-            title: "Gagal Mendaftar",
-            text: "Email sudah terdaftar. Silakan gunakan email lain.",
-            confirmButtonColor: "#d97706",
-            confirmButtonText: "Kembali",
-          }).then(() => {
-            openAuthModal();
-            switchAuthTab("register");
-          });
-        }
+    if (status === "login_success") {
+      Swal.fire({
+        icon: "success",
+        title: "Login Berhasil!",
+        text: "Selamat datang kembali, " + (nama || "Pelanggan") + "!",
+        showConfirmButton: false,
+        timer: 2500,
+        backdrop: `rgba(0,0,0,0.4)`,
+      });
+    } else if (status === "register_success") {
+      Swal.fire({
+        icon: "success",
+        title: "Pendaftaran Berhasil!",
+        text: "Akun Anda telah terdaftar. Silakan masuk.",
+        showConfirmButton: false,
+        timer: 2500,
+        backdrop: `rgba(0,0,0,0.4)`,
+      });
+    } else if (status === "login_failed") {
+      Swal.fire({
+        icon: "error",
+        title: "Login Gagal!",
+        text: "Email/No. HP atau Kata Sandi salah.",
+        confirmButtonColor: "#dc2626",
+        confirmButtonText: "Coba Lagi",
+      }).then(() => {
+        openAuthModal();
+      });
+    } else if (status === "admin_login_failed") {
+      Swal.fire({
+        icon: "error",
+        title: "Login Admin Gagal",
+        text: "Username atau password admin salah.",
+        confirmButtonColor: "#92400e",
+      }).then(() => {
+        openAuthModal();
+        switchAuthTab("admin");
+      });
+    } else if (status === "email_exists") {
+      Swal.fire({
+        icon: "warning",
+        title: "Gagal Mendaftar",
+        text: "Email sudah terdaftar. Silakan gunakan email lain.",
+        confirmButtonColor: "#d97706",
+        confirmButtonText: "Kembali",
+      }).then(() => {
+        openAuthModal();
+        switchAuthTab("register");
+      });
+    }
 
-        if (status) {
-          window.history.replaceState({}, document.title, window.location.pathname);
-        }
-      };
-    </script>
+    if (status) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  };
+</script>
   </body>
 </html>
