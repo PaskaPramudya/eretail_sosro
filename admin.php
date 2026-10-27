@@ -2,12 +2,12 @@
 session_start();
 include 'koneksi.php';
 
-// --- TAMBAHAN OTOMATIS: Memeriksa dan menambahkan kolom 'gambar' jika belum ada ---
+// --- Memeriksa dan menambahkan kolom 'gambar' jika belum ada ---
 $cek_kolom = mysqli_query($koneksi, "SHOW COLUMNS FROM produk LIKE 'gambar'");
 if (mysqli_num_rows($cek_kolom) == 0) {
     mysqli_query($koneksi, "ALTER TABLE produk ADD COLUMN gambar VARCHAR(255) NULL AFTER stok");
 }
-// ----------------------------------------------------------------------------------
+
 
 // 1. Proses Tambah Produk Baru
 if (isset($_POST['tambah_produk'])) {
@@ -28,9 +28,9 @@ if (isset($_POST['tambah_produk'])) {
     $query_tambah = "INSERT INTO produk (nama_produk, kategori, harga, stok, gambar) VALUES ('$nama_produk', '$kategori', $harga, $stok, '$nama_gambar')";
 
     if (mysqli_query($koneksi, $query_tambah)) {
-        echo "<script>alert('Produk baru berhasil ditambahkan!'); window.location.href='admin.php';</script>";
+        echo "<script>window.location.href='admin.php?status=tambah_sukses';</script>";
     } else {
-        echo "<script>alert('Gagal menambahkan produk.');</script>";
+        echo "<script>window.location.href='admin.php?status=tambah_gagal';</script>";
     }
 }
 
@@ -39,11 +39,11 @@ if (isset($_POST['edit_gambar'])) {
     $id = mysqli_real_escape_string($koneksi, $_POST['id']);
     $gambar = mysqli_real_escape_string($koneksi, $_POST['gambar']);
 
-    $query_update_gambar = "UPDATE produk SET gambar = '$gambar' WHERE id = '$id' OR id_produk = '$id'";
+    $query_update_gambar = "UPDATE produk SET gambar = '$gambar' WHERE id = '$id'";
     if (mysqli_query($koneksi, $query_update_gambar)) {
-        echo "<script>alert('Gambar produk berhasil diperbarui!'); window.location.href='admin.php';</script>";
+        echo "<script>window.location.href='admin.php?status=gambar_sukses';</script>";
     } else {
-        echo "<script>alert('Gagal memperbarui gambar.');</script>";
+        echo "<script>window.location.href='admin.php?status=gambar_gagal';</script>";
     }
 }
 
@@ -54,27 +54,28 @@ if (isset($_POST['update_stok'])) {
     $jumlah = intval($_POST['jumlah']);
 
     if ($mode == 'tambah') {
-        $query = "UPDATE produk SET stok = stok + $jumlah WHERE id = '$id' OR id_produk = '$id'";
+        $query = "UPDATE produk SET stok = stok + $jumlah WHERE id = '$id'";
     } else {
-        $query = "UPDATE produk SET stok = $jumlah WHERE id = '$id' OR id_produk = '$id'";
+        $query = "UPDATE produk SET stok = $jumlah WHERE id = '$id'";
     }
 
     if (mysqli_query($koneksi, $query)) {
-        echo "<script>alert('Stok barang berhasil diperbarui!'); window.location.href='admin.php';</script>";
+        echo "<script>window.location.href='admin.php?status=stok_sukses';</script>";
     } else {
-        echo "<script>alert('Gagal memperbarui stok.');</script>";
+        echo "<script>window.location.href='admin.php?status=stok_gagal';</script>";
     }
 }
 
 // 4. Proses Hapus Produk
 if (isset($_GET['hapus'])) {
     $id_hapus = intval($_GET['hapus']);
-    $query_hapus = "DELETE FROM produk WHERE id = '$id_hapus' OR id_produk = '$id_hapus'";
+    
+    $query_hapus = "DELETE FROM produk WHERE id = '$id_hapus'";
 
     if (mysqli_query($koneksi, $query_hapus)) {
-        echo "<script>alert('Produk berhasil dihapus!'); window.location.href='admin.php';</script>";
+        echo "<script>window.location.href='admin.php?status=hapus_sukses';</script>";
     } else {
-        echo "<script>alert('Gagal menghapus produk.'); window.location.href='admin.php';</script>";
+        echo "<script>window.location.href='admin.php?status=hapus_gagal';</script>";
     }
 }
 
@@ -88,21 +89,23 @@ $data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Admin - E-Retail Sosro</title>
+    <!-- SweetAlert2 CDN untuk Notifikasi -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/table.css">
     <style>
-        /* Mengatur font agar lebih rapi dan modern */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fdf8f5; /* Background krem/hangat muda */
+            background-color: #fdf8f5;
             margin: 0;
         }
 
         /* Styling Header ala Navbar Sosro */
         .header {
-            background-color: #8c3b10 !important; /* Cokelat kemerahan hangat */
+            background-color: #8c3b10 !important;
             color: white;
             padding: 15px 30px;
             display: flex;
@@ -112,7 +115,7 @@ $data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         }
         .header h2 { margin: 0; font-size: 22px; font-weight: bold; }
         .header-btn-logout {
-            background-color: #e52929; /* Merah cerah khas tombol Keluar */
+            background-color: #e52929;
             color: white !important;
             text-decoration: none;
             padding: 8px 18px;
@@ -141,7 +144,7 @@ $data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
             border: none;
         }
         thead tr {
-            background-color: #eab676; /* Warna oranye muda kekuningan hangat */
+            background-color: #eab676;
             color: #5a2707;
             text-align: left;
         }
@@ -153,7 +156,7 @@ $data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
 
         /* Styling Tombol Aksi */
         .btn-tambah { 
-            background-color: #e52929; /* Merah Sosro */
+            background-color: #e52929;
             color: white; 
             padding: 10px 20px; 
             border: none; 
@@ -176,7 +179,7 @@ $data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         .btn-hapus:hover { background-color: #922b21; }
 
         /* Styling Modal */
-        .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(60, 20, 0, 0.6); } /* Dark overlay kemerahan */
+        .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(60, 20, 0, 0.6); }
         .modal-content { 
             background-color: #fff; 
             margin: 8% auto; 
@@ -184,7 +187,7 @@ $data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
             width: 400px; 
             border-radius: 10px; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
-            border-top: 5px solid #e52929; /* Aksen merah di atas modal */
+            border-top: 5px solid #e52929;
         }
         .modal-content h3 { margin-top: 0; color: #8c3b10; }
         .form-group { margin-bottom: 15px; }
@@ -207,7 +210,6 @@ $data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
 </head>
 <body>
 
-<!-- Perbaikan Header memisahkan logout dengan Flexbox agar tidak perlu negatif margin -->
 <div class="header">
     <h2>Dashboard Admin E-Retail</h2>
     <a href="logout_admin.php" class="header-btn-logout">Keluar</a>
@@ -233,7 +235,7 @@ $data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
         <tbody>
             <?php while ($row = mysqli_fetch_assoc($data_produk)) : ?>
             <?php 
-                $id_produk = $row['id'] ?? $row['id_produk'] ?? 0;
+                $id_produk = $row['id'];
             ?>
             <tr>
                 <td><?= $id_produk; ?></td>
@@ -245,7 +247,8 @@ $data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
                 <td>
                     <button class="btn-edit" onclick="bukaModalStok('<?= $id_produk; ?>', '<?= htmlspecialchars(addslashes($row['nama_produk'])); ?>')">Edit Stok</button>
                     <button class="btn-gambar" onclick="bukaModalGambar('<?= $id_produk; ?>', '<?= htmlspecialchars(addslashes($row['nama_produk'])); ?>')">Edit Gambar</button>
-                    <a href="admin.php?hapus=<?= $id_produk; ?>" class="btn-hapus" onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">Hapus</a>
+                    <!-- Perubahan tombol Hapus untuk memicu popup konfirmasi modern -->
+                    <a href="javascript:void(0);" class="btn-hapus" onclick="konfirmasiHapus(<?= $id_produk; ?>)">Hapus</a>
                 </td>
             </tr>
             <?php endwhile; ?>
@@ -332,6 +335,7 @@ $data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
 </div>
 
 <script>
+// Fungsi untuk membuka & menutup Modal HTML standar
 function bukaModalTambah() { document.getElementById('modalTambah').style.display = 'block'; }
 function tutupModalTambah() { document.getElementById('modalTambah').style.display = 'none'; }
 
@@ -348,6 +352,89 @@ function bukaModalGambar(id, nama) {
     document.getElementById('modalGambar').style.display = 'block';
 }
 function tutupModalGambar() { document.getElementById('modalGambar').style.display = 'none'; }
+
+// Fungsi SweetAlert untuk Konfirmasi Hapus
+function konfirmasiHapus(id) {
+    Swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: "Produk yang dihapus tidak dapat dikembalikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = 'admin.php?hapus=' + id;
+        }
+    })
+}
+
+// Fungsi SweetAlert untuk Notifikasi Sukses/Gagal setelah Halaman di-Reload
+window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
+
+    if (status) {
+        let title = '';
+        let text = '';
+        let icon = 'success'; // Default icon
+
+        switch(status) {
+            case 'tambah_sukses':
+                title = 'Berhasil!';
+                text = 'Produk baru berhasil ditambahkan.';
+                break;
+            case 'tambah_gagal':
+                title = 'Gagal!';
+                text = 'Gagal menambahkan produk baru.';
+                icon = 'error';
+                break;
+            case 'gambar_sukses':
+                title = 'Berhasil!';
+                text = 'Gambar produk berhasil diperbarui.';
+                break;
+            case 'gambar_gagal':
+                title = 'Gagal!';
+                text = 'Gagal memperbarui gambar produk.';
+                icon = 'error';
+                break;
+            case 'stok_sukses':
+                title = 'Berhasil!';
+                text = 'Stok barang berhasil diperbarui.';
+                break;
+            case 'stok_gagal':
+                title = 'Gagal!';
+                text = 'Gagal memperbarui stok barang.';
+                icon = 'error';
+                break;
+            case 'hapus_sukses':
+                title = 'Terhapus!';
+                text = 'Produk berhasil dihapus dari sistem.';
+                break;
+            case 'hapus_gagal':
+                title = 'Gagal!';
+                text = 'Gagal menghapus produk.';
+                icon = 'error';
+                break;
+        }
+
+        if(title !== '') {
+            Swal.fire({
+                icon: icon,
+                title: title,
+                text: text,
+                showConfirmButton: false,
+                timer: 2000,
+                backdrop: `rgba(0,0,0,0.4)`
+            }).then(() => {
+                // Menghilangkan parameter status dari URL agar alert tidak muncul lagi jika di-refresh
+                window.history.replaceState({}, document.title, window.location.pathname);
+            });
+        }
+    }
+}
 </script>
 
 </body>
