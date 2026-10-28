@@ -4,18 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB; // Impor Facade DB agar tidak error "Class DB not found"
 
 class ProductController extends Controller
 {
-    
-    // Halaman katalog produk untuk pelanggan
-    // Halaman Katalog Pelanggan
     // Halaman Katalog Pelanggan
     public function index()
     {
         $data_produk = Product::orderBy('id', 'desc')->get();
-        
-        // Ubah 'pelanggan' menjadi 'pelanggan.pelanggan'
         return view('pelanggan.pelanggan', compact('data_produk'));
     }
 
@@ -27,7 +23,6 @@ class ProductController extends Controller
             return redirect('/pelanggan?status=admin_login_failed');
         }
 
-        // Ganti Product::latest()->get() menjadi Product::all() atau orderBy('id', 'desc')
         $data_produk = Product::orderBy('id', 'desc')->get();
         return view('admin', compact('data_produk'));
     }
@@ -46,17 +41,17 @@ class ProductController extends Controller
         $namaGambar = null;
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
-            // Menyimpan nama file asli dan memindahkannya ke folder public/images
             $namaGambar = $file->getClientOriginalName();
             $file->move(public_path('images'), $namaGambar);
         }
 
-        Product::create([
+        // Disesuaikan dengan nama kolom file_gambar pada tabel produk
+        DB::table('produk')->insert([
             'nama_produk' => $request->nama_produk,
             'kategori'    => $request->kategori,
             'harga'       => $request->harga,
             'stok'        => $request->stok,
-            'gambar'      => $namaGambar
+            'file_gambar' => $namaGambar
         ]);
 
         return redirect()->back()->with('success', 'Produk berhasil ditambahkan!');
@@ -85,6 +80,7 @@ class ProductController extends Controller
     }
 
     // Edit nama gambar (Admin)
+    // Edit nama gambar (Admin)
     public function editGambar(Request $request)
     {
         $request->validate([
@@ -92,11 +88,14 @@ class ProductController extends Controller
             'gambar' => 'required|string',
         ]);
 
-        $product = Product::findOrFail($request->id);
-        $product->gambar = $request->gambar;
-        $product->save();
+        // Menggunakan nama kolom 'gambar' sesuai struktur tabel produk di MySQL
+        DB::table('produk')
+            ->where('id', $request->id)
+            ->update([
+                'gambar' => $request->gambar
+            ]);
 
-        return redirect()->back()->with('success', 'Gambar produk berhasil diperbarui!');
+        return redirect()->back()->with('success', 'Gambar berhasil diperbarui!');
     }
 
     // Hapus produk (Admin)
@@ -107,5 +106,4 @@ class ProductController extends Controller
 
         return redirect()->back()->with('success', 'Produk berhasil dihapus!');
     }
-
 }

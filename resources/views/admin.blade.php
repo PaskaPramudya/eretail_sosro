@@ -253,7 +253,7 @@
             </div>
             <div class="form-group">
                 <label>Nama File Gambar (termasuk ekstensi):</label>
-                <input type="text" name="gambar" required placeholder="Contoh: susu_kedelai.jpg">
+                <input type="text" name="gambar" id="modal_gambar_file" required placeholder="Contoh: susu_kedelai.jpg">
             </div>
             <button type="submit" name="edit_gambar" class="btn-submit">Simpan Gambar</button>
             <button type="button" class="btn-close" onclick="tutupModalGambar()">Batal</button>
