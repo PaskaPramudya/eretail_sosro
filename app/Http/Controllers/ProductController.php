@@ -45,13 +45,12 @@ class ProductController extends Controller
             $file->move(public_path('images'), $namaGambar);
         }
 
-        // Disesuaikan dengan nama kolom file_gambar pada tabel produk
         DB::table('produk')->insert([
             'nama_produk' => $request->nama_produk,
             'kategori'    => $request->kategori,
             'harga'       => $request->harga,
             'stok'        => $request->stok,
-            'file_gambar' => $namaGambar
+            'gambar'      => $namaGambar
         ]);
 
         return redirect()->back()->with('success', 'Produk berhasil ditambahkan!');

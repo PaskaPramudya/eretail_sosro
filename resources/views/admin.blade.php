@@ -91,31 +91,49 @@
         .btn-hapus { background-color: #c0392b; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; font-size: 13px; display: inline-block; transition: 0.2s;}
         .btn-hapus:hover { background-color: #922b21; }
 
-        /* Styling Modal */
-        .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(60, 20, 0, 0.6); }
+        /* Styling Modal (Disesuaikan agar posisinya pas di tengah vertikal & tidak terpotong) */
+        .modal { 
+            display: none; 
+            position: fixed; 
+            z-index: 9999; 
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(60, 20, 0, 0.6); 
+            overflow: auto;
+        }
         .modal-content { 
             background-color: #fff; 
-            margin: 8% auto; 
-            padding: 25px; 
-            width: 400px; 
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+            margin: 0 auto; 
+            padding: 20px 25px; 
+            width: 420px; 
+            max-width: 90%;
+            max-height: 85vh; /* Membatasi tinggi agar tidak meluap keluar layar */
+            overflow-y: auto;  /* Menambahkan scrollbar jika isi modal lebih panjang */
             border-radius: 10px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25); 
             border-top: 5px solid #e52929;
+            box-sizing: border-box;
         }
-        .modal-content h3 { margin-top: 0; color: #8c3b10; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 6px; font-weight: 500; color: #444; }
+        .modal-content h3 { margin-top: 0; margin-bottom: 15px; color: #8c3b10; }
+        .form-group { margin-bottom: 10px; } /* Diperpadat agar elemen form naik */
+        .form-group label { display: block; margin-bottom: 4px; font-weight: 500; color: #444; font-size: 14px; }
         .form-group input, .form-group select { 
             width: 100%; 
-            padding: 10px; 
+            padding: 8px 10px; 
             box-sizing: border-box; 
             border: 1px solid #ccc;
             border-radius: 5px;
             background-color: #fafafa;
+            font-size: 14px;
         }
         .form-group input:focus, .form-group select:focus { outline: none; border-color: #e52929; }
         
-        .btn-submit { background-color: #27ae60; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 8px;}
+        .btn-submit { background-color: #27ae60; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 5px; margin-bottom: 8px;}
         .btn-submit:hover { background-color: #219150; }
         .btn-close { background-color: #95a5a6; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold;}
         .btn-close:hover { background-color: #7f8c8d; }
