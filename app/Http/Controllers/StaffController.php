@@ -14,24 +14,24 @@ class StaffController extends Controller
             return redirect('/pelanggan?status=admin_login_failed');
         }
 
-        $pesanan = DB::table('pesanan')->get();
+        // Mengambil data dari tabel 'pesan' yang digunakan di database
+        $pesanan = DB::table('pesan')->get();
 
-        // Diubah dari return view('admin', ...) menjadi view('staff', ...)
         return view('staff', compact('pesanan'));
     }
 
     public function prosesPesanan($id)
     {
-        // Jika nama kolom primary key di phpMyAdmin id_pesanan, sesuaikan 'id' di bawah
-        DB::table('pesanan')->where('id', $id)->update(['status' => 'Diproses']);
+        // Update status di tabel 'pesan'
+        DB::table('pesan')->where('id', $id)->update(['status_bayar' => 'Diproses']);
         return redirect()->back()->with('success', 'Pesanan sedang diproses!');
     }
 
     public function aturPengiriman(Request $request, $id)
     {
-        DB::table('pesanan')->where('id', $id)->update([
-            'status'     => 'Dalam Pengiriman',
-            'resi_kurir' => $request->resi_kurir ?? 'ARMADA-SOSRO-' . rand(100, 999),
+        // Update status pengiriman di tabel 'pesan'
+        DB::table('pesan')->where('id', $id)->update([
+            'status_bayar' => 'Dalam Pengiriman',
         ]);
 
         return redirect()->back()->with('success', 'Pengiriman berhasil diatur!');

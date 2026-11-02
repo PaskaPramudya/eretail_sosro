@@ -16,6 +16,7 @@ use App\Http\Controllers\ReportController;
 Route::post('/proses-login', [AuthController::class, 'prosesLogin'])->name('proses.login');
 Route::post('/proses-daftar', [AuthController::class, 'prosesDaftar'])->name('proses.daftar');
 Route::post('/proses-admin-login', [AuthController::class, 'prosesAdminLogin'])->name('proses.admin.login');
+Route::post('/admin/tambah', [ProductController::class, 'store']);
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 /*
