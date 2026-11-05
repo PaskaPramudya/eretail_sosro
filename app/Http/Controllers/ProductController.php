@@ -4,14 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB; // Impor Facade DB agar tidak error "Class DB not found"
+use Illuminate\Support\Facades\DB; 
 
 class ProductController extends Controller
 {
     // Halaman Katalog Pelanggan
     public function index()
     {
-        $data_produk = Product::orderBy('id', 'desc')->get();
+        // UBAH DISINI: Ganti 'id' menjadi 'id_produk'
+        $data_produk = Product::orderBy('id_produk', 'desc')->get();
         return view('pelanggan.pelanggan', compact('data_produk'));
     }
 
@@ -23,7 +24,8 @@ class ProductController extends Controller
             return redirect('/pelanggan?status=admin_login_failed');
         }
 
-        $data_produk = Product::orderBy('id', 'desc')->get();
+        // UBAH DISINI: Ganti 'id' menjadi 'id_produk'
+        $data_produk = Product::orderBy('id_produk', 'desc')->get();
         return view('admin', compact('data_produk'));
     }
 
@@ -79,7 +81,6 @@ class ProductController extends Controller
     }
 
     // Edit nama gambar (Admin)
-    // Edit nama gambar (Admin)
     public function editGambar(Request $request)
     {
         $request->validate([
@@ -87,9 +88,9 @@ class ProductController extends Controller
             'gambar' => 'required|string',
         ]);
 
-        // Menggunakan nama kolom 'gambar' sesuai struktur tabel produk di MySQL
+        // UBAH DISINI: Ganti 'id' menjadi 'id_produk' di dalam klausa where
         DB::table('produk')
-            ->where('id', $request->id)
+            ->where('id_produk', $request->id)
             ->update([
                 'gambar' => $request->gambar
             ]);
