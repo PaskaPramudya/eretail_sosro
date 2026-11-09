@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB; 
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -12,7 +12,7 @@ class ProductController extends Controller
     public function index()
     {
         // UBAH DISINI: Ganti 'id' menjadi 'id_produk'
-        $data_produk = Product::orderBy('id_produk', 'desc')->get();
+        $data_produk = Product::orderBy('id', 'desc')->get();
         return view('pelanggan.pelanggan', compact('data_produk'));
     }
 
