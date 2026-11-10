@@ -3,22 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Staff Distributor - E-Retail Sosro</title>
+    <title>Operasional Staff - Sosro Seller Central</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen">
+    <style>
+        :root{--nav:#131921;--nav2:#232f3e;--orange:#ff9900}
+        body{background:#f3f4f6;color:#172033} .topbar{background:var(--nav);border-bottom:4px solid var(--orange)}
+        .metric{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:18px;box-shadow:0 1px 2px #0001}
+        .metric small{display:block;color:#64748b}.metric strong{font-size:25px}.metric b{float:right;color:var(--orange);font-size:22px}
+        .status{padding:5px 10px;border-radius:999px;font-size:11px;font-weight:700;background:#e5e7eb}
+        @media(max-width:900px){.order-wrap{overflow:auto}.order-table{min-width:1000px}}
+    </style>
+    <body class="min-h-screen">
 
     <!-- Header / Navbar -->
-    <header class="bg-amber-800 text-white p-4 shadow-md flex justify-between items-center px-8">
+    <header class="topbar text-white p-4 shadow-md flex justify-between items-center px-8">
         <div>
-            <h1 class="text-xl font-bold">Dashboard Staff Distributor</h1>
-            <p class="text-xs text-amber-200">Operasional Penjualan & Pengiriman Barang</p>
+            <h1 class="text-xl font-bold">SOSRO <span class="font-normal text-gray-300">Seller Central</span></h1>
+            <p class="text-xs text-gray-300">Pusat Operasional Penjualan & Pengiriman</p>
         </div>
         <a href="{{ url('/logout') }}" class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition">Keluar</a>
     </header>
 
     <main class="max-w-7xl mx-auto p-6">
-        <h2 class="text-xl font-bold text-amber-900 mb-4">Daftar Pesanan Masuk & Pengiriman</h2>
+        <div class="flex justify-between items-end mb-5"><div><p class="text-sm text-gray-500">Dashboard / Operasional</p><h2 class="text-2xl font-bold">Pesanan Masuk & Pengiriman</h2></div><span class="text-sm text-gray-500">{{ now()->format('d M Y') }}</span></div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="metric"><b>▣</b><small>Total Pesanan</small><strong>{{ count($pesanan ?? []) }}</strong></div>
+            <div class="metric"><b>◷</b><small>Menunggu Proses</small><strong>{{ collect($pesanan ?? [])->where('status_bayar', 'Pending')->count() }}</strong></div>
+            <div class="metric"><b>↗</b><small>Dalam Pengiriman</small><strong>{{ collect($pesanan ?? [])->where('status_bayar', 'Dalam Pengiriman')->count() }}</strong></div>
+            <div class="metric"><b>✓</b><small>Total Nilai Pesanan</small><strong>Rp {{ number_format(collect($pesanan ?? [])->sum('total_bayar'), 0, ',', '.') }}</strong></div>
+        </div>
 
         @if(session('success'))
             <div class="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded-lg text-sm">
@@ -26,8 +41,8 @@
             </div>
         @endif
 
-        <div class="bg-white rounded-xl shadow border border-gray-200 overflow-hidden">
-            <table class="w-full text-left border-collapse">
+        <div class="order-wrap bg-white rounded-xl shadow border border-gray-200 overflow-hidden">
+            <table class="order-table w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-amber-200 text-amber-900 font-semibold text-sm">
                         <th class="p-3">No. Pesanan</th>
@@ -50,7 +65,7 @@
                         <td class="p-3 text-gray-600">{{ $item->alamat ?? '-' }}</td>
                         <td class="p-3 font-semibold text-amber-800">Rp {{ number_format($item->total_bayar ?? 0, 0, ',', '.') }}</td>
                         <td class="p-3">
-                            <span class="px-2.5 py-1 rounded-full text-xs font-bold 
+                            <span class="status
                                 {{ ($item->status_bayar ?? '') == 'Selesai' || ($item->status_bayar ?? '') == 'Lunas' ? 'bg-green-100 text-green-800' : '' }}
                                 {{ ($item->status_bayar ?? '') == 'Dalam Pengiriman' ? 'bg-blue-100 text-blue-800' : '' }}
                                 {{ ($item->status_bayar ?? '') == 'Diproses' ? 'bg-yellow-100 text-yellow-800' : '' }}

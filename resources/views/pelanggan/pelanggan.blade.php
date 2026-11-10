@@ -11,7 +11,15 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- SweetAlert2 CDN untuk Animasi Centang Hijau & Silang Merah -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
+     <style>
+   :root { --amazon-navy:#131921; --amazon-blue:#232f3e; }
+   body { background:#eaeded !important; }
+   header { background:var(--amazon-navy) !important; border-bottom:4px solid #ff9900; }
+   header .bg-red-600 { background:#e52929 !important; }
+   header .bg-amber-700 { background:var(--amazon-blue) !important; }
+   .amazon-card { box-shadow:0 2px 6px rgba(15,23,42,.10) !important; border-radius:8px !important; }
+   .amazon-card:hover { box-shadow:0 5px 14px rgba(15,23,42,.18) !important; }
+   .amazon-price { color:#b12704 !important; }
   .fly-item {
     position: fixed;
     z-index: 9999;
@@ -61,7 +69,7 @@
             <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
             <input
               type="text"
-              placeholder="Cari Teh Botol, Fruit Tea, TEBS..."
+              id="product-search" placeholder="Cari Teh Botol, Fruit Tea, TEBS..."
               class="w-full pl-9 pr-4 py-2 bg-white text-gray-800 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-inner"
             />
           </div>
@@ -149,10 +157,10 @@
         </div>
 
         <div class="flex flex-wrap gap-2">
-          <button class="px-4 py-2 rounded-full text-xs font-semibold bg-amber-800 text-white shadow-sm">Semua Produk</button>
-          <button class="px-4 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 hover:bg-amber-50 transition">Teh Botol Sosro</button>
-          <button class="px-4 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 hover:bg-amber-50 transition">Fruit Tea</button>
-          <button class="px-4 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 hover:bg-amber-50 transition">TEBS Sparkling</button>
+           <button onclick="filterCatalog('all', this)" class="category-btn px-4 py-2 rounded-full text-xs font-semibold bg-amber-800 text-white shadow-sm">Semua Produk</button>
+           <button onclick="filterCatalog('teh botol', this)" class="category-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 hover:bg-amber-50 transition">Teh Botol Sosro</button>
+           <button onclick="filterCatalog('fruit tea', this)" class="category-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 hover:bg-amber-50 transition">Fruit Tea</button>
+           <button onclick="filterCatalog('tebs', this)" class="category-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 hover:bg-amber-50 transition">TEBS Sparkling</button>
         </div>
       </div>
 
@@ -165,7 +173,7 @@
               $stok_tersedia = $row->stok ?? 0;
               $id_produk = $row->id ?? $row->id_produk ?? 0;
             @endphp
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group">
+            <div class="amazon-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group product-card" data-search="{{ strtolower($row->nama_produk . ' ' . $row->kategori) }}">
               <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative overflow-hidden">
                 @if (strtolower($row->kategori) == 'minuman' && $id_produk == 1)
                   <span class="absolute top-3 left-3 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded z-10">Terlaris</span>
@@ -198,7 +206,7 @@
                 <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
                   <div>
                     <p class="text-xs text-gray-400">Harga Satuan</p>
-                    <p class="text-lg font-bold text-amber-900">Rp {{ number_format($row->harga, 0, ',', '.') }}</p>
+                    <p class="amazon-price text-lg font-bold text-amber-900">Rp {{ number_format($row->harga, 0, ',', '.') }}</p>
                   </div>
 
                   @if (session()->has('nama'))
@@ -477,6 +485,16 @@
     <!-- Interactive Script -->
 <script>
   lucide.createIcons();
+
+  document.getElementById('product-search')?.addEventListener('input', function () {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll('.product-card').forEach(card => card.style.display = card.dataset.search.includes(q) ? 'flex' : 'none');
+  });
+  function filterCatalog(category, button) {
+    document.querySelectorAll('.category-btn').forEach(btn => { btn.classList.remove('bg-amber-800','text-white'); btn.classList.add('bg-white','text-gray-700'); });
+    button.classList.add('bg-amber-800','text-white');
+    document.querySelectorAll('.product-card').forEach(card => card.style.display = category === 'all' || card.dataset.search.includes(category) ? 'flex' : 'none');
+  }
 
   // Array penampung item keranjang belanja
   let keranjang = [];

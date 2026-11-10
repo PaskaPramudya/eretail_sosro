@@ -140,6 +140,29 @@
         .btn-submit:hover { background-color: #219150; }
         .btn-close { background-color: #95a5a6; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold;}
         .btn-close:hover { background-color: #7f8c8d; }
+
+        /* Amazon-inspired operations workspace */
+        :root { --navy:#131921; --navy2:#232f3e; --orange:#ff9900; --line:#e5e7eb; }
+        body { background:#f3f4f6; color:#172033; }
+        .header { background:var(--navy) !important; padding:12px 30px; border-bottom:4px solid var(--orange); }
+        .header h2 { font-size:20px; letter-spacing:.2px; }
+        .header h2:before { content:'SOSRO'; background:#e52929; padding:8px 12px; border-radius:4px; margin-right:12px; font-size:14px; }
+        .header-btn-logout { background:transparent; border:1px solid #64748b; border-radius:4px; }
+        .container { max-width:1400px; padding:28px 30px 50px; }
+        .container h3 { font-size:26px; color:#172033; margin:0 0 18px; }
+        .container h3:after { content:'  /  Inventaris & katalog produk'; color:#64748b; font-size:14px; font-weight:400; }
+        .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+        .stat-card { background:#fff; border:1px solid var(--line); border-radius:8px; padding:18px; box-shadow:0 1px 2px #0000000b; }
+        .stat-card small { color:#64748b; display:block; margin-bottom:7px; }
+        .stat-card strong { font-size:25px; color:#172033; }
+        .stat-card i { float:right; color:#ff9900; font-size:24px; font-style:normal; }
+        .toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+        .search-admin { border:1px solid #cbd5e1; padding:10px 13px; border-radius:5px; width:280px; }
+        .btn-tambah { background:#ff9900; color:#111; border-radius:5px; margin:0; box-shadow:none; }
+        table { border-radius:8px; border:1px solid var(--line); }
+        thead tr { background:var(--navy2); color:#fff; }
+        th,td { padding:14px 15px; }
+        @media(max-width:800px){ .stats{grid-template-columns:repeat(2,1fr)} .toolbar{gap:10px;align-items:stretch;flex-direction:column}.search-admin{width:auto} .container{padding:20px 12px;overflow:auto} table{min-width:950px} }
     </style>
 </head>
 <body>
@@ -151,8 +174,13 @@
 
 <div class="container">
     <h3>Daftar Produk & Kelola Stok</h3>
-    
-    <button class="btn-tambah" onclick="bukaModalTambah()">+ Tambah Produk Baru</button>
+    <div class="stats">
+        <div class="stat-card"><i>▦</i><small>Total SKU</small><strong>{{ count($data_produk ?? []) }}</strong></div>
+        <div class="stat-card"><i>✓</i><small>Produk Aktif</small><strong>{{ collect($data_produk ?? [])->where('stok', '>', 0)->count() }}</strong></div>
+        <div class="stat-card"><i>!</i><small>Stok Menipis</small><strong>{{ collect($data_produk ?? [])->where('stok', '<=', 10)->count() }}</strong></div>
+        <div class="stat-card"><i>Rp</i><small>Nilai Inventaris</small><strong>Rp {{ number_format(collect($data_produk ?? [])->sum(fn($p) => ($p->harga ?? 0) * ($p->stok ?? 0)), 0, ',', '.') }}</strong></div>
+    </div>
+    <div class="toolbar"><input class="search-admin" id="productSearch" placeholder="Cari nama atau kategori..." onkeyup="filterProducts()"><button class="btn-tambah" onclick="bukaModalTambah()">+ Tambah Produk Baru</button></div>
 
     <table cellspacing="0" cellpadding="10">
         <thead>
@@ -172,7 +200,7 @@
                 @php 
                     $id_produk = $row->id ?? $row->id_produk ?? 0;
                 @endphp
-                <tr>
+                <tr class="product-row">
                     <td>{{ $id_produk }}</td>
                     <td><strong>{{ $row->nama_produk }}</strong></td>
                     <td>{{ $row->kategori }}</td>
@@ -334,6 +362,12 @@ function bukaModalHarga(id, nama, hargaSekarang) {
     document.getElementById('modalHarga').style.display = 'block';
 }
 function tutupModalHarga() { document.getElementById('modalHarga').style.display = 'none'; }
+function filterProducts() {
+    const query = document.getElementById('productSearch').value.toLowerCase();
+    document.querySelectorAll('.product-row').forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(query) ? '' : 'none';
+    });
+}
 </script>
 
 </body>

@@ -11,7 +11,6 @@ class ProductController extends Controller
     // Halaman Katalog Pelanggan
     public function index()
     {
-        // UBAH DISINI: Ganti 'id' menjadi 'id_produk'
         $data_produk = Product::orderBy('id', 'desc')->get();
         return view('pelanggan.pelanggan', compact('data_produk'));
     }
@@ -87,9 +86,8 @@ class ProductController extends Controller
             'gambar' => 'required|string',
         ]);
 
-        // UBAH DISINI: Ganti 'id' menjadi 'id_produk' di dalam klausa where
         DB::table('produk')
-            ->where('id_produk', $request->id)
+            ->where('id', $request->id)
             ->update([
                 'gambar' => $request->gambar
             ]);
