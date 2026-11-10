@@ -87,6 +87,9 @@
         
         .btn-gambar { background-color: #8c3b10; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; transition: 0.2s; font-size: 13px;}
         .btn-gambar:hover { background-color: #692c0c; }
+
+        .btn-harga { background-color: #2980b9; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; transition: 0.2s; font-size: 13px;}
+        .btn-harga:hover { background-color: #1f6693; }
         
         .btn-hapus { background-color: #c0392b; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; font-size: 13px; display: inline-block; transition: 0.2s;}
         .btn-hapus:hover { background-color: #922b21; }
@@ -184,6 +187,7 @@
                     </td>
                     <td>
                         <button class="btn-edit" onclick="bukaModalStok('{{ $id_produk }}', '{{ addslashes($row->nama_produk) }}')">Edit Stok</button>
+                        <button class="btn-harga" onclick="bukaModalHarga('{{ $id_produk }}', '{{ addslashes($row->nama_produk) }}', {{ $row->harga }})">Edit Harga</button>
                         <button class="btn-gambar" onclick="bukaModalGambar('{{ $id_produk }}', '{{ addslashes($row->nama_produk) }}')">Edit Gambar</button>
                         <a href="{{ url('/admin/hapus/' . $id_produk) }}" class="btn-hapus" onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">Hapus</a>
                     </td>
@@ -279,6 +283,31 @@
     </div>
 </div>
 
+<!-- Modal 4: Edit Harga -->
+<div id="modalHarga" class="modal">
+    <div class="modal-content">
+        <h3>Edit Harga Produk</h3>
+        <form action="{{ url('/admin/edit-harga') }}" method="POST">
+            @csrf
+            <input type="hidden" name="id" id="modal_harga_id">
+            <div class="form-group">
+                <label>Nama Produk:</label>
+                <input type="text" id="modal_harga_nama" readonly style="background-color: #eee;">
+            </div>
+            <div class="form-group">
+                <label>Harga Saat Ini (Rp):</label>
+                <input type="text" id="modal_harga_lama" readonly style="background-color: #eee; color: #888;">
+            </div>
+            <div class="form-group">
+                <label>Harga Baru (Rp):</label>
+                <input type="number" name="harga" id="modal_harga_baru" min="0" required placeholder="Contoh: 5000">
+            </div>
+            <button type="submit" class="btn-submit">💾 Simpan Harga</button>
+            <button type="button" class="btn-close" onclick="tutupModalHarga()">Batal</button>
+        </form>
+    </div>
+</div>
+
 <script>
 function bukaModalTambah() { document.getElementById('modalTambah').style.display = 'block'; }
 function tutupModalTambah() { document.getElementById('modalTambah').style.display = 'none'; }
@@ -296,6 +325,15 @@ function bukaModalGambar(id, nama) {
     document.getElementById('modalGambar').style.display = 'block';
 }
 function tutupModalGambar() { document.getElementById('modalGambar').style.display = 'none'; }
+
+function bukaModalHarga(id, nama, hargaSekarang) {
+    document.getElementById('modal_harga_id').value = id;
+    document.getElementById('modal_harga_nama').value = nama;
+    document.getElementById('modal_harga_lama').value = 'Rp ' + Number(hargaSekarang).toLocaleString('id-ID');
+    document.getElementById('modal_harga_baru').value = hargaSekarang;
+    document.getElementById('modalHarga').style.display = 'block';
+}
+function tutupModalHarga() { document.getElementById('modalHarga').style.display = 'none'; }
 </script>
 
 </body>

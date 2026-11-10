@@ -44,6 +44,7 @@ Route::prefix('admin')->group(function () {
     Route::post('/tambah', [ProductController::class, 'store'])->name('admin.products.store');
     Route::post('/update-stok', [ProductController::class, 'updateStok'])->name('admin.products.updateStok');
     Route::post('/edit-gambar', [ProductController::class, 'editGambar'])->name('admin.products.editGambar');
+    Route::post('/edit-harga', [ProductController::class, 'editHarga'])->name('admin.products.editHarga');
     Route::get('/hapus/{id}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
 
     // Kelola Data Mitra

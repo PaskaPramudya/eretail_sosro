@@ -24,8 +24,7 @@ class ProductController extends Controller
             return redirect('/pelanggan?status=admin_login_failed');
         }
 
-        // UBAH DISINI: Ganti 'id' menjadi 'id_produk'
-        $data_produk = Product::orderBy('id_produk', 'desc')->get();
+        $data_produk = Product::orderBy('id', 'desc')->get();
         return view('admin', compact('data_produk'));
     }
 
@@ -96,6 +95,21 @@ class ProductController extends Controller
             ]);
 
         return redirect()->back()->with('success', 'Gambar berhasil diperbarui!');
+    }
+
+    // Edit harga produk (Admin)
+    public function editHarga(Request $request)
+    {
+        $request->validate([
+            'id'    => 'required',
+            'harga' => 'required|numeric|min:0',
+        ]);
+
+        DB::table('produk')
+            ->where('id', $request->id)
+            ->update(['harga' => $request->harga]);
+
+        return redirect()->back()->with('success', 'Harga berhasil diperbarui!');
     }
 
     // Hapus produk (Admin)
