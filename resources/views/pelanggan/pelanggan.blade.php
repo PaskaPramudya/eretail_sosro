@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>E-Commerce Sosro - Toko Online Resmi</title>
+    <title>E-Commerce E-Retail Sosro - Toko Online Resmi</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,7 +11,15 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- SweetAlert2 CDN untuk Animasi Centang Hijau & Silang Merah -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
+     <style>
+   :root { --amazon-navy:#131921; --amazon-blue:#232f3e; }
+   body { background:#eaeded !important; }
+   header { background:var(--amazon-navy) !important; border-bottom:4px solid #ff9900; }
+   header .bg-red-600 { background:#e52929 !important; }
+   header .bg-amber-700 { background:var(--amazon-blue) !important; }
+   .amazon-card { box-shadow:0 2px 6px rgba(15,23,42,.10) !important; border-radius:8px !important; }
+   .amazon-card:hover { box-shadow:0 5px 14px rgba(15,23,42,.18) !important; }
+   .amazon-price { color:#b12704 !important; }
   .fly-item {
     position: fixed;
     z-index: 9999;
@@ -61,7 +69,7 @@
             <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
             <input
               type="text"
-              placeholder="Cari Teh Botol, Fruit Tea, TEBS..."
+              id="product-search" placeholder="Cari Teh Botol, Fruit Tea, TEBS..."
               class="w-full pl-9 pr-4 py-2 bg-white text-gray-800 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-inner"
             />
           </div>
@@ -149,10 +157,10 @@
         </div>
 
         <div class="flex flex-wrap gap-2">
-          <button class="px-4 py-2 rounded-full text-xs font-semibold bg-amber-800 text-white shadow-sm">Semua Produk</button>
-          <button class="px-4 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 hover:bg-amber-50 transition">Teh Botol Sosro</button>
-          <button class="px-4 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 hover:bg-amber-50 transition">Fruit Tea</button>
-          <button class="px-4 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 hover:bg-amber-50 transition">TEBS Sparkling</button>
+           <button onclick="filterCatalog('all', this)" class="category-btn px-4 py-2 rounded-full text-xs font-semibold bg-amber-800 text-white shadow-sm">Semua Produk</button>
+           <button onclick="filterCatalog('teh botol', this)" class="category-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 hover:bg-amber-50 transition">Teh Botol Sosro</button>
+           <button onclick="filterCatalog('fruit tea', this)" class="category-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 hover:bg-amber-50 transition">Fruit Tea</button>
+           <button onclick="filterCatalog('tebs', this)" class="category-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 hover:bg-amber-50 transition">TEBS Sparkling</button>
         </div>
       </div>
 
@@ -165,7 +173,7 @@
               $stok_tersedia = $row->stok ?? 0;
               $id_produk = $row->id ?? $row->id_produk ?? 0;
             @endphp
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group">
+            <div class="amazon-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group product-card" data-search="{{ strtolower($row->nama_produk . ' ' . $row->kategori) }}">
               <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative overflow-hidden">
                 @if (strtolower($row->kategori) == 'minuman' && $id_produk == 1)
                   <span class="absolute top-3 left-3 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded z-10">Terlaris</span>
@@ -198,13 +206,14 @@
                 <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
                   <div>
                     <p class="text-xs text-gray-400">Harga Satuan</p>
-                    <p class="text-lg font-bold text-amber-900">Rp {{ number_format($row->harga, 0, ',', '.') }}</p>
+                    <p class="amazon-price text-lg font-bold text-amber-900">Rp {{ number_format($row->harga, 0, ',', '.') }}</p>
                   </div>
 
                   @if (session()->has('nama'))
                   <button
-                    onclick="addToCart(event, '{{ addslashes($row->nama_produk) }}', {{ $row->harga }}, this)"
+                    onclick="addToCart(event, {{ $id_produk }}, '{{ addslashes($row->nama_produk) }}', {{ $row->harga }}, this, {{ $stok_tersedia }})"
                     class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm"
+                    title="Tambah ke Keranjang"
                   >
                     <i data-lucide="plus" class="w-5 h-5"></i>
                   </button>
@@ -275,11 +284,21 @@
 
         <form action="{{ url('/proses-pesan') }}" method="POST" class="p-6 space-y-4">
           @csrf
+          <input type="hidden" name="keranjang" id="input-keranjang" value="">
+          <input type="hidden" name="total_bayar" id="input-total-bayar" value="0">
+
+          <!-- Ringkasan Total Pesanan -->
+          <div class="bg-amber-50 p-3 rounded-lg border border-amber-200 flex justify-between items-center text-sm">
+            <span class="text-gray-700 font-medium">Total Pembayaran:</span>
+            <span id="checkout-total-display" class="font-bold text-amber-900 text-base">Rp 0</span>
+          </div>
+
           <div>
             <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Pemesan / Nama Toko</label>
             <input
               type="text"
               name="nama_pemesan"
+              value="{{ session('nama', '') }}"
               placeholder="Contoh: Toko Kelontong Berkah"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
               required
@@ -300,22 +319,80 @@
 
             <div>
               <label class="block text-xs font-semibold text-gray-700 mb-1">Metode Pengiriman</label>
-              <select name="metode" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+              <select name="metode" id="select-metode" onchange="handleMetodePengiriman(this.value)" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
                 <option value="Armada Sosro (Grosir)">Armada Sosro (Grosir)</option>
                 <option value="Ambil Sendiri di Depot">Ambil Sendiri di Depot</option>
               </select>
             </div>
           </div>
 
-          <div>
-            <label class="block text-xs font-semibold text-gray-700 mb-1">Alamat Lengkap Pengiriman</label>
-            <textarea
+          {{-- ===== BAGIAN ALAMAT: Dinamis sesuai metode pengiriman ===== --}}
+
+          {{-- [Armada Sosro] Input Share Location Google Maps --}}
+          <div id="section-armada">
+            <label class="block text-xs font-semibold text-gray-700 mb-1">
+              📍 Bagikan Lokasi Anda <span class="text-gray-400 font-normal">(dari Google Maps)</span>
+            </label>
+            <p class="text-xs text-gray-500 mb-2">
+              Buka Google Maps → Tahan titik lokasi Anda → Klik <strong>Bagikan</strong> → Salin link pendek, lalu tempel di bawah ini.
+            </p>
+            <input
+              type="url"
+              id="input-maps-link"
               name="alamat"
-              rows="3"
-              placeholder="Masukkan jalan, RT/RW, dan kecamatan..."
+              placeholder="https://maps.app.goo.gl/..."
+              oninput="previewMapsLink(this.value)"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
               required
-            ></textarea>
+            />
+            {{-- Preview maps embed --}}
+            <div id="maps-preview-wrapper" class="mt-2 hidden">
+              <p class="text-xs text-green-700 font-semibold mb-1">✅ Link lokasi terdeteksi:</p>
+              <div class="rounded-lg overflow-hidden border border-gray-200 shadow-sm">
+                <iframe
+                  id="maps-preview-frame"
+                  src=""
+                  width="100%"
+                  height="180"
+                  style="border:0;"
+                  allowfullscreen=""
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+
+          {{-- [Ambil Sendiri] Tampilkan lokasi depot --}}
+          <div id="section-depot" class="hidden">
+            <input type="hidden" name="alamat" id="hidden-alamat-depot" value="Ambil Sendiri di Depot Sosro - 767J+5G9, Diro, Sendangmulyo, Kec. Minggir, Kabupaten Sleman, DIY 55562">
+            <label class="block text-xs font-semibold text-gray-700 mb-1">📍 Lokasi Depot Sosro</label>
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-2">
+              <p class="text-xs font-semibold text-amber-900 flex items-start gap-1">
+                <span>🏭</span>
+                <span>Depot Sosro Minggir</span>
+              </p>
+              <p class="text-xs text-gray-600 mt-0.5 ml-5">767J+5G9, Diro, Sendangmulyo, Kec. Minggir,<br>Kabupaten Sleman, Daerah Istimewa Yogyakarta 55562</p>
+              <a href="https://maps.app.goo.gl/HK6J1PiCe8t5iZis6" target="_blank"
+                 class="inline-flex items-center gap-1 mt-1.5 ml-5 text-xs text-blue-600 hover:text-blue-800 underline">
+                 🗺️ Buka di Google Maps
+              </a>
+            </div>
+            {{-- Embed Google Maps Depot --}}
+            <div class="rounded-lg overflow-hidden border border-gray-200 shadow-sm">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.5938853!2d110.2834!3d-7.7205!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a9b9b9b9b9b9b%3A0x0!2sDepot+Sosro+Minggir!5e0!3m2!1sid!2sid!4v1699999999999!5m2!1sid!2sid"
+                width="100%"
+                height="200"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
+            <p class="text-xs text-gray-500 mt-1.5">
+              ⏰ Pastikan Anda datang pada jam operasional depot.
+            </p>
           </div>
 
           <div class="pt-4 border-t border-gray-100 flex justify-end space-x-2">
@@ -409,6 +486,16 @@
 <script>
   lucide.createIcons();
 
+  document.getElementById('product-search')?.addEventListener('input', function () {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll('.product-card').forEach(card => card.style.display = card.dataset.search.includes(q) ? 'flex' : 'none');
+  });
+  function filterCatalog(category, button) {
+    document.querySelectorAll('.category-btn').forEach(btn => { btn.classList.remove('bg-amber-800','text-white'); btn.classList.add('bg-white','text-gray-700'); });
+    button.classList.add('bg-amber-800','text-white');
+    document.querySelectorAll('.product-card').forEach(card => card.style.display = category === 'all' || card.dataset.search.includes(category) ? 'flex' : 'none');
+  }
+
   // Array penampung item keranjang belanja
   let keranjang = [];
 
@@ -434,36 +521,57 @@
     drawer.classList.toggle("hidden");
   }
 
-  // Fungsi Tambah Ke Keranjang (Akumulasi Jumlah Produk yang Sama)
-  // Fungsi Tambah Ke Keranjang dengan Animasi Fly to Cart
-  function addToCart(event, nama, harga, btnElement) {
-    // 1. Logika Tambah Data ke Array Keranjang
-    let itemDitemukan = keranjang.find(item => item.nama === nama);
+  // Fungsi Tambah Ke Keranjang (Akumulasi Jumlah Produk yang Sama & Cek Stok)
+  function addToCart(event, id, nama, harga, btnElement, maxStok) {
+    maxStok = parseInt(maxStok) || 0;
+
+    // 1. Cek jika stok awal produk 0
+    if (maxStok <= 0) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Stok Habis',
+        text: `Maaf, stok untuk produk "${nama}" sedang tidak tersedia.`,
+        confirmButtonColor: '#92400e'
+      });
+      return;
+    }
+
+    // 2. Logika Tambah Data ke Array Keranjang
+    let itemDitemukan = keranjang.find(item => item.id === id || item.nama === nama);
 
     if (itemDitemukan) {
+      if (itemDitemukan.jumlah + 1 > maxStok) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Batas Stok Tercapai',
+          text: `Maaf, stok ${nama} yang tersedia hanya tersisa ${maxStok} unit.`,
+          confirmButtonColor: '#92400e'
+        });
+        return;
+      }
       itemDitemukan.jumlah += 1;
     } else {
       keranjang.push({
+        id: id,
         nama: nama,
         harga: harga,
-        jumlah: 1
+        jumlah: 1,
+        maxStok: maxStok
       });
     }
 
     renderKeranjang(); // Update data di latar belakang
 
-    // 2. Efek Animasi Produk Melayang ke Ikon Keranjang
+    // 3. Efek Animasi Produk Melayang ke Ikon Keranjang
     const targetCart = document.getElementById("cart-count") || document.querySelector("[title='Keranjang']");
     
     if (btnElement && targetCart) {
       const card = btnElement.closest('.bg-white') || btnElement.parentElement.parentElement;
       const img = card ? card.querySelector('img') : null;
 
-      // Ambil posisi awal tombol / gambar
       const startRect = img ? img.getBoundingClientRect() : btnElement.getBoundingClientRect();
       const targetRect = targetCart.getBoundingClientRect();
 
-      // Buat elemen bayangan produk melayang
       const flyer = document.createElement('img');
       flyer.src = img ? img.src : 'https://via.placeholder.com/50';
       flyer.className = 'fly-item';
@@ -472,7 +580,6 @@
       
       document.body.appendChild(flyer);
 
-      // Jalankan gerakan melayang ke target keranjang
       setTimeout(() => {
         flyer.style.left = `${targetRect.left + targetRect.width / 2 - 25}px`;
         flyer.style.top = `${targetRect.top + targetRect.height / 2 - 25}px`;
@@ -481,16 +588,12 @@
         flyer.style.opacity = '0.5';
       }, 20);
 
-      // Setelah sampai, hapus elemen flyer dan beri efek membal pada ikon keranjang
       setTimeout(() => {
         flyer.remove();
         targetCart.classList.add('cart-bounce');
         setTimeout(() => targetCart.classList.remove('cart-bounce'), 400);
       }, 820);
     }
-    
-    // CATATAN: Kode pembuka modal/drawer keranjang (cartDrawer.classList.remove("hidden")) sengaja dihilangkan 
-    // agar keranjang tidak langsung terbuka saat tombol + diklik.
   }
 
   // Render Ulang Tampilan Keranjang Belanja
@@ -547,15 +650,101 @@
 
     if (elCount) elCount.innerText = jumlahBarang;
     if (elTotal) elTotal.innerText = "Rp " + totalBaru.toLocaleString("id-ID");
+
+    return totalBaru;
   }
 
   function openCheckout() {
+    if (keranjang.length === 0) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Keranjang Kosong',
+        text: 'Silakan tambahkan produk ke keranjang terlebih dahulu!',
+        confirmButtonColor: '#92400e'
+      });
+      return;
+    }
+
+    const total = hitungUlangTotal();
+    const inputKeranjang = document.getElementById("input-keranjang");
+    const inputTotalBayar = document.getElementById("input-total-bayar");
+    const displayTotal = document.getElementById("checkout-total-display");
+
+    if (inputKeranjang) inputKeranjang.value = JSON.stringify(keranjang);
+    if (inputTotalBayar) inputTotalBayar.value = total;
+    if (displayTotal) displayTotal.innerText = "Rp " + total.toLocaleString("id-ID");
+
+    // Reset tampilan metode ke Armada Sosro saat buka checkout
+    handleMetodePengiriman('Armada Sosro (Grosir)');
+    const selectMetode = document.getElementById('select-metode');
+    if (selectMetode) selectMetode.value = 'Armada Sosro (Grosir)';
+
     toggleCart();
     document.getElementById("modal-checkout").classList.remove("hidden");
   }
 
   function closeCheckout() {
     document.getElementById("modal-checkout").classList.add("hidden");
+  }
+
+  // ===== LOGIKA METODE PENGIRIMAN =====
+  function handleMetodePengiriman(metode) {
+    const sectionArmada = document.getElementById('section-armada');
+    const sectionDepot  = document.getElementById('section-depot');
+    const inputMapsLink = document.getElementById('input-maps-link');
+    const hiddenAlamat  = document.getElementById('hidden-alamat-depot');
+
+    if (metode === 'Ambil Sendiri di Depot') {
+      sectionArmada.classList.add('hidden');
+      sectionDepot.classList.remove('hidden');
+      // Nonaktifkan required pada input link maps
+      if (inputMapsLink) {
+        inputMapsLink.removeAttribute('required');
+        inputMapsLink.setAttribute('name', '_alamat_armada_disabled');
+      }
+      if (hiddenAlamat) hiddenAlamat.setAttribute('name', 'alamat');
+    } else {
+      sectionDepot.classList.add('hidden');
+      sectionArmada.classList.remove('hidden');
+      // Aktifkan kembali input link maps
+      if (inputMapsLink) {
+        inputMapsLink.setAttribute('required', 'required');
+        inputMapsLink.setAttribute('name', 'alamat');
+      }
+      if (hiddenAlamat) hiddenAlamat.setAttribute('name', '_alamat_depot_disabled');
+    }
+  }
+
+  // Preview Google Maps dari link yang dipastekan pengguna
+  function previewMapsLink(url) {
+    const wrapper = document.getElementById('maps-preview-wrapper');
+    const frame   = document.getElementById('maps-preview-frame');
+
+    if (!url || url.trim() === '') {
+      wrapper.classList.add('hidden');
+      return;
+    }
+
+    // Cek apakah URL Google Maps valid
+    if (url.includes('maps.app.goo.gl') || url.includes('maps.google.com') || url.includes('goo.gl/maps')) {
+      // Buat embed URL dari link Google Maps
+      // Untuk link pendek (goo.gl), tampilkan sebagai konfirmasi teks dulu
+      // lalu buka preview menggunakan maps embed via place
+      const embedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(url)}&output=embed`;
+      frame.src = embedUrl;
+      wrapper.classList.remove('hidden');
+    } else if (url.includes('@') && url.includes('google.com/maps')) {
+      // Format: https://www.google.com/maps/place/.../@lat,lng,...
+      const embedUrl = url.replace('/maps/place/', '/maps/embed?pb=') || url + '&output=embed';
+      frame.src = embedUrl;
+      wrapper.classList.remove('hidden');
+    } else if (url.length > 10) {
+      // Link apapun yang diisi, coba embed
+      frame.src = `https://maps.google.com/maps?q=${encodeURIComponent(url)}&output=embed`;
+      wrapper.classList.remove('hidden');
+    } else {
+      wrapper.classList.add('hidden');
+    }
   }
 
   function openAuthModal() {
@@ -631,6 +820,31 @@
       }).then(() => {
         openAuthModal();
         switchAuthTab("register");
+      });
+    } else if (status === "pesan_success") {
+      keranjang = [];
+      renderKeranjang();
+      Swal.fire({
+        icon: "success",
+        title: "Pesanan Berhasil!",
+        text: "Pesanan Anda telah diterima. Staff kami akan segera memproses pesanan.",
+        showConfirmButton: false,
+        timer: 3000,
+        backdrop: `rgba(0,0,0,0.4)`,
+      });
+    } else if (status === "stok_kurang") {
+      Swal.fire({
+        icon: "error",
+        title: "Stok Tidak Mencukupi",
+        text: "Salah satu produk dalam keranjang Anda melebihi stok yang tersedia.",
+        confirmButtonColor: "#dc2626",
+      });
+    } else if (status === "pesan_failed") {
+      Swal.fire({
+        icon: "error",
+        title: "Gagal Memesan",
+        text: "Terjadi kesalahan saat memproses pesanan. Silakan coba lagi.",
+        confirmButtonColor: "#dc2626",
       });
     }
 

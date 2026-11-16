@@ -23,21 +23,76 @@ class OrderController extends Controller
             'nama_pemesan' => 'required|string|max:255',
             'no_wa'        => 'required|string|max:20',
             'metode'       => 'required|string',
-            'alamat'       => 'required|string',
+            'alamat'       => 'required|string|max:1000', // max diperluas untuk URL Google Maps
         ]);
 
-        // Menyimpan data ke tabel 'pesan' sesuai nama kolom asli di phpMyAdmin
-        DB::table('pesan')->insert([
-            'nama_pemesan'      => $request->nama_pemesan,
-            'no_wa'             => $request->no_wa,
-            'metode_pengiriman' => $request->metode, // Menggunakan kolom metode_pengiriman
-            'alamat'            => $request->alamat,
-            'total_bayar'       => $request->input('total_bayar', 0),
-            'tanggal'           => date('Y-m-d'),
-            'status_bayar'      => 'Pending',
-        ]);
+        $cartItems = [];
+        if ($request->filled('keranjang')) {
+            $cartItems = json_decode($request->keranjang, true);
+        }
 
-        return redirect('/pelanggan?status=pesan_success');
+        // Hitung total bayar dari keranjang atau dari input
+        $totalBayar = 0;
+        if (!empty($cartItems) && is_array($cartItems)) {
+            foreach ($cartItems as $item) {
+                $qty = intval($item['jumlah'] ?? 1);
+                $harga = intval($item['harga'] ?? 0);
+                $totalBayar += ($qty * $harga);
+            }
+        }
+        if ($totalBayar <= 0) {
+            $totalBayar = intval($request->input('total_bayar', 0));
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // 1. Kurangi stok setiap produk yang dibeli
+            if (!empty($cartItems) && is_array($cartItems)) {
+                foreach ($cartItems as $item) {
+                    $qty = intval($item['jumlah'] ?? 1);
+                    $productId = $item['id'] ?? null;
+                    $namaProduk = $item['nama'] ?? '';
+
+                    $product = null;
+                    if ($productId) {
+                        $product = DB::table('produk')->where('id', $productId)->lockForUpdate()->first();
+                    }
+                    if (!$product && !empty($namaProduk)) {
+                        $product = DB::table('produk')->where('nama_produk', $namaProduk)->lockForUpdate()->first();
+                    }
+
+                    if ($product) {
+                        if ($product->stok < $qty) {
+                            DB::rollBack();
+                            return redirect('/pelanggan?status=stok_kurang');
+                        }
+
+                        DB::table('produk')
+                            ->where('id', $product->id)
+                            ->decrement('stok', $qty);
+                    }
+                }
+            }
+
+            // 2. Simpan data ke tabel 'pesan' sesuai kolom yang ada
+            DB::table('pesan')->insert([
+                'nama_pemesan'      => $request->nama_pemesan,
+                'no_wa'             => $request->no_wa,
+                'metode_pengiriman' => $request->metode,
+                'alamat'            => $request->alamat,
+                'total_bayar'       => $totalBayar,
+                'tanggal'           => date('Y-m-d'),
+                'status_bayar'      => 'Pending',
+            ]);
+
+            DB::commit();
+            return redirect('/pelanggan?status=pesan_success');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect('/pelanggan?status=pesan_failed');
+        }
     }
 
     // Simpan pesanan produk spesifik (versi Model Order)

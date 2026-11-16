@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB; // Impor Facade DB agar tidak error "Class DB not found"
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -79,7 +79,6 @@ class ProductController extends Controller
     }
 
     // Edit nama gambar (Admin)
-    // Edit nama gambar (Admin)
     public function editGambar(Request $request)
     {
         $request->validate([
@@ -87,7 +86,6 @@ class ProductController extends Controller
             'gambar' => 'required|string',
         ]);
 
-        // Menggunakan nama kolom 'gambar' sesuai struktur tabel produk di MySQL
         DB::table('produk')
             ->where('id', $request->id)
             ->update([
@@ -95,6 +93,21 @@ class ProductController extends Controller
             ]);
 
         return redirect()->back()->with('success', 'Gambar berhasil diperbarui!');
+    }
+
+    // Edit harga produk (Admin)
+    public function editHarga(Request $request)
+    {
+        $request->validate([
+            'id'    => 'required',
+            'harga' => 'required|numeric|min:0',
+        ]);
+
+        DB::table('produk')
+            ->where('id', $request->id)
+            ->update(['harga' => $request->harga]);
+
+        return redirect()->back()->with('success', 'Harga berhasil diperbarui!');
     }
 
     // Hapus produk (Admin)
