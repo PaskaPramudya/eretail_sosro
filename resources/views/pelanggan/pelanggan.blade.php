@@ -133,11 +133,87 @@
           </p>
           <div class="pt-2 flex flex-wrap justify-center md:justify-start gap-3">
             <a href="#katalog" class="bg-white text-amber-900 hover:bg-amber-100 font-bold px-6 py-3 rounded-lg shadow transition text-sm">Lihat Katalog</a>
-            <a href="#cara-pesan" class="bg-amber-950/70 hover:bg-amber-900 border border-amber-500 font-medium px-5 py-3 rounded-lg transition text-sm backdrop-blur-sm">Panduan Mitra</a>
-          </div>
+            <button type="button" onclick="bukaPanduanMitra()" class="bg-amber-950/70 hover:bg-amber-900 border border-amber-500 font-medium px-5 py-3 rounded-lg transition text-sm backdrop-blur-sm cursor-pointer">
+    Panduan Mitra
+</button>
+
+<!-- Modal Panduan Mitra -->
+<div id="modalPanduanMitra" onclick="tutupJikaKlikLuar(event)" style="z-index: 999999;" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm items-center justify-center p-4 text-left">
+    <div class="bg-white text-gray-800 w-full max-w-lg rounded-2xl shadow-2xl border border-amber-200 overflow-hidden">
+        <!-- Header Modal -->
+        <div class="bg-gradient-to-r from-red-700 to-amber-800 px-6 py-4 flex items-center justify-between text-white">
+            <h3 class="text-lg font-bold">Panduan Pemesanan Mitra Sosro</h3>
+            <button type="button" onclick="tutupPanduanMitra()" class="text-white/80 hover:text-white text-2xl leading-none font-bold cursor-pointer">×</button>
         </div>
 
-        <div class="w-full md:w-auto flex justify-center">
+        <!-- Isi Panduan -->
+        <div class="p-6 space-y-4 text-sm text-gray-700">
+            <div class="flex items-start gap-3">
+                <span class="flex-shrink-0 w-7 h-7 rounded-full bg-red-100 text-red-700 font-bold flex items-center justify-center">1</span>
+                <div>
+                    <p class="font-semibold text-gray-900">Masuk atau Daftar Akun Mitra</p>
+                    <p class="text-gray-600">Klik tombol <strong>Masuk / Daftar</strong> di pojok kanan atas untuk mengakses harga grosir khusus mitra.</p>
+                </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+                <span class="flex-shrink-0 w-7 h-7 rounded-full bg-red-100 text-red-700 font-bold flex items-center justify-center">2</span>
+                <div>
+                    <p class="font-semibold text-gray-900">Pilih Varian & Jumlah Pesanan</p>
+                    <p class="text-gray-600">Pilih produk Teh Botol Sosro, Fruit Tea, atau TEBS dari katalog dan masukkan ke keranjang belanja.</p>
+                </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+                <span class="flex-shrink-0 w-7 h-7 rounded-full bg-red-100 text-red-700 font-bold flex items-center justify-center">3</span>
+                <div>
+                    <p class="font-semibold text-gray-900">Periksa Keranjang & Alamat Pengiriman</p>
+                    <p class="text-gray-600">Pastikan alamat toko atau warung sudah sesuai untuk menikmati fasilitas bebas ongkir mitra.</p>
+                </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+                <span class="flex-shrink-0 w-7 h-7 rounded-full bg-red-100 text-red-700 font-bold flex items-center justify-center">4</span>
+                <div>
+                    <p class="font-semibold text-gray-900">Checkout & Konfirmasi Pesanan</p>
+                    <p class="text-gray-600">Selesaikan transaksi dan pantau status pengiriman langsung melalui halaman pesanan Anda.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Modal -->
+        <div class="bg-gray-50 px-6 py-3.5 border-t border-gray-200 flex justify-end">
+            <button type="button" onclick="tutupPanduanMitra()" class="bg-red-700 hover:bg-red-800 text-white text-sm font-medium px-5 py-2 rounded-lg transition cursor-pointer">
+                Mengerti
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function bukaPanduanMitra() {
+        const modal = document.getElementById('modalPanduanMitra');
+        document.body.appendChild(modal);
+        modal.style.zIndex = '999999';
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function tutupPanduanMitra() {
+        const modal = document.getElementById('modalPanduanMitra');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    function tutupJikaKlikLuar(event) {
+        if (event.target.id === 'modalPanduanMitra') {
+            tutupPanduanMitra();
+        }
+    }
+</script>
+          </div>
+      </div>
+            <div class="w-full md:w-auto flex justify-center">
           <div class="bg-black/40 backdrop-blur-md p-6 rounded-2xl border border-white/20 text-center space-y-2 shadow-lg">
             <i data-lucide="shield-check" class="w-12 h-12 text-amber-300 mx-auto"></i>
             <p class="font-bold text-lg">100% Produk Original</p>
@@ -146,7 +222,6 @@
         </div>
       </div>
     </section>
-
     <!-- Main Content (Katalog Produk) -->
     <main id="katalog" class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1">
       <!-- Filter Category Tabs -->
