@@ -16,6 +16,7 @@ use App\Http\Controllers\ReportController;
 Route::post('/proses-login', [AuthController::class, 'prosesLogin'])->name('proses.login');
 Route::post('/proses-daftar', [AuthController::class, 'prosesDaftar'])->name('proses.daftar');
 Route::post('/proses-admin-login', [AuthController::class, 'prosesAdminLogin'])->name('proses.admin.login');
+Route::post('/proses-staff-login', [AuthController::class, 'prosesStaffLogin'])->name('proses.staff.login');
 Route::post('/admin/tambah', [ProductController::class, 'store']);
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -66,6 +67,6 @@ Route::prefix('staff')->group(function () {
     Route::get('/penjualan', [StaffController::class, 'kelolaPenjualan'])->name('staff.penjualan');
     Route::post('/proses-pesanan/{id}', [StaffController::class, 'prosesPesanan'])->name('staff.proses');
     Route::post('/atur-pengiriman/{id}', [StaffController::class, 'aturPengiriman'])->name('staff.pengiriman');
-    Route::get('/verifikasi/{id}', [OrderController::class, 'verifikasiPembayaran'])->name('staff.verifikasi');
+    Route::post('/selesaikan-pesanan/{id}', [StaffController::class, 'selesaikanPesanan'])->name('staff.selesai');
     Route::get('/laporan', [ReportController::class, 'laporanPenjualan'])->name('staff.laporan');
 });

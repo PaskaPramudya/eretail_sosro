@@ -485,7 +485,8 @@
       <div class="flex space-x-4">
         <button id="tab-login" onclick="switchAuthTab('login')" class="font-bold text-base border-b-2 border-white pb-0.5">Masuk</button>
         <button id="tab-register" onclick="switchAuthTab('register')" class="font-medium text-base text-amber-200 border-b-2 border-transparent hover:text-white pb-0.5">Daftar Akun</button>
-        <button id="tab-admin" onclick="switchAuthTab('admin')" class="font-medium text-base text-amber-200 border-b-2 border-transparent hover:text-white pb-0.5">Staff / Admin</button>
+         <button id="tab-admin" onclick="switchAuthTab('admin')" class="font-medium text-base text-amber-200 border-b-2 border-transparent hover:text-white pb-0.5">Admin</button>
+         <button id="tab-staff" onclick="switchAuthTab('staff')" class="font-medium text-base text-amber-200 border-b-2 border-transparent hover:text-white pb-0.5">Staff</button>
       </div>
       <button onclick="closeAuthModal()" class="hover:bg-amber-700 p-1 rounded text-amber-200 hover:text-white">
         <i data-lucide="x" class="w-5 h-5"></i>
@@ -529,22 +530,39 @@
         <button type="submit" class="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition text-sm shadow">Daftar Akun Baru</button>
       </form>
 
-      <!-- Form Internal Login (Staff & Admin) -->
-      <form id="form-admin" action="{{ url('/proses-admin-login') }}" method="POST" class="space-y-4 hidden">
-        @csrf
-        <div class="rounded-lg bg-amber-50 border border-amber-200 p-3 text-xs text-amber-900">
-          Akses khusus internal (Staff / Admin Distributor) untuk mengelola operasional dan produk.
+       <!-- Form Login Admin Distributor -->
+       <form id="form-admin" action="{{ url('/proses-admin-login') }}" method="POST" class="space-y-4 hidden">
+         @csrf
+         <div class="rounded-lg bg-amber-50 border border-amber-200 p-3 text-xs text-amber-900">
+           Login khusus Admin Distributor untuk mengelola produk, stok, mitra, pembayaran, dan laporan.
         </div>
         <div>
           <label for="admin-username" class="block text-xs font-semibold text-gray-700 mb-1">Username Internal</label>
-          <input id="admin-username" type="text" name="username" autocomplete="username" placeholder="Masukkan username staff/admin" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
+           <input id="admin-username" type="text" name="username" autocomplete="username" placeholder="Username atau email admin" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
         </div>
         <div>
           <label for="admin-password" class="block text-xs font-semibold text-gray-700 mb-1">Password</label>
           <input id="admin-password" type="password" name="password" autocomplete="current-password" placeholder="Masukkan password" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
         </div>
-        <button type="submit" class="w-full py-2.5 bg-gray-900 hover:bg-black text-white font-bold rounded-lg transition text-sm shadow">Masuk Internal</button>
-      </form>
+         <button type="submit" class="w-full py-2.5 bg-gray-900 hover:bg-black text-white font-bold rounded-lg transition text-sm shadow">Masuk sebagai Admin</button>
+       </form>
+
+       <!-- Form Login Staff Distributor -->
+       <form id="form-staff" action="{{ route('proses.staff.login') }}" method="POST" class="space-y-4 hidden">
+         @csrf
+         <div class="rounded-lg bg-blue-50 border border-blue-200 p-3 text-xs text-blue-900">
+           Login khusus Staff Distributor untuk memproses pesanan dan mengatur pengiriman.
+         </div>
+         <div>
+           <label for="staff-username" class="block text-xs font-semibold text-gray-700 mb-1">Username Staff</label>
+           <input id="staff-username" type="text" name="username" autocomplete="username" placeholder="Username atau email staff" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+         </div>
+         <div>
+           <label for="staff-password" class="block text-xs font-semibold text-gray-700 mb-1">Password</label>
+           <input id="staff-password" type="password" name="password" autocomplete="current-password" placeholder="Masukkan password staff" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+         </div>
+         <button type="submit" class="w-full py-2.5 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-lg transition text-sm shadow">Masuk sebagai Staff</button>
+       </form>
     </div>
   </div>
 </div>
@@ -831,7 +849,7 @@
   }
 
   function switchAuthTab(type) {
-    ["login", "register", "admin"].forEach((name) => {
+     ["login", "register", "admin", "staff"].forEach((name) => {
       const tab = document.getElementById("tab-" + name);
       const form = document.getElementById("form-" + name);
       const active = name === type;
@@ -883,7 +901,24 @@
         confirmButtonColor: "#92400e",
       }).then(() => {
         openAuthModal();
-        switchAuthTab("admin");
+         switchAuthTab("admin");
+       });
+    } else if (status === "staff_login_failed") {
+      Swal.fire({
+        icon: "error",
+        title: "Login Staff Gagal",
+        text: "Username atau password staff salah, atau akun tersebut bukan akun staff.",
+        confirmButtonColor: "#1d4ed8",
+      }).then(() => {
+        openAuthModal();
+        switchAuthTab("staff");
+      });
+    } else if (status === "akses_ditolak") {
+      Swal.fire({
+        icon: "warning",
+        title: "Akses Ditolak",
+        text: "Akun Anda tidak memiliki izin untuk membuka halaman tersebut.",
+        confirmButtonColor: "#d97706",
       });
     } else if (status === "email_exists") {
       Swal.fire({

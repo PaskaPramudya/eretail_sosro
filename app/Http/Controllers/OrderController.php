@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class OrderController extends Controller
 {
@@ -153,7 +154,16 @@ class OrderController extends Controller
     // Verifikasi Pembayaran (Admin & Staff)
     public function verifikasiPembayaran($id)
     {
-        DB::table('pesan')->where('id', $id)->update(['status_bayar' => 'Lunas']);
+        if (session('role') !== 'admin') {
+            abort(403, 'Hanya admin yang boleh memverifikasi pembayaran.');
+        }
+
+        $data = ['status_bayar' => 'Lunas'];
+        if (Schema::hasColumn('pesan', 'status_pesanan')) {
+            $data['status_pesanan'] = 'Lunas';
+        }
+
+        DB::table('pesan')->where('id', $id)->update($data);
         return redirect()->back()->with('success', 'Pembayaran berhasil diverifikasi!');
     }
 }

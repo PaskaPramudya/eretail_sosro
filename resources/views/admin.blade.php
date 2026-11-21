@@ -1,578 +1,197 @@
-<<<<<<< HEAD:admin.php
-<?php
-session_start();
-include 'koneksi.php';
-
-// --- Memeriksa dan menambahkan kolom 'gambar' jika belum ada ---
-$cek_kolom = mysqli_query($koneksi, "SHOW COLUMNS FROM produk LIKE 'gambar'");
-if (mysqli_num_rows($cek_kolom) == 0) {
-    mysqli_query($koneksi, "ALTER TABLE produk ADD COLUMN gambar VARCHAR(255) NULL AFTER stok");
-}
-
-
-// 1. Proses Tambah Produk Baru
-if (isset($_POST['tambah_produk'])) {
-    $nama_produk = mysqli_real_escape_string($koneksi, $_POST['nama_produk']);
-    $kategori = mysqli_real_escape_string($koneksi, $_POST['kategori']);
-    $harga = intval($_POST['harga']);
-    $stok = intval($_POST['stok']);
-
-    $nama_gambar = $_FILES['gambar']['name'];
-    $tmp_gambar = $_FILES['gambar']['tmp_name'];
-
-    if (!empty($nama_gambar)) {
-        move_uploaded_file($tmp_gambar, $nama_gambar);
-    } else {
-        $nama_gambar = '';
-    }
-
-    $query_tambah = "INSERT INTO produk (nama_produk, kategori, harga, stok, gambar) VALUES ('$nama_produk', '$kategori', $harga, $stok, '$nama_gambar')";
-
-    if (mysqli_query($koneksi, $query_tambah)) {
-        echo "<script>window.location.href='admin.php?status=tambah_sukses';</script>";
-    } else {
-        echo "<script>window.location.href='admin.php?status=tambah_gagal';</script>";
-    }
-}
-
-// 2. Proses Edit Nama Gambar
-if (isset($_POST['edit_gambar'])) {
-    $id = mysqli_real_escape_string($koneksi, $_POST['id']);
-    $gambar = mysqli_real_escape_string($koneksi, $_POST['gambar']);
-
-    $query_update_gambar = "UPDATE produk SET gambar = '$gambar' WHERE id = '$id'";
-    if (mysqli_query($koneksi, $query_update_gambar)) {
-        echo "<script>window.location.href='admin.php?status=gambar_sukses';</script>";
-    } else {
-        echo "<script>window.location.href='admin.php?status=gambar_gagal';</script>";
-    }
-}
-
-// 3. Proses Update Stok
-if (isset($_POST['update_stok'])) {
-    $id = mysqli_real_escape_string($koneksi, $_POST['id']);
-    $mode = $_POST['mode']; // 'tambah' atau 'set'
-    $jumlah = intval($_POST['jumlah']);
-
-    if ($mode == 'tambah') {
-        $query = "UPDATE produk SET stok = stok + $jumlah WHERE id = '$id'";
-    } else {
-        $query = "UPDATE produk SET stok = $jumlah WHERE id = '$id'";
-    }
-
-    if (mysqli_query($koneksi, $query)) {
-        echo "<script>window.location.href='admin.php?status=stok_sukses';</script>";
-    } else {
-        echo "<script>window.location.href='admin.php?status=stok_gagal';</script>";
-    }
-}
-
-// 4. Proses Hapus Produk
-if (isset($_GET['hapus'])) {
-    $id_hapus = intval($_GET['hapus']);
-    
-    $query_hapus = "DELETE FROM produk WHERE id = '$id_hapus'";
-
-    if (mysqli_query($koneksi, $query_hapus)) {
-        echo "<script>window.location.href='admin.php?status=hapus_sukses';</script>";
-    } else {
-        echo "<script>window.location.href='admin.php?status=hapus_gagal';</script>";
-    }
-}
-
-// Ambil Seluruh Data Produk
-$data_produk = mysqli_query($koneksi, "SELECT * FROM produk");
-?>
-
-=======
->>>>>>> 440da6656413722635c3849a1852a5a0f6cb366a:resources/views/admin.blade.php
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Admin - E-Retail Sosro</title>
-<<<<<<< HEAD:admin.php
-    <!-- SweetAlert2 CDN untuk Notifikasi -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/sidebar.css">
-    <link rel="stylesheet" href="css/table.css">
-=======
-    <link rel="stylesheet" href="{{ asset('css/base.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/table.css') }}">
->>>>>>> 440da6656413722635c3849a1852a5a0f6cb366a:resources/views/admin.blade.php
+    <title>Dashboard Admin - E-Retail Sosro</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fdf8f5;
-            margin: 0;
-        }
-
-        /* Styling Header ala Navbar Sosro */
-        .header {
-            background-color: #8c3b10 !important;
-            color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        }
-        .header h2 { margin: 0; font-size: 22px; font-weight: bold; }
-        .header-btn-logout {
-            background-color: #e52929;
-            color: white !important;
-            text-decoration: none;
-            padding: 8px 18px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 14px;
-            transition: background 0.3s;
-        }
-        .header-btn-logout:hover { background-color: #c91f1f; }
-
-        /* Styling Container & Table */
-        .container {
-            padding: 30px;
-            max-width: 1200px;
-            margin: auto;
-        }
-        h3 { color: #5a2707; margin-bottom: 20px; }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: #ffffff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            border-radius: 8px;
-            overflow: hidden;
-            border: none;
-        }
-        thead tr {
-            background-color: #eab676;
-            color: #5a2707;
-            text-align: left;
-        }
-        th, td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #f0e4db;
-        }
-        tbody tr:hover { background-color: #fff9f2; }
-
-        /* Styling Tombol Aksi */
-        .btn-tambah { 
-            background-color: #e52929;
-            color: white; 
-            padding: 10px 20px; 
-            border: none; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            margin-bottom: 20px; 
-            font-weight: bold; 
-            box-shadow: 0 2px 5px rgba(229, 41, 41, 0.3);
-            transition: 0.2s;
-        }
-        .btn-tambah:hover { background-color: #c91f1f; }
-        
-        .btn-edit { background-color: #e67e22; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; transition: 0.2s; font-size: 13px;}
-        .btn-edit:hover { background-color: #d35400; }
-        
-        .btn-gambar { background-color: #8c3b10; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; transition: 0.2s; font-size: 13px;}
-        .btn-gambar:hover { background-color: #692c0c; }
-
-        .btn-harga { background-color: #2980b9; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; transition: 0.2s; font-size: 13px;}
-        .btn-harga:hover { background-color: #1f6693; }
-        
-        .btn-hapus { background-color: #c0392b; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; font-size: 13px; display: inline-block; transition: 0.2s;}
-        .btn-hapus:hover { background-color: #922b21; }
-
-        /* Styling Modal (Disesuaikan agar posisinya pas di tengah vertikal & tidak terpotong) */
-        .modal { 
-            display: none; 
-            position: fixed; 
-            z-index: 9999; 
-            left: 0; 
-            top: 0; 
-            width: 100%; 
-            height: 100%; 
-            background-color: rgba(60, 20, 0, 0.6); 
-            overflow: auto;
-        }
-        .modal-content { 
-            background-color: #fff; 
-            position: relative;
-            top: 50%;
-            transform: translateY(-50%);
-            margin: 0 auto; 
-            padding: 20px 25px; 
-            width: 420px; 
-            max-width: 90%;
-            max-height: 85vh; /* Membatasi tinggi agar tidak meluap keluar layar */
-            overflow-y: auto;  /* Menambahkan scrollbar jika isi modal lebih panjang */
-            border-radius: 10px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.25); 
-            border-top: 5px solid #e52929;
-            box-sizing: border-box;
-        }
-        .modal-content h3 { margin-top: 0; margin-bottom: 15px; color: #8c3b10; }
-        .form-group { margin-bottom: 10px; } /* Diperpadat agar elemen form naik */
-        .form-group label { display: block; margin-bottom: 4px; font-weight: 500; color: #444; font-size: 14px; }
-        .form-group input, .form-group select { 
-            width: 100%; 
-            padding: 8px 10px; 
-            box-sizing: border-box; 
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #fafafa;
-            font-size: 14px;
-        }
-        .form-group input:focus, .form-group select:focus { outline: none; border-color: #e52929; }
-        
-        .btn-submit { background-color: #27ae60; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 5px; margin-bottom: 8px;}
-        .btn-submit:hover { background-color: #219150; }
-        .btn-close { background-color: #95a5a6; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold;}
-        .btn-close:hover { background-color: #7f8c8d; }
-
-        /* Amazon-inspired operations workspace */
-        :root { --navy:#131921; --navy2:#232f3e; --orange:#ff9900; --line:#e5e7eb; }
-        body { background:#f3f4f6; color:#172033; }
-        .header { background:var(--navy) !important; padding:12px 30px; border-bottom:4px solid var(--orange); }
-        .header h2 { font-size:20px; letter-spacing:.2px; }
-        .header h2:before { content:'SOSRO'; background:#e52929; padding:8px 12px; border-radius:4px; margin-right:12px; font-size:14px; }
-        .header-btn-logout { background:transparent; border:1px solid #64748b; border-radius:4px; }
-        .container { max-width:1400px; padding:28px 30px 50px; }
-        .container h3 { font-size:26px; color:#172033; margin:0 0 18px; }
-        .container h3:after { content:'  /  Inventaris & katalog produk'; color:#64748b; font-size:14px; font-weight:400; }
-        .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
-        .stat-card { background:#fff; border:1px solid var(--line); border-radius:8px; padding:18px; box-shadow:0 1px 2px #0000000b; }
-        .stat-card small { color:#64748b; display:block; margin-bottom:7px; }
-        .stat-card strong { font-size:25px; color:#172033; }
-        .stat-card i { float:right; color:#ff9900; font-size:24px; font-style:normal; }
-        .toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
-        .search-admin { border:1px solid #cbd5e1; padding:10px 13px; border-radius:5px; width:280px; }
-        .btn-tambah { background:#ff9900; color:#111; border-radius:5px; margin:0; box-shadow:none; }
-        table { border-radius:8px; border:1px solid var(--line); }
-        thead tr { background:var(--navy2); color:#fff; }
-        th,td { padding:14px 15px; }
-        @media(max-width:800px){ .stats{grid-template-columns:repeat(2,1fr)} .toolbar{gap:10px;align-items:stretch;flex-direction:column}.search-admin{width:auto} .container{padding:20px 12px;overflow:auto} table{min-width:950px} }
+        :root { --navy: #131921; --navy-light: #232f3e; --orange: #ff9900; --line: #e5e7eb; }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: #f3f4f6; color: #172033; font-family: Arial, sans-serif; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 16px 30px; color: #fff; background: var(--navy); border-bottom: 4px solid var(--orange); }
+        .header h1 { margin: 0; font-size: 20px; }
+        .header p { margin: 5px 0 0; color: #cbd5e1; font-size: 12px; }
+        .logout { padding: 9px 14px; border: 1px solid #64748b; border-radius: 5px; color: #fff; text-decoration: none; font-size: 13px; }
+        .container { max-width: 1400px; margin: auto; padding: 28px 30px 50px; }
+        .page-title { margin: 0 0 18px; font-size: 26px; }
+        .alert { margin-bottom: 18px; padding: 12px 14px; border-radius: 6px; background: #dcfce7; color: #166534; }
+        .error { margin-bottom: 18px; padding: 12px 14px; border-radius: 6px; background: #fee2e2; color: #991b1b; }
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+        .stat { padding: 18px; background: #fff; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 1px 2px #0000000b; }
+        .stat small { display: block; margin-bottom: 8px; color: #64748b; }
+        .stat strong { font-size: 24px; }
+        .toolbar { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 14px; }
+        .search { width: 300px; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 5px; }
+        button, .button { display: inline-block; padding: 9px 12px; border: 0; border-radius: 5px; color: #fff; cursor: pointer; text-decoration: none; font-size: 13px; }
+        .primary { background: var(--orange); color: #111; }
+        .blue { background: #2563eb; }
+        .brown { background: #8c3b10; }
+        .red { background: #dc2626; }
+        .green { background: #16a34a; }
+        .table-wrap { overflow-x: auto; background: #fff; border: 1px solid var(--line); border-radius: 8px; }
+        table { width: 100%; min-width: 900px; border-collapse: collapse; }
+        th, td { padding: 13px 15px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+        th { color: #fff; background: var(--navy-light); }
+        tr:last-child td { border-bottom: 0; }
+        .stock { display: inline-block; padding: 4px 8px; border-radius: 12px; background: #ffedd5; color: #9a3412; font-weight: bold; }
+        .actions { display: flex; flex-wrap: wrap; gap: 6px; }
+        .modal { display: none; position: fixed; inset: 0; z-index: 10; padding: 30px 15px; overflow-y: auto; background: #0008; }
+        .modal.open { display: block; }
+        .modal-card { width: min(440px, 100%); margin: 5vh auto 0; padding: 22px; background: #fff; border-radius: 8px; }
+        .modal-card h2 { margin-top: 0; }
+        label { display: block; margin: 11px 0 5px; font-weight: bold; font-size: 13px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 5px; }
+        .modal-actions { display: flex; gap: 8px; margin-top: 18px; }
+        .modal-actions button { flex: 1; }
+        .muted { color: #64748b; }
+        @media (max-width: 800px) { .stats { grid-template-columns: repeat(2, 1fr); } .toolbar { align-items: stretch; flex-direction: column; } .search { width: 100%; } .container { padding: 20px 12px; } }
     </style>
 </head>
 <body>
+    <header class="header">
+        <div>
+            <h1>SOSRO - Dashboard Admin</h1>
+            <p>Manajemen produk, inventaris, dan harga</p>
+        </div>
+        <a class="logout" href="{{ route('logout') }}">Keluar</a>
+    </header>
 
-<div class="header">
-    <h2>Dashboard Admin E-Retail</h2>
-    <a href="{{ url('/logout') }}" class="header-btn-logout">Keluar</a>
-</div>
+    <main class="container">
+        <h2 class="page-title">Daftar Produk dan Kelola Stok</h2>
 
-<div class="container">
-    <h3>Daftar Produk & Kelola Stok</h3>
-    <div class="stats">
-        <div class="stat-card"><i>▦</i><small>Total SKU</small><strong>{{ count($data_produk ?? []) }}</strong></div>
-        <div class="stat-card"><i>✓</i><small>Produk Aktif</small><strong>{{ collect($data_produk ?? [])->where('stok', '>', 0)->count() }}</strong></div>
-        <div class="stat-card"><i>!</i><small>Stok Menipis</small><strong>{{ collect($data_produk ?? [])->where('stok', '<=', 10)->count() }}</strong></div>
-        <div class="stat-card"><i>Rp</i><small>Nilai Inventaris</small><strong>Rp {{ number_format(collect($data_produk ?? [])->sum(fn($p) => ($p->harga ?? 0) * ($p->stok ?? 0)), 0, ',', '.') }}</strong></div>
+        @if(session('success'))
+            <div class="alert">{{ session('success') }}</div>
+        @endif
+        @if($errors->any())
+            <div class="error">
+                <strong>Data belum dapat disimpan:</strong>
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        @php
+            $produk = collect($data_produk ?? []);
+            $totalProduk = $produk->count();
+            $produkAktif = $produk->where('stok', '>', 0)->count();
+            $stokMenipis = $produk->where('stok', '<=', 10)->count();
+            $nilaiInventaris = $produk->sum(fn ($item) => ((float) ($item->harga ?? 0)) * ((int) ($item->stok ?? 0)));
+        @endphp
+
+        <section class="stats">
+            <div class="stat"><small>Total Produk</small><strong>{{ $totalProduk }}</strong></div>
+            <div class="stat"><small>Produk Tersedia</small><strong>{{ $produkAktif }}</strong></div>
+            <div class="stat"><small>Stok Menipis</small><strong>{{ $stokMenipis }}</strong></div>
+            <div class="stat"><small>Nilai Inventaris</small><strong>Rp {{ number_format($nilaiInventaris, 0, ',', '.') }}</strong></div>
+        </section>
+
+        <div class="toolbar">
+            <input class="search" id="productSearch" type="search" placeholder="Cari nama atau kategori...">
+            <button class="primary" type="button" onclick="openModal('modalTambah')">+ Tambah Produk</button>
+        </div>
+
+        <div class="table-wrap">
+            <table id="productTable">
+                <thead>
+                    <tr>
+                        <th>ID</th><th>Nama Produk</th><th>Kategori</th><th>Harga</th><th>Stok</th><th>Gambar</th><th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($produk as $product)
+                        <tr class="product-row">
+                            <td>{{ $product->id }}</td>
+                            <td><strong>{{ $product->nama_produk }}</strong></td>
+                            <td>{{ $product->kategori }}</td>
+                            <td>Rp {{ number_format($product->harga, 0, ',', '.') }}</td>
+                            <td><span class="stock">{{ $product->stok }}</span></td>
+                            <td>{{ $product->gambar ?: 'Belum ada' }}</td>
+                            <td>
+                                <div class="actions">
+                                    <button class="blue" type="button" onclick="openStock({{ $product->id }}, @js($product->nama_produk))">Stok</button>
+                                    <button class="brown" type="button" onclick="openImage({{ $product->id }}, @js($product->nama_produk), @js($product->gambar))">Gambar</button>
+                                    <button class="green" type="button" onclick="openPrice({{ $product->id }}, @js($product->nama_produk), {{ (float) $product->harga }})">Harga</button>
+                                    <a class="red button" href="{{ route('admin.products.destroy', $product->id) }}" onclick="return confirm('Hapus produk ini?')">Hapus</a>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="7" class="muted">Belum ada data produk.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div class="modal" id="modalTambah">
+        <div class="modal-card">
+            <h2>Tambah Produk</h2>
+            <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <label>Nama Produk</label><input name="nama_produk" required>
+                <label>Kategori</label><input name="kategori" required>
+                <label>Harga</label><input name="harga" type="number" min="0" required>
+                <label>Stok Awal</label><input name="stok" type="number" min="0" required>
+                <label>Gambar</label><input name="gambar" type="file" accept=".jpg,.jpeg,.png" required>
+                <div class="modal-actions"><button class="green" type="submit">Simpan</button><button class="red" type="button" onclick="closeModal('modalTambah')">Batal</button></div>
+            </form>
+        </div>
     </div>
-    <div class="toolbar"><input class="search-admin" id="productSearch" placeholder="Cari nama atau kategori..." onkeyup="filterProducts()"><button class="btn-tambah" onclick="bukaModalTambah()">+ Tambah Produk Baru</button></div>
 
-    <table cellspacing="0" cellpadding="10">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nama Produk</th>
-                <th>Kategori</th>
-                <th>Harga</th>
-                <th>Stok Saat Ini</th>
-                <th>File Gambar</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-<<<<<<< HEAD:admin.php
-            <?php while ($row = mysqli_fetch_assoc($data_produk)) : ?>
-            <?php 
-                $id_produk = $row['id'];
-            ?>
-            <tr>
-                <td><?= $id_produk; ?></td>
-                <td><strong><?= htmlspecialchars($row['nama_produk']); ?></strong></td>
-                <td><?= htmlspecialchars($row['kategori']); ?></td>
-                <td>Rp <?= number_format($row['harga'], 0, ',', '.'); ?></td>
-                <td><span style="background-color: #ffe8d6; padding: 3px 8px; border-radius: 4px; color: #d35400; font-weight: bold;"><?= isset($row['stok']) ? $row['stok'] : 0; ?></span></td>
-                <td><?= !empty($row['gambar']) ? htmlspecialchars($row['gambar']) : '<i style="color:#aaa;">Belum Ada</i>'; ?></td>
-                <td>
-                    <button class="btn-edit" onclick="bukaModalStok('<?= $id_produk; ?>', '<?= htmlspecialchars(addslashes($row['nama_produk'])); ?>')">Edit Stok</button>
-                    <button class="btn-gambar" onclick="bukaModalGambar('<?= $id_produk; ?>', '<?= htmlspecialchars(addslashes($row['nama_produk'])); ?>')">Edit Gambar</button>
-                    <!-- Perubahan tombol Hapus untuk memicu popup konfirmasi modern -->
-                    <a href="javascript:void(0);" class="btn-hapus" onclick="konfirmasiHapus(<?= $id_produk; ?>)">Hapus</a>
-                </td>
-            </tr>
-            <?php endwhile; ?>
-=======
-            @if(isset($data_produk) && count($data_produk) > 0)
-                @foreach ($data_produk as $row)
-                @php 
-                    $id_produk = $row->id ?? $row->id_produk ?? 0;
-                @endphp
-                <tr class="product-row">
-                    <td>{{ $id_produk }}</td>
-                    <td><strong>{{ $row->nama_produk }}</strong></td>
-                    <td>{{ $row->kategori }}</td>
-                    <td>Rp {{ number_format($row->harga, 0, ',', '.') }}</td>
-                    <td><span style="background-color: #ffe8d6; padding: 3px 8px; border-radius: 4px; color: #d35400; font-weight: bold;">{{ $row->stok ?? 0 }}</span></td>
-                    <td>
-                        @if(!empty($row->gambar))
-                            {{ $row->gambar }}
-                        @else
-                            <i style="color:#aaa;">Belum Ada</i>
-                        @endif
-                    </td>
-                    <td>
-                        <button class="btn-edit" onclick="bukaModalStok('{{ $id_produk }}', '{{ addslashes($row->nama_produk) }}')">Edit Stok</button>
-                        <button class="btn-harga" onclick="bukaModalHarga('{{ $id_produk }}', '{{ addslashes($row->nama_produk) }}', {{ $row->harga }})">Edit Harga</button>
-                        <button class="btn-gambar" onclick="bukaModalGambar('{{ $id_produk }}', '{{ addslashes($row->nama_produk) }}')">Edit Gambar</button>
-                        <a href="{{ url('/admin/hapus/' . $id_produk) }}" class="btn-hapus" onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">Hapus</a>
-                    </td>
-                </tr>
-                @endforeach
-            @else
-                <tr>
-                    <td colspan="7" style="text-align: center; color: #888;">Belum ada data produk.</td>
-                </tr>
-            @endif
->>>>>>> 440da6656413722635c3849a1852a5a0f6cb366a:resources/views/admin.blade.php
-        </tbody>
-    </table>
-</div>
-
-<!-- Modal 1: Tambah Produk Baru -->
-<div id="modalTambah" class="modal">
-    <div class="modal-content">
-        <h3>Tambah Produk Baru</h3>
-        <form action="{{ url('/admin/tambah') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            <div class="form-group">
-                <label>Nama Produk:</label>
-                <input type="text" name="nama_produk" required placeholder="Contoh: Susu Kedelai">
-            </div>
-            <div class="form-group">
-                <label>Kategori:</label>
-                <input type="text" name="kategori" required placeholder="Contoh: Minuman">
-            </div>
-            <div class="form-group">
-                <label>Harga (Rp):</label>
-                <input type="number" name="harga" min="0" required placeholder="Contoh: 5000">
-            </div>
-            <div class="form-group">
-                <label>Stok Awal:</label>
-                <input type="number" name="stok" min="0" required placeholder="Contoh: 50">
-            </div>
-            <div class="form-group">
-                <label>File Gambar:</label>
-                <input type="file" name="gambar" accept="image/*" required>
-            </div>
-            <button type="submit" name="tambah_produk" class="btn-submit">Simpan Produk</button>
-            <button type="button" class="btn-close" onclick="tutupModalTambah()">Batal</button>
-        </form>
+    <div class="modal" id="modalStok">
+        <div class="modal-card">
+            <h2>Perbarui Stok</h2>
+            <form action="{{ route('admin.products.updateStok') }}" method="POST">
+                @csrf
+                <input type="hidden" name="id" id="stockId">
+                <label>Produk</label><input id="stockName" readonly>
+                <label>Mode</label><select name="mode"><option value="tambah">Tambah dari stok sekarang</option><option value="set">Tetapkan jumlah stok</option></select>
+                <label>Jumlah</label><input name="jumlah" type="number" min="1" required>
+                <div class="modal-actions"><button class="green" type="submit">Simpan</button><button class="red" type="button" onclick="closeModal('modalStok')">Batal</button></div>
+            </form>
+        </div>
     </div>
-</div>
 
-<!-- Modal 2: Edit Stok -->
-<div id="modalStok" class="modal">
-    <div class="modal-content">
-        <h3>Kelola Stok Barang</h3>
-        <form action="{{ url('/admin/update-stok') }}" method="POST">
-            @csrf
-            <input type="hidden" name="id" id="modal_stok_id">
-            <div class="form-group">
-                <label>Nama Produk:</label>
-                <input type="text" id="modal_stok_nama" readonly style="background-color: #eee;">
-            </div>
-            <div class="form-group">
-                <label>Pilih Aksi:</label>
-                <select name="mode" required>
-                    <option value="tambah">Tambah dari Stok Sekarang (+)</option>
-                    <option value="set">Ubah Langsung Total Stok (=)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Jumlah Barang:</label>
-                <input type="number" name="jumlah" min="1" required placeholder="Masukkan jumlah">
-            </div>
-            <button type="submit" name="update_stok" class="btn-submit">Simpan Stok</button>
-            <button type="button" class="btn-close" onclick="tutupModalStok()">Batal</button>
-        </form>
+    <div class="modal" id="modalGambar">
+        <div class="modal-card">
+            <h2>Perbarui Gambar</h2>
+            <form action="{{ route('admin.products.editGambar') }}" method="POST">
+                @csrf
+                <input type="hidden" name="id" id="imageId">
+                <label>Produk</label><input id="imageName" readonly>
+                <label>Nama file gambar</label><input name="gambar" id="imageFile" required>
+                <div class="modal-actions"><button class="green" type="submit">Simpan</button><button class="red" type="button" onclick="closeModal('modalGambar')">Batal</button></div>
+            </form>
+        </div>
     </div>
-</div>
 
-<!-- Modal 3: Edit Gambar -->
-<div id="modalGambar" class="modal">
-    <div class="modal-content">
-        <h3>Edit Nama Gambar</h3>
-        <form action="{{ url('/admin/edit-gambar') }}" method="POST">
-            @csrf
-            <input type="hidden" name="id" id="modal_gambar_id">
-            <div class="form-group">
-                <label>Nama Produk:</label>
-                <input type="text" id="modal_gambar_nama" readonly style="background-color: #eee;">
-            </div>
-            <div class="form-group">
-                <label>Nama File Gambar (termasuk ekstensi):</label>
-                <input type="text" name="gambar" id="modal_gambar_file" required placeholder="Contoh: susu_kedelai.jpg">
-            </div>
-            <button type="submit" name="edit_gambar" class="btn-submit">Simpan Gambar</button>
-            <button type="button" class="btn-close" onclick="tutupModalGambar()">Batal</button>
-        </form>
+    <div class="modal" id="modalHarga">
+        <div class="modal-card">
+            <h2>Perbarui Harga</h2>
+            <form action="{{ route('admin.products.editHarga') }}" method="POST">
+                @csrf
+                <input type="hidden" name="id" id="priceId">
+                <label>Produk</label><input id="priceName" readonly>
+                <label>Harga Baru</label><input name="harga" id="priceValue" type="number" min="0" required>
+                <div class="modal-actions"><button class="green" type="submit">Simpan</button><button class="red" type="button" onclick="closeModal('modalHarga')">Batal</button></div>
+            </form>
+        </div>
     </div>
-</div>
 
-<!-- Modal 4: Edit Harga -->
-<div id="modalHarga" class="modal">
-    <div class="modal-content">
-        <h3>Edit Harga Produk</h3>
-        <form action="{{ url('/admin/edit-harga') }}" method="POST">
-            @csrf
-            <input type="hidden" name="id" id="modal_harga_id">
-            <div class="form-group">
-                <label>Nama Produk:</label>
-                <input type="text" id="modal_harga_nama" readonly style="background-color: #eee;">
-            </div>
-            <div class="form-group">
-                <label>Harga Saat Ini (Rp):</label>
-                <input type="text" id="modal_harga_lama" readonly style="background-color: #eee; color: #888;">
-            </div>
-            <div class="form-group">
-                <label>Harga Baru (Rp):</label>
-                <input type="number" name="harga" id="modal_harga_baru" min="0" required placeholder="Contoh: 5000">
-            </div>
-            <button type="submit" class="btn-submit">💾 Simpan Harga</button>
-            <button type="button" class="btn-close" onclick="tutupModalHarga()">Batal</button>
-        </form>
-    </div>
-</div>
-
-<script>
-// Fungsi untuk membuka & menutup Modal HTML standar
-function bukaModalTambah() { document.getElementById('modalTambah').style.display = 'block'; }
-function tutupModalTambah() { document.getElementById('modalTambah').style.display = 'none'; }
-
-function bukaModalStok(id, nama) {
-    document.getElementById('modal_stok_id').value = id;
-    document.getElementById('modal_stok_nama').value = nama;
-    document.getElementById('modalStok').style.display = 'block';
-}
-function tutupModalStok() { document.getElementById('modalStok').style.display = 'none'; }
-
-function bukaModalGambar(id, nama) {
-    document.getElementById('modal_gambar_id').value = id;
-    document.getElementById('modal_gambar_nama').value = nama;
-    document.getElementById('modalGambar').style.display = 'block';
-}
-function tutupModalGambar() { document.getElementById('modalGambar').style.display = 'none'; }
-
-<<<<<<< HEAD
-// Fungsi SweetAlert untuk Konfirmasi Hapus
-function konfirmasiHapus(id) {
-    Swal.fire({
-        title: 'Apakah Anda yakin?',
-        text: "Produk yang dihapus tidak dapat dikembalikan!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Ya, Hapus!',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = 'admin.php?hapus=' + id;
-        }
-    })
-}
-
-// Fungsi SweetAlert untuk Notifikasi Sukses/Gagal setelah Halaman di-Reload
-window.onload = function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const status = urlParams.get('status');
-
-    if (status) {
-        let title = '';
-        let text = '';
-        let icon = 'success'; // Default icon
-
-        switch(status) {
-            case 'tambah_sukses':
-                title = 'Berhasil!';
-                text = 'Produk baru berhasil ditambahkan.';
-                break;
-            case 'tambah_gagal':
-                title = 'Gagal!';
-                text = 'Gagal menambahkan produk baru.';
-                icon = 'error';
-                break;
-            case 'gambar_sukses':
-                title = 'Berhasil!';
-                text = 'Gambar produk berhasil diperbarui.';
-                break;
-            case 'gambar_gagal':
-                title = 'Gagal!';
-                text = 'Gagal memperbarui gambar produk.';
-                icon = 'error';
-                break;
-            case 'stok_sukses':
-                title = 'Berhasil!';
-                text = 'Stok barang berhasil diperbarui.';
-                break;
-            case 'stok_gagal':
-                title = 'Gagal!';
-                text = 'Gagal memperbarui stok barang.';
-                icon = 'error';
-                break;
-            case 'hapus_sukses':
-                title = 'Terhapus!';
-                text = 'Produk berhasil dihapus dari sistem.';
-                break;
-            case 'hapus_gagal':
-                title = 'Gagal!';
-                text = 'Gagal menghapus produk.';
-                icon = 'error';
-                break;
-        }
-
-        if(title !== '') {
-            Swal.fire({
-                icon: icon,
-                title: title,
-                text: text,
-                showConfirmButton: false,
-                timer: 2000,
-                backdrop: `rgba(0,0,0,0.4)`
-            }).then(() => {
-                // Menghilangkan parameter status dari URL agar alert tidak muncul lagi jika di-refresh
-                window.history.replaceState({}, document.title, window.location.pathname);
-            });
-        }
-    }
-=======
-function bukaModalHarga(id, nama, hargaSekarang) {
-    document.getElementById('modal_harga_id').value = id;
-    document.getElementById('modal_harga_nama').value = nama;
-    document.getElementById('modal_harga_lama').value = 'Rp ' + Number(hargaSekarang).toLocaleString('id-ID');
-    document.getElementById('modal_harga_baru').value = hargaSekarang;
-    document.getElementById('modalHarga').style.display = 'block';
-}
-function tutupModalHarga() { document.getElementById('modalHarga').style.display = 'none'; }
-function filterProducts() {
-    const query = document.getElementById('productSearch').value.toLowerCase();
-    document.querySelectorAll('.product-row').forEach(row => {
-        row.style.display = row.innerText.toLowerCase().includes(query) ? '' : 'none';
-    });
->>>>>>> 47a74f63e0bbf7c919ada24e4417ce345c79a159
-}
-</script>
-
+    <script>
+        function openModal(id) { document.getElementById(id).classList.add('open'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+        function openStock(id, name) { document.getElementById('stockId').value = id; document.getElementById('stockName').value = name; openModal('modalStok'); }
+        function openImage(id, name, image) { document.getElementById('imageId').value = id; document.getElementById('imageName').value = name; document.getElementById('imageFile').value = image || ''; openModal('modalGambar'); }
+        function openPrice(id, name, price) { document.getElementById('priceId').value = id; document.getElementById('priceName').value = name; document.getElementById('priceValue').value = price; openModal('modalHarga'); }
+        document.querySelectorAll('.modal').forEach((modal) => modal.addEventListener('click', (event) => { if (event.target === modal) modal.classList.remove('open'); }));
+        document.getElementById('productSearch').addEventListener('input', function () {
+            const keyword = this.value.toLowerCase();
+            document.querySelectorAll('.product-row').forEach((row) => { row.style.display = row.innerText.toLowerCase().includes(keyword) ? '' : 'none'; });
+        });
+    </script>
 </body>
 </html>

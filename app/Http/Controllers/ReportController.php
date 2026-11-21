@@ -10,8 +10,13 @@ class ReportController extends Controller
     // Laporan Penjualan (Admin & Staff Distributor)
     public function laporanPenjualan()
     {
-        $laporan = DB::table('pesanan')
-            ->where('status', 'Selesai')
+        if (!in_array(session('role'), ['admin', 'staff'], true)) {
+            return redirect('/pelanggan?status=akses_ditolak');
+        }
+
+        $laporan = DB::table('pesan')
+            ->whereIn('status_bayar', ['Lunas', 'Selesai'])
+            ->orderByDesc('id')
             ->get();
 
         return view('admin', compact('laporan'));

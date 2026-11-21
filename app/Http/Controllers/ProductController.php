@@ -18,9 +18,8 @@ class ProductController extends Controller
     // Dashboard Manajemen Produk Admin
     public function adminIndex()
     {
-        // Cek session admin
-        if (!session()->has('admin')) {
-            return redirect('/pelanggan?status=admin_login_failed');
+        if (session('role') !== 'admin') {
+            return redirect('/pelanggan?status=akses_ditolak');
         }
 
         $data_produk = Product::orderBy('id', 'desc')->get();
@@ -30,6 +29,10 @@ class ProductController extends Controller
     // Simpan produk baru (Admin)
     public function store(Request $request)
     {
+        if (session('role') !== 'admin') {
+            abort(403, 'Hanya admin yang boleh mengelola produk.');
+        }
+
         $request->validate([
             'nama_produk' => 'required|string|max:255',
             'kategori'    => 'required|string|max:100',
@@ -59,6 +62,10 @@ class ProductController extends Controller
     // Update stok produk (Admin)
     public function updateStok(Request $request)
     {
+        if (session('role') !== 'admin') {
+            abort(403, 'Hanya admin yang boleh mengubah stok.');
+        }
+
         $request->validate([
             'id'     => 'required',
             'mode'   => 'required|in:tambah,set',
@@ -81,6 +88,10 @@ class ProductController extends Controller
     // Edit nama gambar (Admin)
     public function editGambar(Request $request)
     {
+        if (session('role') !== 'admin') {
+            abort(403, 'Hanya admin yang boleh mengubah gambar.');
+        }
+
         $request->validate([
             'id'     => 'required',
             'gambar' => 'required|string',
@@ -98,6 +109,10 @@ class ProductController extends Controller
     // Edit harga produk (Admin)
     public function editHarga(Request $request)
     {
+        if (session('role') !== 'admin') {
+            abort(403, 'Hanya admin yang boleh mengubah harga.');
+        }
+
         $request->validate([
             'id'    => 'required',
             'harga' => 'required|numeric|min:0',
@@ -113,6 +128,10 @@ class ProductController extends Controller
     // Hapus produk (Admin)
     public function destroy($id)
     {
+        if (session('role') !== 'admin') {
+            abort(403, 'Hanya admin yang boleh menghapus produk.');
+        }
+
         $product = Product::findOrFail($id);
         $product->delete();
 
