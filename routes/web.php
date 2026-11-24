@@ -30,6 +30,7 @@ Route::get('/pelanggan', [ProductController::class, 'index'])->name('pelanggan')
 
 // Pemesanan Online
 Route::post('/proses-pesan', [OrderController::class, 'prosesPesan'])->name('proses.pesan');
+Route::post('/midtrans/notification', [OrderController::class, 'midtransNotification'])->name('midtrans.notification');
 Route::get('/faktur/{id}', [OrderController::class, 'fakturPenjualan'])->name('pelanggan.faktur');
 Route::get('/tracking/{id}', [OrderController::class, 'trackingPengiriman'])->name('pelanggan.tracking');
 

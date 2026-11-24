@@ -1,547 +1,197 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
+-- MariaDB dump 10.19  Distrib 10.4.32-MariaDB, for Win64 (AMD64)
 --
--- Host: 127.0.0.1
--- Waktu pembuatan: 16 Nov 2026 pada 16.20
--- Versi server: 10.4.32-MariaDB
--- Versi PHP: 8.5.12
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
+-- Host: 127.0.0.1    Database: ecommers_sosro
+-- ------------------------------------------------------
+-- Server version	10.4.32-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Database: `ecommers_sosro`
+-- Table structure for table `mitra`
 --
 
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `cache`
---
-
-CREATE TABLE `cache` (
-  `key` varchar(255) NOT NULL,
-  `value` mediumtext NOT NULL,
-  `expiration` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `cache_locks`
---
-
-CREATE TABLE `cache_locks` (
-  `key` varchar(255) NOT NULL,
-  `owner` varchar(255) NOT NULL,
-  `expiration` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `failed_jobs`
---
-
-CREATE TABLE `failed_jobs` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `uuid` varchar(255) NOT NULL,
-  `connection` text NOT NULL,
-  `queue` text NOT NULL,
-  `payload` longtext NOT NULL,
-  `exception` longtext NOT NULL,
-  `failed_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `jobs`
---
-
-CREATE TABLE `jobs` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `queue` varchar(255) NOT NULL,
-  `payload` longtext NOT NULL,
-  `attempts` tinyint(3) UNSIGNED NOT NULL,
-  `reserved_at` int(10) UNSIGNED DEFAULT NULL,
-  `available_at` int(10) UNSIGNED NOT NULL,
-  `created_at` int(10) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `job_batches`
---
-
-CREATE TABLE `job_batches` (
-  `id` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `total_jobs` int(11) NOT NULL,
-  `pending_jobs` int(11) NOT NULL,
-  `failed_jobs` int(11) NOT NULL,
-  `failed_job_ids` longtext NOT NULL,
-  `options` mediumtext DEFAULT NULL,
-  `cancelled_at` int(11) DEFAULT NULL,
-  `created_at` int(11) NOT NULL,
-  `finished_at` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `migrations`
---
-
-CREATE TABLE `migrations` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `migration` varchar(255) NOT NULL,
-  `batch` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data untuk tabel `migrations`
---
-
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
-(1, '0001_01_01_000000_create_users_table', 1),
-(2, '0001_01_01_000001_create_cache_table', 1),
-(3, '0001_01_01_000002_create_jobs_table', 1),
-(4, '2026_10_26_172251_create_products_table', 1),
-(5, '2026_10_26_172252_create_mitras_table', 1),
-(6, '2026_10_26_172253_create_orders_table', 1);
-
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `mitra`
---
-
+DROP TABLE IF EXISTS `mitra`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `mitra` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `nama_mitra` varchar(100) NOT NULL,
   `kontak` varchar(30) NOT NULL,
   `wilayah` varchar(100) NOT NULL,
-  `status` varchar(20) DEFAULT 'Aktif'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `status` varchar(20) DEFAULT 'Aktif',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data untuk tabel `mitra`
+-- Dumping data for table `mitra`
 --
 
-INSERT INTO `mitra` (`id`, `nama_mitra`, `kontak`, `wilayah`, `status`) VALUES
-(1, 'PT. Indomarco Prismatama', '0812-3456-7890', 'DKI Jakarta', 'Aktif'),
-(2, 'CV. Sumber Makmur Jaya', '0857-1122-3344', 'Jawa Barat', 'Aktif');
-
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `mitras`
---
-
-CREATE TABLE `mitras` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `store_name` varchar(255) NOT NULL,
-  `owner_name` varchar(255) NOT NULL,
-  `phone` varchar(255) NOT NULL,
-  `address` text NOT NULL,
-  `status` enum('pending','active','rejected') NOT NULL DEFAULT 'pending',
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
+LOCK TABLES `mitra` WRITE;
+/*!40000 ALTER TABLE `mitra` DISABLE KEYS */;
+INSERT INTO `mitra` VALUES (1,'PT. Indomarco Prismatama','0812-3456-7890','DKI Jakarta','Aktif'),(2,'CV. Sumber Makmur Jaya','0857-1122-3344','Jawa Barat','Aktif');
+/*!40000 ALTER TABLE `mitra` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Struktur dari tabel `orders`
+-- Table structure for table `pengguna`
 --
 
-CREATE TABLE `orders` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `customer_name` varchar(255) NOT NULL,
-  `customer_phone` varchar(255) NOT NULL,
-  `shipping_address` text NOT NULL,
-  `product_id` bigint(20) UNSIGNED NOT NULL,
-  `quantity` int(11) NOT NULL,
-  `total_price` decimal(12,2) NOT NULL,
-  `status` enum('pending','processed','completed','cancelled') NOT NULL DEFAULT 'pending',
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `password_reset_tokens`
---
-
-CREATE TABLE `password_reset_tokens` (
-  `email` varchar(255) NOT NULL,
-  `token` varchar(255) NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `pengguna`
---
-
+DROP TABLE IF EXISTS `pengguna`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `pengguna` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `nama_lengkap` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL,
   `no_hp` varchar(20) DEFAULT NULL,
+  `password` varchar(255) NOT NULL,
   `role` enum('pelanggan','admin') DEFAULT 'pelanggan',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data untuk tabel `pengguna`
+-- Dumping data for table `pengguna`
 --
 
-INSERT INTO `pengguna` (`id`, `nama_lengkap`, `email`, `password`, `no_hp`, `role`, `created_at`) VALUES
-(1, 'albert', 'albert@gmail.com', '12345678', '085710635201', 'pelanggan', '2026-10-13 14:08:10'),
-(2, '', '', '', NULL, 'pelanggan', '2026-10-13 17:18:01');
-
--- --------------------------------------------------------
+LOCK TABLES `pengguna` WRITE;
+/*!40000 ALTER TABLE `pengguna` DISABLE KEYS */;
+INSERT INTO `pengguna` VALUES (1,'Ahmad Fauzi','ahmad@gmail.com','081299887766','123456','pelanggan','2026-10-14 08:34:44'),(2,'Admin Sosro','admin@sosro.com','081122334455','admin123','admin','2026-10-14 08:34:44'),(3,'TokoDimas','dimasgalih741@gmail.com','085842623945','123456','pelanggan','2026-10-14 08:38:00'),(4,'dimas','dimas@gmail.com','123456789','12345678','pelanggan','2026-10-14 09:24:44'),(5,'Bima','bimadungu@gmail.com','086353752583','11111111','pelanggan','2026-10-15 17:59:02'),(6,'DEDI','pes06778@gmail.com','085842623945','1111','pelanggan','2026-10-20 12:18:55'),(7,'TokoCleimen','kaisaclemens@gmail.com','0852374623842','1111','pelanggan','2026-11-10 14:47:04'),(8,'Raja Sosro','sosro1@gmail.com','12345678902','sosro1','pelanggan','2026-11-10 16:56:31'),(9,'uzik','uzik123@gmail.com','089898898898','123456','pelanggan','2026-11-21 04:19:01');
+/*!40000 ALTER TABLE `pengguna` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Struktur dari tabel `pesan`
+-- Table structure for table `pesan`
 --
 
+DROP TABLE IF EXISTS `pesan`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `pesan` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `nama_pemesan` varchar(100) NOT NULL,
   `no_wa` varchar(20) NOT NULL,
   `metode_pengiriman` varchar(50) NOT NULL,
+  `nomor_resi` varchar(100) DEFAULT NULL,
   `alamat` text NOT NULL,
   `total_bayar` int(11) NOT NULL,
   `tanggal` date NOT NULL,
-  `status_bayar` varchar(20) DEFAULT 'Pending'
+  `status_bayar` varchar(20) DEFAULT 'Pending',
+  `status_pesanan` varchar(30) NOT NULL DEFAULT 'Menunggu Pembayaran',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pesan`
+--
+
+LOCK TABLES `pesan` WRITE;
+/*!40000 ALTER TABLE `pesan` DISABLE KEYS */;
+INSERT INTO `pesan` VALUES (1,'TokoDimas','085842623945','Armada Sosro (Grosir)',NULL,'tumut',118000,'2026-10-15','Dalam Pengiriman','Dalam Pengiriman'),(2,'TokoDimas','085842623945','Armada Sosro (Grosir)',NULL,'tumut',118000,'2026-10-15','Dalam Pengiriman','Dalam Pengiriman'),(3,'TokoDimas','085942623945','Armada Sosro (Grosir)',NULL,'Minggir',118000,'2026-10-26','Diproses','Dalam Pengiriman'),(4,'TokoDEDI','085942623945','Armada Sosro (Grosir)',NULL,'MINGGIR',0,'2026-10-27','Dalam Pengiriman','Dalam Pengiriman'),(5,'TokoDEDI','085942623945','Armada Sosro (Grosir)',NULL,'yaya',0,'2026-10-27','Pending','Menunggu Pembayaran'),(6,'TokoDEDI','085942623945','Armada Sosro (Grosir)',NULL,'Tumut',0,'2026-10-28','Pending','Menunggu Pembayaran'),(7,'TokoDEDI','085942623945','Armada Sosro (Grosir)',NULL,'minggir',0,'2026-10-28','Pending','Menunggu Pembayaran'),(8,'TokoKembar','085171939748','Armada Sosro (Grosir)',NULL,'Ndalangan',0,'2026-10-28','Dalam Pengiriman','Dalam Pengiriman'),(9,'Toko DEDI','08573842349238','Armada Sosro (Grosir)',NULL,'Paingan',0,'2026-10-28','Pending','Menunggu Pembayaran'),(10,'Toko Sipno','08642568755','Armada Sosro (Grosir)',NULL,'Paingan Depan USD',0,'2026-10-28','Dalam Pengiriman','Selesai'),(11,'toko paska','08312394248','Armada Sosro (Grosir)',NULL,'Budur',0,'2026-11-06','Pending','Menunggu Pembayaran'),(12,'TokoCleimen','081285802865','Armada Sosro (Grosir)',NULL,'wifdlkb',155000,'2026-11-10','Pending','Menunggu Pembayaran'),(13,'TokoCleimen','08312394248','Armada Sosro (Grosir)',NULL,'wedomartani',310,'2026-11-10','Pending','Menunggu Pembayaran'),(14,'dimas','0851264712834','Armada Sosro (Grosir)',NULL,'diro',620,'2026-11-10','Pending','Menunggu Pembayaran'),(15,'dimas','1496644337','Armada Sosro (Grosir)',NULL,'waterboom',600000,'2026-11-10','Pending','Menunggu Pembayaran'),(16,'dimas','1496644337','Armada Sosro (Grosir)',NULL,'https://maps.app.goo.gl/RCSgxrH7TftykCUC9?g_st=iw',275000,'2026-11-10','Pending','Menunggu Pembayaran'),(17,'dimas','1496644337','Ambil Sendiri di Depot',NULL,'Ambil Sendiri di Depot Sosro - 767J+5G9, Diro, Sendangmulyo, Kec. Minggir, Kabupaten Sleman, DIY 55562',275000,'2026-11-10','Pending','Menunggu Pembayaran'),(19,'dimas','1496644337','Armada Sosro (Grosir)',NULL,'https://maps.app.goo.gl/RCSgxrH7TftykCUC9?g_st=iw',220000,'2026-11-10','Pending','Menunggu Pembayaran'),(20,'uzik','089898898989','Armada Sosro (Grosir)',NULL,'https://maps.app.goo.gl/PusXYkDg8kA7Z7xM8',31000,'2026-11-21','Pending','Menunggu Pembayaran'),(21,'uzik','099999999','Ambil Sendiri di Depot',NULL,'Ambil Sendiri di Depot Sosro - 767J+5G9, Diro, Sendangmulyo, Kec. Minggir, Kabupaten Sleman, DIY 55562',31000,'2026-11-21','Pending','Menunggu Pembayaran');
+/*!40000 ALTER TABLE `pesan` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `pesanan`
+--
+
+DROP TABLE IF EXISTS `pesanan`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `pesanan` (
+  `id_pesanan` int(11) NOT NULL AUTO_INCREMENT,
+  `nomor_telepon` varchar(20) DEFAULT NULL,
+  `detail_pesanan` text DEFAULT NULL,
+  `jumlah` int(11) DEFAULT NULL,
+  `tanggal_pesan` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id_pesanan`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data untuk tabel `pesan`
+-- Dumping data for table `pesanan`
 --
 
-INSERT INTO `pesan` (`id`, `nama_pemesan`, `no_wa`, `metode_pengiriman`, `alamat`, `total_bayar`, `tanggal`, `status_bayar`) VALUES
-(1, 'Toko Kelontong Berkah', '081299887766', 'Armada Sosro (Grosir)', 'Jl. Merdeka No. 12', 1200000, '2026-10-12', 'Lunas');
-
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `products`
---
-
-CREATE TABLE `products` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `description` text DEFAULT NULL,
-  `price` decimal(12,2) NOT NULL,
-  `stock` int(11) NOT NULL DEFAULT 0,
-  `image` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
+LOCK TABLES `pesanan` WRITE;
+/*!40000 ALTER TABLE `pesanan` DISABLE KEYS */;
+/*!40000 ALTER TABLE `pesanan` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Struktur dari tabel `produk`
+-- Table structure for table `produk`
 --
 
+DROP TABLE IF EXISTS `produk`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `produk` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `nama_produk` varchar(100) NOT NULL,
   `kategori` varchar(50) NOT NULL,
   `harga` int(11) NOT NULL,
   `stok` int(11) NOT NULL,
-  `gambar` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `gambar` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data untuk tabel `produk`
+-- Dumping data for table `produk`
 --
 
-INSERT INTO `produk` (`id`, `nama_produk`, `kategori`, `harga`, `stok`, `gambar`) VALUES
-(1, 'Teh Botol Sosro RGB 220ml', 'Minuman', 4000, 120, NULL),
-(2, 'Fruit Tea Apple 350ml', 'Minuman', 6000, 85, NULL),
-(3, 'TEBS Sparkling 500ml', 'Minuman', 7500, 45, NULL);
-
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `sessions`
---
-
-CREATE TABLE `sessions` (
-  `id` varchar(255) NOT NULL,
-  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `ip_address` varchar(45) DEFAULT NULL,
-  `user_agent` text DEFAULT NULL,
-  `payload` longtext NOT NULL,
-  `last_activity` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+LOCK TABLES `produk` WRITE;
+/*!40000 ALTER TABLE `produk` DISABLE KEYS */;
+INSERT INTO `produk` VALUES (1,'Teh Botol Sosro RGB 220ml','Minuman',4000,120,'teh botol 220ml.jpg'),(2,'Fruit Tea Apple 350ml','Minuman',6000,85,'teh apel.jpg'),(3,'TEBS Sparkling 500ml','Minuman',7500,45,'Tebss.jpg'),(4,'Teh Botol Sosro PET 350ml','Minuman',45000,100,'teh 350ml.jpg'),(5,'Teh Botol Sosro PET 450ml','Minuman',60000,70,'teh pet 450ml.jpg'),(6,'Teh Botol Sosro PET 1 Liter','Minuman',105000,50,'teh 1ltr.jpg'),(7,'Teh Botol Kotak 250ml (Dus)','Minuman',78000,30,'Teh Botol Kotak 250ml (Dus).jpg'),(8,'Fruit Tea Blackcurrant 350ml','Minuman',60000,89,'fruittea250bc.jpg'),(9,'TEBS Sparkling Can 330ml','Minuman',55000,20,'tebs can.jpg'),(10,'Prima 220ml','Minuman',31000,24,'prima220ml.png'),(12,'Prima 220ml','Minuman',31000,18,'prima220ml.png');
+/*!40000 ALTER TABLE `produk` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Dumping data untuk tabel `sessions`
+-- Table structure for table `staff`
 --
 
-INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('bP9B8gRVl2so2IzBkqOxagextR1GnBM3FTN6kjfy', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.145.3 Chrome/150.0.7871.250 Electron/43.8.3 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiZm5MS1RxbWVOYmFvVjIzYWVNa1R5dEZRamtldUFTQlJINXFaRDNhVyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7czoxNToicGVsYW5nZ2FuLmluZGV4Ijt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1794844257),
-('u9ncrbE0YAHFkIfMXRsBpApzTc0x3ynxHyf1fTJU', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoicUxjZVQ0V3kwVVhPaXR1SmxpSm1jUzNuV2tKdDZ0NmFoR1paOVpEZCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7czoxNToicGVsYW5nZ2FuLmluZGV4Ijt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo0OiJuYW1hIjtzOjY6ImFsYmVydCI7fQ==', 1794845787);
-
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `staff`
---
-
+DROP TABLE IF EXISTS `staff`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `staff` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `nama_staff` varchar(100) NOT NULL,
   `jabatan` varchar(50) NOT NULL,
-  `email` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data untuk tabel `staff`
---
-
-INSERT INTO `staff` (`id`, `nama_staff`, `jabatan`, `email`) VALUES
-(1, 'Budi Santoso', 'Manager Gudang', 'budi.s@sosro.id'),
-(2, 'Siti Rahma', 'Staff Admin Logistics', 'siti.r@sosro.id');
-
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `users`
---
-
-CREATE TABLE `users` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `email_verified_at` timestamp NULL DEFAULT NULL,
+  `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `remember_token` varchar(100) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Indexes for dumped tables
+-- Dumping data for table `staff`
 --
 
---
--- Indeks untuk tabel `cache`
---
-ALTER TABLE `cache`
-  ADD PRIMARY KEY (`key`),
-  ADD KEY `cache_expiration_index` (`expiration`);
+LOCK TABLES `staff` WRITE;
+/*!40000 ALTER TABLE `staff` DISABLE KEYS */;
+INSERT INTO `staff` VALUES (1,'admin','admin ','admin@sosro.id','admin'),(2,'staff','Staff','staff@sosro.id','staff');
+/*!40000 ALTER TABLE `staff` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
---
--- Indeks untuk tabel `cache_locks`
---
-ALTER TABLE `cache_locks`
-  ADD PRIMARY KEY (`key`),
-  ADD KEY `cache_locks_expiration_index` (`expiration`);
-
---
--- Indeks untuk tabel `failed_jobs`
---
-ALTER TABLE `failed_jobs`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
-
---
--- Indeks untuk tabel `jobs`
---
-ALTER TABLE `jobs`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `jobs_queue_index` (`queue`);
-
---
--- Indeks untuk tabel `job_batches`
---
-ALTER TABLE `job_batches`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `migrations`
---
-ALTER TABLE `migrations`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `mitra`
---
-ALTER TABLE `mitra`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `mitras`
---
-ALTER TABLE `mitras`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `orders`
---
-ALTER TABLE `orders`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `orders_product_id_foreign` (`product_id`);
-
---
--- Indeks untuk tabel `password_reset_tokens`
---
-ALTER TABLE `password_reset_tokens`
-  ADD PRIMARY KEY (`email`);
-
---
--- Indeks untuk tabel `pengguna`
---
-ALTER TABLE `pengguna`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- Indeks untuk tabel `pesan`
---
-ALTER TABLE `pesan`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `products`
---
-ALTER TABLE `products`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `produk`
---
-ALTER TABLE `produk`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `sessions`
---
-ALTER TABLE `sessions`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `sessions_user_id_index` (`user_id`),
-  ADD KEY `sessions_last_activity_index` (`last_activity`);
-
---
--- Indeks untuk tabel `staff`
---
-ALTER TABLE `staff`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `users_email_unique` (`email`);
-
---
--- AUTO_INCREMENT untuk tabel yang dibuang
---
-
---
--- AUTO_INCREMENT untuk tabel `failed_jobs`
---
-ALTER TABLE `failed_jobs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT untuk tabel `jobs`
---
-ALTER TABLE `jobs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT untuk tabel `migrations`
---
-ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT untuk tabel `mitra`
---
-ALTER TABLE `mitra`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT untuk tabel `mitras`
---
-ALTER TABLE `mitras`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT untuk tabel `orders`
---
-ALTER TABLE `orders`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT untuk tabel `pengguna`
---
-ALTER TABLE `pengguna`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT untuk tabel `pesan`
---
-ALTER TABLE `pesan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT untuk tabel `products`
---
-ALTER TABLE `products`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT untuk tabel `produk`
---
-ALTER TABLE `produk`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT untuk tabel `staff`
---
-ALTER TABLE `staff`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT untuk tabel `users`
---
-ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
---
-
---
--- Ketidakleluasaan untuk tabel `orders`
---
-ALTER TABLE `orders`
-  ADD CONSTRAINT `orders_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
-COMMIT;
-
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2026-11-24 21:28:35

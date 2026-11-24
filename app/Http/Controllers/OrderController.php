@@ -6,7 +6,9 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
@@ -76,8 +78,8 @@ class OrderController extends Controller
                 }
             }
 
-            // 2. Simpan data ke tabel 'pesan' sesuai kolom yang ada
-            DB::table('pesan')->insert([
+            // 2. Simpan pesanan sebagai Pending sebelum pembayaran Midtrans.
+            $orderId = DB::table('pesan')->insertGetId([
                 'nama_pemesan'      => $request->nama_pemesan,
                 'no_wa'             => $request->no_wa,
                 'metode_pengiriman' => $request->metode,
@@ -87,13 +89,85 @@ class OrderController extends Controller
                 'status_bayar'      => 'Pending',
             ]);
 
+            if (!config('services.midtrans.server_key') || !Schema::hasColumn('pesan', 'midtrans_order_id')) {
+                throw new \RuntimeException('Midtrans belum dikonfigurasi. Jalankan migration dan isi MIDTRANS_SERVER_KEY.');
+            }
+
+            $midtransOrderId = 'SOSRO-' . $orderId . '-' . Str::upper(Str::random(8));
+            $items = collect($cartItems)->map(function ($item) {
+                return [
+                    'id' => (string) ($item['id'] ?? Str::slug($item['nama'] ?? 'produk')),
+                    'price' => (int) ($item['harga'] ?? 0),
+                    'quantity' => (int) ($item['jumlah'] ?? 1),
+                    'name' => Str::limit((string) ($item['nama'] ?? 'Produk Sosro'), 50, ''),
+                ];
+            })->values()->all();
+
+            $response = Http::withBasicAuth(config('services.midtrans.server_key'), '')
+                ->acceptJson()
+                ->post(config('services.midtrans.is_production')
+                    ? 'https://app.midtrans.com/snap/v1/transactions'
+                    : 'https://app.sandbox.midtrans.com/snap/v1/transactions', [
+                        'transaction_details' => [
+                            'order_id' => $midtransOrderId,
+                            'gross_amount' => $totalBayar,
+                        ],
+                        'item_details' => $items,
+                        'customer_details' => [
+                            'first_name' => $request->nama_pemesan,
+                            'phone' => $request->no_wa,
+                        ],
+                        'callbacks' => [
+                            'finish' => url('/pelanggan?status=payment_finish'),
+                        ],
+                    ]);
+
+            if (!$response->successful() || !$response->json('token')) {
+                throw new \RuntimeException('Midtrans gagal membuat transaksi: ' . $response->body());
+            }
+
+            DB::table('pesan')->where('id', $orderId)->update([
+                'midtrans_order_id' => $midtransOrderId,
+                'midtrans_token' => $response->json('token'),
+                'midtrans_status' => 'pending',
+            ]);
+
             DB::commit();
-            return redirect('/pelanggan?status=pesan_success');
+            return redirect('/pelanggan?status=payment_pending&snap_token=' . urlencode($response->json('token')));
 
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect('/pelanggan?status=pesan_failed');
         }
+    }
+
+    /** Midtrans HTTP notification/webhook. Jangan percaya status dari browser. */
+    public function midtransNotification(Request $request)
+    {
+        $payload = $request->all();
+        $orderId = $payload['order_id'] ?? null;
+        $status = $payload['transaction_status'] ?? null;
+        $signature = $payload['signature_key'] ?? '';
+        $expected = hash('sha512', ($orderId ?? '') . ($payload['status_code'] ?? '') . ($payload['gross_amount'] ?? '') . config('services.midtrans.server_key'));
+
+        if (!$orderId || !hash_equals($expected, $signature)) {
+            return response()->json(['message' => 'Invalid notification'], 403);
+        }
+
+        $paid = in_array($status, ['settlement', 'capture'], true);
+        $failed = in_array($status, ['deny', 'cancel', 'expire', 'failure'], true);
+        $data = ['midtrans_status' => $status];
+        if ($paid) {
+            $data['status_bayar'] = 'Lunas';
+            $data['paid_at'] = now();
+        } elseif ($failed) {
+            $data['status_bayar'] = 'Gagal';
+        }
+        if (Schema::hasColumn('pesan', 'status_pesanan') && $paid) {
+            $data['status_pesanan'] = 'Lunas';
+        }
+        DB::table('pesan')->where('midtrans_order_id', $orderId)->update($data);
+        return response()->json(['message' => 'OK']);
     }
 
     // Simpan pesanan produk spesifik (versi Model Order)

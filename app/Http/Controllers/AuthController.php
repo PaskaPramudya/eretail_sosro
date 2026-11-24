@@ -19,8 +19,11 @@ class AuthController extends Controller
         $password = $request->input('password');
 
         $user = DB::table('pengguna')
-            ->where('email', $input)
-            ->orWhere('no_hp', $input)
+            ->where(function ($query) use ($input) {
+                $query->where('email', $input)
+                    ->orWhere('no_hp', $input)
+                    ->orWhere('nama_lengkap', $input);
+            })
             ->first();
 
         if ($user && $this->passwordMatches($password, $user->password ?? null)) {
@@ -42,14 +45,20 @@ class AuthController extends Controller
     {
         $request->validate([
             'nama_lengkap' => 'required|string|max:100',
-            'email' => 'required|email|max:100',
-            'no_hp' => 'nullable|string|max:20',
-            'password' => 'required|string|min:6|max:255',
+            'email'        => 'required|email|max:100',
+            'no_hp'        => 'nullable|string|max:20',
+            'password'     => 'required|string|min:4|max:255',
+        ], [
+            'nama_lengkap.required' => 'Nama lengkap / nama toko wajib diisi.',
+            'email.required'        => 'Alamat email wajib diisi.',
+            'email.email'           => 'Format email tidak valid (harus ada @ dan domain).',
+            'password.required'     => 'Kata sandi wajib diisi.',
+            'password.min'          => 'Kata sandi minimal 4 karakter.',
         ]);
 
-        $nama     = $request->input('nama_lengkap');
-        $email    = $request->input('email');
-        $no_hp    = $request->input('no_hp');
+        $nama     = trim($request->input('nama_lengkap'));
+        $email    = trim($request->input('email'));
+        $no_hp    = trim($request->input('no_hp'));
         $password = $request->input('password');
 
         // Cek apakah email sudah terdaftar
@@ -58,15 +67,19 @@ class AuthController extends Controller
             return redirect('/pelanggan?status=email_exists');
         }
 
-        DB::table('pengguna')->insert([
-            'nama_lengkap' => $nama,
-            'email'        => $email,
-            'no_hp'        => $no_hp,
-            'password'     => password_hash($password, PASSWORD_DEFAULT),
-            'role'         => 'pelanggan',
-        ]);
+        try {
+            DB::table('pengguna')->insert([
+                'nama_lengkap' => $nama,
+                'email'        => $email,
+                'no_hp'        => $no_hp,
+                'password'     => $password,
+                'role'         => 'pelanggan',
+            ]);
 
-        return redirect('/pelanggan?status=register_success');
+            return redirect('/pelanggan?status=register_success');
+        } catch (\Exception $e) {
+            return redirect('/pelanggan?status=register_failed&msg=' . urlencode($e->getMessage()));
+        }
     }
 
     // 3. Login khusus Admin Distributor
@@ -105,18 +118,24 @@ class AuthController extends Controller
             'password' => 'required|string|max:255',
         ]);
 
-        $input = $request->input('username');
+        $input = trim($request->input('username'));
         $user = DB::table('staff')
             ->where(function ($query) use ($input) {
-                $query->where('nama_staff', $input)
-                    ->orWhere('email', $input);
+                $query->whereRaw('LOWER(nama_staff) = ?', [strtolower($input)])
+                    ->orWhereRaw('LOWER(email) = ?', [strtolower($input)]);
             })
             ->first();
 
-        $jabatan = strtolower(trim($user->jabatan ?? ''));
+        if (!$user || !$this->passwordMatches($request->password, $user->password ?? null)) {
+            return redirect('/pelanggan?status=' . $expectedRole . '_login_failed');
+        }
+
+        // Data lama menggunakan kolom jabatan ("Staff", "Admin").
+        // Tetap dukung variasi kapitalisasi/spasi agar login tidak gagal karena format data.
+        $jabatan = strtolower(trim((string) ($user->jabatan ?? '')));
         $actualRole = str_contains($jabatan, 'staff') ? 'staff' : 'admin';
 
-        if (!$user || $actualRole !== $expectedRole || !$this->passwordMatches($request->password, $user->password ?? null)) {
+        if ($actualRole !== $expectedRole) {
             return redirect('/pelanggan?status=' . $expectedRole . '_login_failed');
         }
 

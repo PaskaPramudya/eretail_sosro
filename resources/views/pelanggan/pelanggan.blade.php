@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>E-Commerce E-Retail Sosro - Toko Online Resmi</title>
+    <title>Sosro Official Store — Kesegaran Asli Indonesia</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,15 +11,31 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- SweetAlert2 CDN untuk Animasi Centang Hijau & Silang Merah -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ config('services.midtrans.is_production') ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' }}" data-client-key="{{ config('services.midtrans.client_key') }}"></script>
      <style>
-   :root { --amazon-navy:#131921; --amazon-blue:#232f3e; }
-   body { background:#eaeded !important; }
-   header { background:var(--amazon-navy) !important; border-bottom:4px solid #ff9900; }
-   header .bg-red-600 { background:#e52929 !important; }
-   header .bg-amber-700 { background:var(--amazon-blue) !important; }
-   .amazon-card { box-shadow:0 2px 6px rgba(15,23,42,.10) !important; border-radius:8px !important; }
-   .amazon-card:hover { box-shadow:0 5px 14px rgba(15,23,42,.18) !important; }
-   .amazon-price { color:#b12704 !important; }
+   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+   :root { --sosro-red:#b91c1c; --sosro-orange:#f97316; --ink:#172033; --cream:#fffaf4; }
+   * { scrollbar-width: thin; scrollbar-color:#f3b48b transparent; }
+   body { background:var(--cream) !important; color:var(--ink); font-family:'DM Sans',sans-serif; }
+   h1,h2,h3,h4,button { font-family:'Plus Jakarta Sans','DM Sans',sans-serif; }
+   header { background:rgba(255,255,255,.94) !important; border-bottom:1px solid #f3e7dc; box-shadow:0 8px 24px rgba(104,45,20,.06) !important; backdrop-filter:blur(16px); }
+   header .bg-red-600 { background:var(--sosro-red) !important; }
+   header .bg-amber-700 { background:#fff4ec !important; color:var(--sosro-red) !important; }
+   header .text-white { color:var(--ink) !important; }
+   header .text-amber-200, header .text-amber-100 { color:#9b341f !important; }
+   header .border-amber-600\/50 { border-color:#f4c5ae !important; }
+   .amazon-card { box-shadow:0 8px 24px rgba(93,48,28,.07) !important; border-radius:18px !important; border-color:#f3e9e0 !important; }
+   .amazon-card:hover { box-shadow:0 18px 35px rgba(93,48,28,.14) !important; transform:translateY(-4px); }
+   .amazon-price { color:var(--sosro-red) !important; }
+   .hero-copy { max-width:650px; }
+   .soft-panel { background:#fff; border:1px solid #f3e9e0; box-shadow:0 10px 25px rgba(93,48,28,.05); }
+   .section-kicker { color:var(--sosro-red); letter-spacing:.16em; font-size:11px; font-weight:800; text-transform:uppercase; }
+   .category-btn { transition:all .2s ease; }
+   .category-btn.active, .category-btn:hover { background:var(--sosro-red) !important; color:#fff !important; border-color:var(--sosro-red) !important; box-shadow:0 6px 14px rgba(185,28,28,.18); }
+   .product-card { transition:all .25s ease; }
+   .product-card .product-image { background:linear-gradient(145deg,#fff8f1,#fff); }
+   .feature-icon { background:#fff1e8; color:var(--sosro-red); }
+   .footer-link:hover { color:#fb923c; }
   .fly-item {
     position: fixed;
     z-index: 9999;
@@ -47,30 +63,30 @@
 
   <body class="bg-gray-50 font-sans text-gray-800 antialiased flex flex-col min-h-screen">
     <!-- Top Announcement Bar -->
-    <div class="bg-amber-900 text-amber-100 text-xs py-2 px-4 text-center font-medium">
-      🍃 Nikmati Keharuman & Kesegaran Teh Asli Indonesia. Bebas Ongkir untuk Pembelian Grosir Mitra!
+    <div class="bg-[#fff1e8] text-[#9b341f] text-xs py-2.5 px-4 text-center font-semibold">
+      ✦ Gratis ongkir untuk pembelian grosir mitra &nbsp;•&nbsp; Pesan langsung dari Official Store Sosro
     </div>
 
     <!-- Header Navigation -->
     <header class="bg-amber-800 text-white shadow-md sticky top-0 z-30">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-[76px] gap-5">
         <!-- Logo Brand -->
         <div class="flex items-center space-x-3">
-          <div class="bg-red-600 p-2 rounded-lg font-bold text-xl tracking-wide flex items-center gap-2 shadow">
-            <i data-lucide="store" class="w-6 h-6"></i>
-            <span>SOSRO</span>
+          <div class="bg-red-600 px-3 py-2 rounded-xl font-extrabold text-xl tracking-wide flex items-center gap-2 shadow-sm text-white">
+            <i data-lucide="leaf" class="w-5 h-5"></i>
+            <span class="text-white">SOSRO</span>
           </div>
-          <span class="text-xs bg-amber-700/60 text-amber-200 px-2.5 py-1 rounded-full font-medium hidden sm:inline-block">Official Store</span>
+          <span class="text-[10px] bg-amber-700/60 text-amber-200 px-2.5 py-1 rounded-full font-bold hidden sm:inline-block border border-orange-200">✓ Official Store</span>
         </div>
 
         <!-- Search Bar -->
-        <div class="hidden md:flex flex-1 max-w-md mx-8">
+        <div class="hidden md:flex flex-1 max-w-2xl mx-3">
           <div class="relative w-full">
             <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
             <input
               type="text"
               id="product-search" placeholder="Cari Teh Botol, Fruit Tea, TEBS..."
-              class="w-full pl-9 pr-4 py-2 bg-white text-gray-800 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-inner"
+              class="w-full pl-10 pr-4 py-3 bg-[#fffaf7] border border-orange-100 text-gray-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 shadow-inner"
             />
           </div>
         </div>
@@ -79,12 +95,12 @@
         <div class="flex items-center space-x-4">
           <button
             onclick="{{ session()->has('nama') ? 'toggleCart()' : 'requireLogin()' }}"
-            class="relative bg-amber-700 hover:bg-amber-600 p-2.5 rounded-full transition flex items-center gap-2"
+             class="relative bg-amber-700 hover:bg-orange-100 p-3 rounded-xl transition flex items-center gap-2"
           >
             <i data-lucide="shopping-bag" class="w-5 h-5"></i>
             <span
               id="cart-count"
-              class="bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center -top-1 -right-1 absolute"
+              class="bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center -top-1 -right-1 absolute"
               >0</span
             >
           </button>
@@ -94,18 +110,18 @@
           <!-- Tombol Profil / Auth -->
           @if (session()->has('nama'))
             <div class="flex items-center gap-2">
-              <span class="text-sm font-semibold bg-amber-900/60 px-3 py-1.5 rounded-lg border border-amber-600/50 flex items-center gap-2 text-amber-100">
+              <span class="text-sm font-semibold bg-orange-50 px-3 py-1.5 rounded-lg border border-amber-600/50 flex items-center gap-2 text-amber-100">
                 <i data-lucide="user" class="w-4 h-4 text-amber-300"></i>
                 {{ session('nama') }}
               </span>
-              <a href="{{ url('/logout') }}" class="text-xs font-semibold bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition shadow-sm">
+              <a href="{{ url('/logout') }}" class="text-xs font-semibold bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg transition shadow-sm">
                 Keluar
               </a>
             </div>
           @else
             <button
               onclick="openAuthModal()"
-              class="text-sm font-medium hover:text-amber-200 transition hidden sm:block cursor-pointer bg-amber-900/40 hover:bg-amber-900 px-3 py-1.5 rounded-lg border border-amber-600/50"
+               class="text-sm font-semibold hover:text-white transition hidden sm:block cursor-pointer bg-red-600 hover:bg-red-700 px-4 py-2.5 rounded-lg border border-red-600 text-white"
             >
               Masuk / Daftar
             </button>
@@ -116,25 +132,25 @@
 
     <!-- Hero Banner dengan Gambar Background -->
     <section 
-      class="relative bg-cover bg-center text-white py-14 px-4 sm:px-6 lg:px-8"
+      class="relative bg-cover bg-center text-white py-20 px-4 sm:px-6 lg:px-8"
       style="background-image: url('{{ asset('images/background.jpg') }}');"
     >
       <!-- Overlay hitam transparan -->
-      <div class="absolute inset-0 bg-black/40 backdrop-blur-[1px]"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-[#431313]/90 via-[#7f2419]/70 to-[#9a3412]/20"></div>
 
       <div class="relative max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 z-10">
-        <div class="space-y-4 text-center md:text-left max-w-xl">
-          <span class="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider drop-shadow">Promo Mitra & Grosir</span>
-          <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight drop-shadow-md">
-            Segarnya Minuman Asli Sosro Langsung Dari Pabrik!
+        <div class="space-y-5 text-center md:text-left hero-copy">
+           <span class="inline-flex bg-orange-400/20 border border-orange-200/50 text-orange-100 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider drop-shadow">Promo mitra & grosir</span>
+           <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.08] drop-shadow-md">
+             Kesegaran asli,<br><span class="text-orange-300">langsung dari Sosro.</span>
           </h1>
-          <p class="text-amber-100 text-sm sm:text-base drop-shadow">
+           <p class="text-orange-50 text-sm sm:text-base leading-relaxed drop-shadow max-w-xl">
             Pesan beragam produk Teh Botol Sosro, Fruit Tea, TEBS, dan Prima langsung untuk kebutuhan toko, cafe, maupun konsumsi harian Anda.
           </p>
           <div class="pt-2 flex flex-wrap justify-center md:justify-start gap-3">
-            <a href="#katalog" class="bg-white text-amber-900 hover:bg-amber-100 font-bold px-6 py-3 rounded-lg shadow transition text-sm">Lihat Katalog</a>
-            <button type="button" onclick="bukaPanduanMitra()" class="bg-amber-950/70 hover:bg-amber-900 border border-amber-500 font-medium px-5 py-3 rounded-lg transition text-sm backdrop-blur-sm cursor-pointer">
-    Panduan Mitra
+             <a href="#katalog" class="bg-orange-400 hover:bg-orange-300 text-white font-bold px-6 py-3.5 rounded-xl shadow transition text-sm">Belanja Sekarang <span class="ml-2">→</span></a>
+             <button type="button" onclick="bukaPanduanMitra()" class="bg-white/10 hover:bg-white/20 border border-white/30 font-semibold px-5 py-3.5 rounded-xl transition text-sm backdrop-blur-sm cursor-pointer">
+     Lihat katalog
 </button>
 
 <!-- Modal Panduan Mitra -->
@@ -214,28 +230,39 @@
           </div>
       </div>
             <div class="w-full md:w-auto flex justify-center">
-          <div class="bg-black/40 backdrop-blur-md p-6 rounded-2xl border border-white/20 text-center space-y-2 shadow-lg">
-            <i data-lucide="shield-check" class="w-12 h-12 text-amber-300 mx-auto"></i>
-            <p class="font-bold text-lg">100% Produk Original</p>
-            <p class="text-xs text-amber-100">Jaminan Kualitas & Kadaluarsa Panjang</p>
+            <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 text-center space-y-2 shadow-lg">
+             <i data-lucide="badge-check" class="w-12 h-12 text-orange-300 mx-auto"></i>
+             <p class="font-bold text-lg">100% Produk Original</p>
+             <p class="text-xs text-orange-100">Jaminan kualitas & kadaluarsa panjang</p>
           </div>
         </div>
       </div>
     </section>
     <!-- Main Content (Katalog Produk) -->
-    <main id="katalog" class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1">
+     <main id="katalog" class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-14 flex-1">
+       <section class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 mb-14">
+         <div class="soft-panel rounded-2xl p-4 md:p-5 flex items-center gap-3"><div class="feature-icon rounded-xl p-3"><i data-lucide="truck" class="w-5 h-5"></i></div><div><p class="font-bold text-sm">Pengiriman aman</p><p class="text-xs text-gray-500">Langsung dari depot</p></div></div>
+         <div class="soft-panel rounded-2xl p-4 md:p-5 flex items-center gap-3"><div class="feature-icon rounded-xl p-3"><i data-lucide="shield-check" class="w-5 h-5"></i></div><div><p class="font-bold text-sm">Produk original</p><p class="text-xs text-gray-500">Kualitas terjamin</p></div></div>
+         <div class="soft-panel rounded-2xl p-4 md:p-5 flex items-center gap-3"><div class="feature-icon rounded-xl p-3"><i data-lucide="badge-percent" class="w-5 h-5"></i></div><div><p class="font-bold text-sm">Harga terbaik</p><p class="text-xs text-gray-500">Promo setiap minggu</p></div></div>
+         <div class="soft-panel rounded-2xl p-4 md:p-5 flex items-center gap-3"><div class="feature-icon rounded-xl p-3"><i data-lucide="headphones" class="w-5 h-5"></i></div><div><p class="font-bold text-sm">Bantuan ramah</p><p class="text-xs text-gray-500">Siap membantu Anda</p></div></div>
+       </section>
       <!-- Filter Category Tabs -->
       <div class="flex flex-wrap items-center justify-between gap-4 mb-8 border-b border-gray-200 pb-4">
         <div>
-          <h2 class="text-2xl font-bold text-gray-900">Katalog Produk</h2>
-          <p class="text-xs text-gray-500">Pilih ragam produk kesegaran Sosro favorit Anda</p>
+          <p class="section-kicker mb-2">Temukan favoritmu</p>
+          <h2 class="text-3xl font-bold text-gray-900">Produk pilihan Sosro</h2>
+          <p class="text-sm text-gray-500 mt-1">Minuman segar untuk setiap momen, dikirim langsung dari official store.</p>
         </div>
 
         <div class="flex flex-wrap gap-2">
-           <button onclick="filterCatalog('all', this)" class="category-btn px-4 py-2 rounded-full text-xs font-semibold bg-amber-800 text-white shadow-sm">Semua Produk</button>
+            <button onclick="filterCatalog('all', this)" class="category-btn active px-4 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 shadow-sm">Semua Produk</button>
            <button onclick="filterCatalog('teh botol', this)" class="category-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 hover:bg-amber-50 transition">Teh Botol Sosro</button>
            <button onclick="filterCatalog('fruit tea', this)" class="category-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 hover:bg-amber-50 transition">Fruit Tea</button>
            <button onclick="filterCatalog('tebs', this)" class="category-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 hover:bg-amber-50 transition">TEBS Sparkling</button>
+           <button onclick="filterCatalog('prima', this)" class="category-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 hover:bg-amber-50 transition">Prima</button>
+           <select id="product-sort" onchange="sortProducts(this.value)" class="px-3 py-2 rounded-full text-xs font-semibold bg-white border border-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300">
+             <option value="latest">Terbaru</option><option value="low">Harga terendah</option><option value="high">Harga tertinggi</option>
+           </select>
         </div>
       </div>
 
@@ -248,8 +275,8 @@
               $stok_tersedia = $row->stok ?? 0;
               $id_produk = $row->id ?? $row->id_produk ?? 0;
             @endphp
-            <div class="amazon-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group product-card" data-search="{{ strtolower($row->nama_produk . ' ' . $row->kategori) }}">
-              <div class="bg-gray-100 h-48 flex items-center justify-center p-4 relative overflow-hidden">
+            <div class="amazon-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col group product-card" data-search="{{ strtolower($row->nama_produk . ' ' . $row->kategori) }}" data-price="{{ $row->harga }}" data-id="{{ $id_produk }}">
+               <div class="product-image h-56 flex items-center justify-center p-5 relative overflow-hidden">
                 @if (strtolower($row->kategori) == 'minuman' && $id_produk == 1)
                   <span class="absolute top-3 left-3 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded z-10">Terlaris</span>
                 @elseif (str_contains(strtolower($row->nama_produk), 'tebs'))
@@ -273,8 +300,8 @@
                     {{ $row->nama_produk }}
                   </h3>
 
-                  <p class="text-xs text-emerald-600 font-semibold mt-1">
-                    Stok Tersedia: {{ $stok_tersedia }}
+                   <p class="text-xs text-emerald-600 font-semibold mt-2 flex items-center gap-1">
+                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Stok tersedia: {{ $stok_tersedia }}
                   </p>
                 </div>
 
@@ -287,7 +314,7 @@
                   @if (session()->has('nama'))
                   <button
                     onclick="addToCart(event, {{ $id_produk }}, '{{ addslashes($row->nama_produk) }}', {{ $row->harga }}, this, {{ $stok_tersedia }})"
-                    class="bg-amber-800 hover:bg-amber-900 text-white p-2.5 rounded-lg transition shadow-sm"
+                     class="bg-red-600 hover:bg-red-700 text-white p-2.5 rounded-xl transition shadow-sm"
                     title="Tambah ke Keranjang"
                   >
                     <i data-lucide="plus" class="w-5 h-5"></i>
@@ -310,14 +337,20 @@
           </div>
         @endif
       </div>
-    </main>
+     </main>
+     <section class="bg-[#fff1e8] py-14 px-4">
+       <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-5">
+         <div><p class="section-kicker mb-2">Nikmati lebih hemat</p><h2 class="text-2xl md:text-3xl font-bold text-gray-900">Belanja grosir, lebih praktis.</h2><p class="text-sm text-gray-600 mt-2">Dapatkan penawaran khusus untuk kebutuhan toko, kafe, dan bisnis Anda.</p></div>
+         <a href="#katalog" class="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3 rounded-xl shadow">Lihat semua promo →</a>
+       </div>
+     </section>
 
     <!-- Slide-over Drawer Keranjang Belanja -->
     <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden hidden">
       <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="toggleCart()"></div>
       <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
         <div class="w-screen max-w-md bg-white shadow-xl flex flex-col">
-          <div class="p-4 bg-amber-800 text-white flex justify-between items-center">
+          <div class="p-4 bg-red-700 text-white flex justify-between items-center">
             <div class="flex items-center gap-2">
               <i data-lucide="shopping-cart" class="w-5 h-5"></i>
               <h2 class="font-bold text-lg">Keranjang Belanja</h2>
@@ -350,7 +383,7 @@
     <!-- Modal Form Checkout / Pemesanan -->
     <div id="modal-checkout" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
       <div class="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden">
-        <div class="bg-amber-800 text-white p-4 flex justify-between items-center">
+         <div class="bg-red-700 text-white p-4 flex justify-between items-center">
           <h3 class="font-bold text-lg">Form Pemesanan Pembeli</h3>
           <button onclick="closeCheckout()" class="hover:bg-amber-700 p-1 rounded">
             <i data-lucide="x" class="w-5 h-5"></i>
@@ -486,7 +519,7 @@
         <button id="tab-login" onclick="switchAuthTab('login')" class="font-bold text-base border-b-2 border-white pb-0.5">Masuk</button>
         <button id="tab-register" onclick="switchAuthTab('register')" class="font-medium text-base text-amber-200 border-b-2 border-transparent hover:text-white pb-0.5">Daftar Akun</button>
          <button id="tab-admin" onclick="switchAuthTab('admin')" class="font-medium text-base text-amber-200 border-b-2 border-transparent hover:text-white pb-0.5">Admin</button>
-         <button id="tab-staff" onclick="switchAuthTab('staff')" class="font-medium text-base text-amber-200 border-b-2 border-transparent hover:text-white pb-0.5">Staff</button>
+          <button id="tab-staff" onclick="switchAuthTab('staff')" class="font-medium text-base text-amber-200 border-b-2 border-transparent hover:text-white pb-0.5">Staff Operasional</button>
       </div>
       <button onclick="closeAuthModal()" class="hover:bg-amber-700 p-1 rounded text-amber-200 hover:text-white">
         <i data-lucide="x" class="w-5 h-5"></i>
@@ -498,8 +531,8 @@
       <form id="form-login" action="{{ url('/proses-login') }}" method="POST" class="space-y-4">
         @csrf
         <div>
-          <label class="block text-xs font-semibold text-gray-700 mb-1">Email / No. Handphone</label>
-          <input type="text" name="email_or_phone" placeholder="Contoh: dimas@gmail.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
+          <label class="block text-xs font-semibold text-gray-700 mb-1">Email / No. Handphone / Nama Akun</label>
+          <input type="text" name="email_or_phone" placeholder="Contoh: dimas@gmail.com atau TokoDimas" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" required />
         </div>
         <div>
           <label class="block text-xs font-semibold text-gray-700 mb-1">Kata Sandi (Password)</label>
@@ -551,10 +584,10 @@
        <form id="form-staff" action="{{ route('proses.staff.login') }}" method="POST" class="space-y-4 hidden">
          @csrf
          <div class="rounded-lg bg-blue-50 border border-blue-200 p-3 text-xs text-blue-900">
-           Login khusus Staff Distributor untuk memproses pesanan dan mengatur pengiriman.
+            Login khusus Staff Operasional untuk memproses pesanan dan mengatur pengiriman.
          </div>
          <div>
-           <label for="staff-username" class="block text-xs font-semibold text-gray-700 mb-1">Username Staff</label>
+            <label for="staff-username" class="block text-xs font-semibold text-gray-700 mb-1">Username atau Email Staff</label>
            <input id="staff-username" type="text" name="username" autocomplete="username" placeholder="Username atau email staff" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required />
          </div>
          <div>
@@ -568,12 +601,14 @@
 </div>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-400 text-xs py-8 border-t border-gray-800 mt-12">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
-        <p class="text-white font-bold text-sm">PT Sinar Sosro - E-Commerce System</p>
-        <p>Sistem Pemesanan Produk Resmi Sosro Indonesia.</p>
-      </div>
-    </footer>
+     <footer class="bg-[#211516] text-[#d9c8c4] text-sm py-12 border-t border-[#3b2525] mt-0">
+       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+         <div class="md:col-span-2"><p class="text-white font-extrabold text-xl mb-3">SOSRO</p><p class="max-w-sm leading-relaxed text-xs">Kesegaran teh asli Indonesia untuk menemani setiap cerita. Pesan produk Sosro favoritmu melalui official store.</p></div>
+         <div><p class="text-white font-bold mb-3">Bantuan</p><p class="text-xs leading-7">Panduan Pemesanan<br>Informasi Pengiriman<br>Hubungi Kami</p></div>
+         <div><p class="text-white font-bold mb-3">Ikuti kami</p><div class="flex gap-3"><span class="footer-link cursor-pointer">Instagram</span><span class="footer-link cursor-pointer">Facebook</span></div></div>
+         <div class="md:col-span-4 pt-5 border-t border-white/10 text-xs flex justify-between"><span>© {{ date('Y') }} PT Sinar Sosro</span><span>Official E-Commerce Store</span></div>
+       </div>
+     </footer>
 
     <!-- Interactive Script -->
 <script>
@@ -581,12 +616,17 @@
 
   document.getElementById('product-search')?.addEventListener('input', function () {
     const q = this.value.toLowerCase();
-    document.querySelectorAll('.product-card').forEach(card => card.style.display = card.dataset.search.includes(q) ? 'flex' : 'none');
+    document.querySelectorAll('.product-card').forEach(card => { card.style.display = card.dataset.search.includes(q) ? 'flex' : 'none'; });
   });
   function filterCatalog(category, button) {
-    document.querySelectorAll('.category-btn').forEach(btn => { btn.classList.remove('bg-amber-800','text-white'); btn.classList.add('bg-white','text-gray-700'); });
-    button.classList.add('bg-amber-800','text-white');
+    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
     document.querySelectorAll('.product-card').forEach(card => card.style.display = category === 'all' || card.dataset.search.includes(category) ? 'flex' : 'none');
+  }
+  function sortProducts(mode) {
+    const grid = document.querySelector('.product-card')?.parentElement;
+    if (!grid) return;
+    [...grid.querySelectorAll('.product-card')].sort((a,b) => mode === 'low' ? +a.dataset.price - +b.dataset.price : mode === 'high' ? +b.dataset.price - +a.dataset.price : +b.dataset.id - +a.dataset.id).forEach(card => grid.appendChild(card));
   }
 
   // Array penampung item keranjang belanja
@@ -861,6 +901,19 @@
   }
 
   window.onload = function () {
+    @if ($errors->any())
+      Swal.fire({
+        icon: 'warning',
+        title: 'Periksa Kembali Data Anda',
+        html: '{!! implode("<br>", $errors->all()) !!}',
+        confirmButtonColor: '#d97706',
+        confirmButtonText: 'Tutup'
+      }).then(() => {
+        openAuthModal();
+        switchAuthTab('register');
+      });
+    @endif
+
     const urlParams = new URLSearchParams(window.location.search);
     const status = urlParams.get("status");
     const nama = urlParams.get("nama");
@@ -924,13 +977,36 @@
       Swal.fire({
         icon: "warning",
         title: "Gagal Mendaftar",
-        text: "Email sudah terdaftar. Silakan gunakan email lain.",
+        text: "Email sudah terdaftar. Silakan gunakan email lain atau langsung Masuk.",
         confirmButtonColor: "#d97706",
         confirmButtonText: "Kembali",
       }).then(() => {
         openAuthModal();
         switchAuthTab("register");
       });
+    } else if (status === "register_failed") {
+      const msg = urlParams.get("msg") || "Terjadi kesalahan saat pendaftaran.";
+      Swal.fire({
+        icon: "error",
+        title: "Pendaftaran Gagal",
+        text: decodeURIComponent(msg),
+        confirmButtonColor: "#dc2626",
+      }).then(() => {
+        openAuthModal();
+        switchAuthTab("register");
+      });
+    } else if (status === "payment_pending") {
+      const snapToken = urlParams.get('snap_token');
+      if (snapToken && window.snap) {
+        window.snap.pay(snapToken, {
+          onSuccess: function () { Swal.fire({ icon: 'success', title: 'Pembayaran Berhasil', text: 'Pesanan Anda sedang diproses.', confirmButtonColor: '#b91c1c' }); },
+          onPending: function () { Swal.fire({ icon: 'info', title: 'Menunggu Pembayaran', text: 'Selesaikan pembayaran melalui Midtrans untuk memproses pesanan.', confirmButtonColor: '#b91c1c' }); },
+          onError: function () { Swal.fire({ icon: 'error', title: 'Pembayaran Gagal', text: 'Silakan coba kembali atau gunakan metode pembayaran lain.', confirmButtonColor: '#b91c1c' }); },
+          onClose: function () { Swal.fire({ icon: 'info', title: 'Pembayaran Belum Selesai', text: 'Anda dapat melakukan pembayaran kembali dari halaman ini.', confirmButtonColor: '#b91c1c' }); }
+        });
+      } else {
+        Swal.fire({ icon: 'warning', title: 'Midtrans Belum Siap', text: 'Client key Midtrans belum dikonfigurasi.' });
+      }
     } else if (status === "pesan_success") {
       keranjang = [];
       renderKeranjang();
